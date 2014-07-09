@@ -1,8 +1,8 @@
 
-Rapid_Cold_Chain
+Rapid_Cold_Chain: This project is a django/rapid-sms based application to process CCEM SMS messages
 ========================
 
-Below you will find basic setup instructions for the ``project_name``
+Below you will find basic setup instructions for the Rapid Cold Chain
 project. To begin you should have the following applications installed on your
 local development system:
 

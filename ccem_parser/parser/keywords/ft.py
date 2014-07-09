@@ -22,7 +22,7 @@ class ft(utils.Keyword):
 		return self.args,self.error,self.pos
 				
 	def parse_alarms(self,string):
-		m,self.pos = utils.gobble('\d{1,2}',string,self.pos) #gobble 1 or 2 diggits
+		m,self.pos = utils.gobble('\d{1,2}',string,self.pos) #gobble 1 or 2 digits
 		if not m:
 			self.error = 'INVALID_ALARMS'
 		else:

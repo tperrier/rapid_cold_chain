@@ -205,7 +205,7 @@ INSTALLED_APPS = (
     "rapidsms.backends.database",
     #"rapidsms.contrib.handlers",
     "rapidsms.contrib.httptester",
-    "rapidsms.contrib.messagelog",
+    "messagelog",
     "rapidsms.contrib.messaging",
     "rapidsms.contrib.registration",
     'ccem_parser',

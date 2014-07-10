@@ -197,8 +197,8 @@ INSTALLED_APPS = (
     "django_nose",
     #"djtables",  # required by rapidsms.contrib.locations
     "django_tables2",
-    #"jsonfield",
     "selectable",
+    "django_ccem",
     "south",
     # RapidSMS
     "rapidsms",

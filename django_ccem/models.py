@@ -12,7 +12,7 @@ class TimeStampedModel(models.Model):
 	class Meta:
 		abstract = True
 
-class Message(TimeStampedModel)
+class Message(TimeStampedModel):
 	'''
 	A message model that links to the RapidSMS messagelog message
 	'''
@@ -23,7 +23,44 @@ class Message(TimeStampedModel)
 	#The cleaned version of the message text used to parse the data
 	cleaned = models.CharField(max_length=200)
 	
-class Report(TimeStampedModel)
+	#Boolean field if this messages looks like a submission
+	is_submission = models.BooleanField(default=True)
+
+class SubmissionMessageManager(models.Manager):
+	
+	def get_queryset(self):
+		return super(SubmissionMessageManager,self).get_queryset().filter(is_submission=True)
+		
+class RegularMessageManager(models.Manager):
+	
+	def get_queryset(self):
+		return super(RegularMessageManager,self).get_queryset().filter(is_submission=False)
+
+class SubmissionMessage(Message):
+	'''
+	A proxy model for Message that has a special Manager filtering on is_submission = True
+	'''
+	
+	objects = SubmissionMessageManager()
+	
+	class Meta:
+		proxy = True #make this a proxy model 
+		
+class RegularMessage(Message):
+	'''
+	A proxy model for Message that has a special Manager filtering on is_submission = False
+	'''
+	
+	objects = RegularMessageManager()
+	
+	def save(self,*args,**kwargs):
+		self.is_submission = False
+		super(RegularMessage,self).save(*args,**kwargs)
+	
+	class Meta:
+		proxy = True #make this a proxy model
+	
+class Report(TimeStampedModel):
 	'''
 	A parsed message report linking back to the originial message
 	'''
@@ -54,7 +91,6 @@ class OrganisationBase(DHIS2Object,TimeStampedModel):
 	'''
 	A Json object representing the OrganisationUnits name in multiple languages
 	formate {
-		'en':
 		'ke':
 		'lo':
 	}
@@ -67,6 +103,9 @@ class OrganisationBase(DHIS2Object,TimeStampedModel):
 	
 	class Meta:
 		abstract = True
+		
+	def __unicode__(self):
+		return '|'.join([' '+i+' ' for i in self.i18n_name.values()])
 	
 class OrganisationUnit(OrganisationBase):
 	"""
@@ -86,9 +125,11 @@ class Facility(OrganisationBase):
 	
 	dhis2_api_name = 'organisationUnits'
 	
-class Equitment(DHIS2Object,TimeStampedModel);
+class Equitment(DHIS2Object,TimeStampedModel):
 	
 	facility = models.ForeignKey(Facility,blank=True,null=True)
+	
+	equitment_type = models.CharField(max_length=50)
 	
 	working = models.BooleanField(default=True)
 	

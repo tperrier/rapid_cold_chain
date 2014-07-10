@@ -12,3 +12,4 @@ public/static/
 public/media/
 *-env/
 rapidsms.log
+*.json

@@ -78,7 +78,7 @@ class Report(TimeStampedModel):
 	
 class DHIS2Object(models.Model):
 	
-	dhis2_id = models.CharField(max_length=20) #possibly make this the primary key
+	dhis2_id = models.CharField(max_length=20,primary_key=True) 
 	
 	class Meta:
 		abstract = True

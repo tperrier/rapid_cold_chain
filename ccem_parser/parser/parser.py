@@ -19,7 +19,7 @@ class Parser:
 	
 	def parse(self,msg,pos=0):
 		msg = self.clean(msg)
-		msg_report = utils.ParseResult()
+		msg_report = utils.ParseResult(msg)
 		while True:
 			kw,args,errors,pos = self._parse(msg,pos)
 			if kw is not None:

@@ -25,11 +25,12 @@ class Keyword(object):
 		
 class ParseResult(dict):
 	
-	def __init__(self,commands=None,errors=None):
+	def __init__(self,cleaned='',commands=None,errors=None):
 		if commands is None:
 			commands = {}
 		if errors is None:
 			errors = []
+		self.cleaned = cleaned
 		self['commands'] = commands
 		self['errors'] = errors
 		

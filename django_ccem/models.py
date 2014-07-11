@@ -18,23 +18,32 @@ class Message(TimeStampedModel):
 	'''
 	
 	#The RapidSMS log message this message is based on.
-	message = models.ForeignKey('messagelog.Message')
+	#There can only be one incoming message that created this Message
+	message = models.OneToOneField('messagelog.Message')
 	
 	#The cleaned version of the message text used to parse the data
 	cleaned = models.CharField(max_length=200)
 	
 	#Boolean field if this messages looks like a submission
 	is_submission = models.BooleanField(default=True)
+	
+	@classmethod
+	def from_msg(cls,msg,parsed):
+		'''
+		Create a new message from a rapidsms msg object and parser result
+		'''
+		submission = False if 'NO_KEYWORD_FOUND' in parsed.errors else True #ERROR_CODE
+		return cls.objects.create(message=msg.logger_msg,cleaned=parsed.cleaned,is_submission=submission)
 
 class SubmissionMessageManager(models.Manager):
 	
-	def get_queryset(self):
-		return super(SubmissionMessageManager,self).get_queryset().filter(is_submission=True)
+	def get_query_set(self):
+		return super(SubmissionMessageManager,self).get_query_set().filter(is_submission=True)
 		
 class RegularMessageManager(models.Manager):
 	
-	def get_queryset(self):
-		return super(RegularMessageManager,self).get_queryset().filter(is_submission=False)
+	def get_query_set(self):
+		return super(RegularMessageManager,self).get_query_set().filter(is_submission=False)
 
 class SubmissionMessage(Message):
 	'''
@@ -72,9 +81,31 @@ class Report(TimeStampedModel):
 	#Boolean indicating the presence of errors 
 	has_error = models.BooleanField(default=False)
 	
-	#Forignkey link to Message that generated this report and response
+	#Foreignkey link to Message that generated this report
+	#A message may have multiple reports so create a OneToManyField (Foreign Key)
 	message = models.ForeignKey(Message)
-	response = models.ForeignKey('messagelog.Message',null=True,blank=True)
+	#Foreignkey link to outgoing message response. Can only be one.
+	response = models.OneToOneField('messagelog.Message',null=True,blank=True)
+	
+	@classmethod
+	def from_ccem(cls,msg,parsed):
+		'''
+		Create a new report from a CCEM message and parsed object
+		'''
+		
+		has_error = False if len(parsed.errors)==0 else True
+		
+		return cls.objects.create(commands=parsed.commands,errors=parsed.errors,message=msg,has_error=has_error)
+	
+	@classmethod
+	def add_latest_response(cls,response):
+		'''
+		Given a rapidsms outgoing object attaches it to the correct report object if there is one
+		'''
+		report = response.in_response_to.logger_msg.message.report_set.latest('created')
+		report.response = response.logger_msg
+		report.save()
+		
 	
 class DHIS2Object(models.Model):
 	

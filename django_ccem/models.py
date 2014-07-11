@@ -1,18 +1,10 @@
 from django.db import models
 from jsonfield import JSONField
+import util.models as util
 
 # Create your models here.
 
-class TimeStampedModel(models.Model):
-	
-	#The date and time this message was created or modified
-	created = models.DateTimeField(auto_now_add=True)
-	modified = models.DateTimeField(auto_now=True)
-	
-	class Meta:
-		abstract = True
-
-class Message(TimeStampedModel):
+class Message(util.TimeStampedModel):
 	'''
 	A message model that links to the RapidSMS messagelog message
 	'''
@@ -69,7 +61,7 @@ class RegularMessage(Message):
 	class Meta:
 		proxy = True #make this a proxy model
 	
-class Report(TimeStampedModel):
+class Report(util.TimeStampedModel):
 	'''
 	A parsed message report linking back to the originial message
 	'''
@@ -106,7 +98,7 @@ class Report(TimeStampedModel):
 		report.response = response.logger_msg
 		report.save()
 		
-	
+## Move all this to a DHIS2 App
 class DHIS2Object(models.Model):
 	
 	dhis2_id = models.CharField(max_length=20,primary_key=True) 
@@ -114,7 +106,7 @@ class DHIS2Object(models.Model):
 	class Meta:
 		abstract = True
 
-class OrganisationBase(DHIS2Object,TimeStampedModel):
+class OrganisationBase(DHIS2Object,util.TimeStampedModel):
 	"""
 	Abstract class definition for element in the Organisational Hierarchy
 	"""
@@ -156,7 +148,7 @@ class Facility(OrganisationBase):
 	
 	dhis2_api_name = 'organisationUnits'
 	
-class Equitment(DHIS2Object,TimeStampedModel):
+class Equitment(DHIS2Object,util.TimeStampedModel):
 	
 	facility = models.ForeignKey(Facility,blank=True,null=True)
 	

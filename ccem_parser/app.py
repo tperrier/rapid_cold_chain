@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import logging, code
 from rapidsms.apps.base import AppBase
-from parser import default_parser as parser
+from . import default_parser as parser
 import messagelog as mlog 
 import django_ccem.models as ccem
 

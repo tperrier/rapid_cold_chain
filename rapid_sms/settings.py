@@ -186,29 +186,32 @@ LOGGING = {
 	}
 
 INSTALLED_APPS = (
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.admin',
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.sites",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django.contrib.admin",
     # External apps
     "django_nose",
     #"djtables",  # required by rapidsms.contrib.locations
     "django_tables2",
     "selectable",
-    "django_ccem",
     "south",
+    
+    #CCEM Parser Apps
+    "django_ccem",
+    "ccem_parser",
+    
     # RapidSMS
     "rapidsms",
     "rapidsms.backends.database",
     #"rapidsms.contrib.handlers",
     "rapidsms.contrib.httptester",
-    "rapidsms.contrib.messagelog",
+    "messagelog",
     "rapidsms.contrib.messaging",
     "rapidsms.contrib.registration",
-    'ccem_parser',
     #"rapidsms.contrib.echo",
     "rapidsms.contrib.default",  # Must be last
 )

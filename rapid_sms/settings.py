@@ -203,6 +203,7 @@ INSTALLED_APPS = (
     #CCEM Parser Apps
     "django_ccem",
     "ccem_parser",
+    "dhis2",
     
     # RapidSMS
     "rapidsms",

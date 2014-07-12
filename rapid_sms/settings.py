@@ -24,7 +24,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'rapid_sms.db',
+        'NAME': os.path.join(PROJECT_PATH,'rapid_sms.db'),
         'USER': '',
         'PASSWORD': '',
         'HOST': '',

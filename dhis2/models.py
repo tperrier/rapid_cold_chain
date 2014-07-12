@@ -1,7 +1,7 @@
 from django.db import models
 from jsonfield import JSONField
 
-import util.models as util
+import util, dhis2
 
 # Create your models here.
 
@@ -12,7 +12,7 @@ class DHIS2Object(models.Model):
 	class Meta:
 		abstract = True
 
-class OrganisationBase(DHIS2Object,util.TimeStampedModel):
+class OrganisationBase(DHIS2Object,util.models.TimeStampedModel):
 	"""
 	Abstract class definition for element in the Organisational Hierarchy
 	"""
@@ -26,7 +26,7 @@ class OrganisationBase(DHIS2Object,util.TimeStampedModel):
 	'''
 	i18n_name = JSONField()
 	
-	dhis2_code = models.CharField(max_length=20)
+	dhis2_code = models.CharField(max_length=20,null=True,blank=True)
 	
 	level = models.IntegerField() 
 	
@@ -34,7 +34,40 @@ class OrganisationBase(DHIS2Object,util.TimeStampedModel):
 		abstract = True
 		
 	def __unicode__(self):
-		return '|'.join([' '+i+' ' for i in self.i18n_name.values()])
+		if isinstance(self.i18n_name,dict):
+			return '|'.join([' '+i+' ' for i in self.i18n_name.values()])
+		return '|'.join([' '+i+' ' for i in self.i18n_name])
+	
+	@classmethod
+	def create_if_not_exists(cls,dhis2_id,follow_up=False,follow_down=False):
+		try:
+			return cls.objects.get(pk=dhis2_id)
+		except cls.DoesNotExist:
+			
+			if follow_up:
+				path_to_root = dhis2.orgs.path_to_root(dhis2_id)
+				path_to_root.reverse()
+				for p in path_to_root:
+					OrganisationUnit.create_if_not_exists(p)
+					
+			node = dhis2.orgs.from_id(dhis2_id,json=True)
+			#read node information
+			_id = node['id']
+			_code = node['code'] if 'code' in node else None
+			_level = node['level']
+			_name = node['name'] if 'name' in node else None
+			_parent = node['parent']['id'] if node['parent'] else None
+			
+			cls_obj = cls(
+				dhis2_id=_id,
+				dhis2_code=_code,
+				level=_level,
+				i18n_name=[_name],
+				parent=util.get_or_none(OrganisationUnit,pk=_parent),
+				)
+			cls_obj.save()
+			print cls_obj
+			return cls_obj
 	
 class OrganisationUnit(OrganisationBase):
 	"""
@@ -54,7 +87,7 @@ class Facility(OrganisationBase):
 	
 	dhis2_api_name = 'organisationUnits'
 	
-class Equitment(DHIS2Object,util.TimeStampedModel):
+class Equitment(DHIS2Object,util.models.TimeStampedModel):
 	
 	facility = models.ForeignKey(Facility,blank=True,null=True)
 	
@@ -64,7 +97,7 @@ class Equitment(DHIS2Object,util.TimeStampedModel):
 	
 	dhis2_api_name = 'equipments'
 
-class ContactProfile(util.TimeStampedModel):
+class ContactProfile(util.models.TimeStampedModel):
 	'''
 	A user who interacts with the CCEM system through SMS
 	'''

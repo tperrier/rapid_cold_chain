@@ -2,7 +2,7 @@ import api
 
 
 def from_id(dhis2_id,**kwargs):
-	return api.get_from_id('organisationUnit',dhis2_id,**kwargs)
+	return api.get_from_id('organisationUnits',dhis2_id,**kwargs)
 
 def path_to_root(dhis2_id):
 	parents=[]

@@ -33,6 +33,24 @@ def get_children(dhis2_id,verbose=False):
 		children[c_id] = get_children(c_id,verbose)
 	_node['children'] = children
 	return _node if verbose else children
+	
+def is_health_facility(node):
+	'''
+	Returns True if Node is in the Health Facility Group
+	Otherwise returns False
+	'''
+	if 'organisationUnitGroups' not in node:
+		return False
+	orgGroups = node['organisationUnitGroups']
+	
+	def _test(group):
+		if 'name' not in group:
+			return False
+		return group['name'] == 'Health Facility'
+		
+	group_test = [_test(group) for group in orgGroups]
+	
+	return True in group_test
 
 if __name__ == '__main__':
 

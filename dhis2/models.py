@@ -40,16 +40,29 @@ class OrganisationBase(DHIS2Object,util.models.TimeStampedModel):
 	
 	@classmethod
 	def create_if_not_exists(cls,dhis2_id,follow_up=False,follow_down=False):
-		try:
-			return cls.objects.get(pk=dhis2_id)
-		except cls.DoesNotExist:
-			
-			if follow_up:
+		'''
+		Uses the DHIS2 API to add a facility to the local database
+		@cls: OrganisationUnit or Facility (calling class)
+		@dhis2_id: the dhis2 id to add
+		@follow_up: add parent nodes on path to root if needed
+		@follow_down: add all decedent nodes if needed
+		
+		Since dhis2.orgs.is_health_facility() is not always accurate this
+		method may create some Facilities as OrganisationUnits
+		'''
+		#Create parent organisationUnits if necessary 
+		if follow_up:
 				path_to_root = dhis2.orgs.path_to_root(dhis2_id)
 				path_to_root.reverse()
 				for p in path_to_root:
 					OrganisationUnit.create_if_not_exists(p)
-					
+		
+		#Create this unit if necessary
+		try:
+
+			return cls.objects.get(pk=dhis2_id)
+		except cls.DoesNotExist:
+			#add loging
 			node = dhis2.orgs.from_id(dhis2_id,json=True)
 			#read node information
 			_id = node['id']
@@ -57,6 +70,9 @@ class OrganisationBase(DHIS2Object,util.models.TimeStampedModel):
 			_level = node['level']
 			_name = node['name'] if 'name' in node else None
 			_parent = node['parent']['id'] if node['parent'] else None
+			
+			#set cls var to the correct class based on Facility type
+			cls = Facility if dhis2.orgs.is_health_facility(node) else OrganisationUnit
 			
 			cls_obj = cls(
 				dhis2_id=_id,
@@ -66,8 +82,13 @@ class OrganisationBase(DHIS2Object,util.models.TimeStampedModel):
 				parent=util.get_or_none(OrganisationUnit,pk=_parent),
 				)
 			cls_obj.save()
-			print cls_obj
-			return cls_obj
+		
+		#Create child organisationUnits if necessary
+		if follow_down and 'children' in node and node['children']:
+			for child in node['children']:
+				cls.create_if_not_exists(child['id'],follow_down=True)
+		
+		return cls_obj
 	
 class OrganisationUnit(OrganisationBase):
 	"""

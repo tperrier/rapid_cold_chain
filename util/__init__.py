@@ -2,6 +2,8 @@
 Collection of utility functions
 '''
 
+import models
+
 
 def get_or_none(cls,**kwargs):
 	'''

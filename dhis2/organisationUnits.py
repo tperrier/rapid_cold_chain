@@ -34,6 +34,17 @@ def get_children(dhis2_id,verbose=False):
 	_node['children'] = children
 	return _node if verbose else children
 	
+def parse_name(node):
+	
+	#Split name on | and strip all numbers and spaces from beginning and end of each string
+	name = [s.strip('0123456789 ') for s in node['name'].split('|')]
+	
+	if len(name) == 1:
+		return {'ke':name[0]}
+	elif len(name) > 0:
+		return {'lo':'1'+name[0],'ke':name[1]}
+	
+	
 def is_health_facility(node):
 	'''
 	Returns True if Node is in the Health Facility Group
@@ -53,11 +64,12 @@ def is_health_facility(node):
 	return True in group_test
 
 if __name__ == '__main__':
+	
+	id_list = ['Skb3RGA4qqD','lZSTiL43bJ1','FRmrFTE63D0','wbZtszn1b0R']
 
-	print 'Test get children'
-	c =  get_children('Skb3RGA4qqD')
-	print len(c),c
-
-	print 'Test get children (verbose)'
-	c =  get_children('Skb3RGA4qqD',verbose=True)
-	print len(c),c
+	for id in id_list:
+		node = from_id(id,json=True)
+		name = parse_name(node)
+		print name
+		if 'lo' in name:
+			print name['lo']

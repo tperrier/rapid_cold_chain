@@ -36,6 +36,9 @@ def get_children(dhis2_id,verbose=False):
 	
 def parse_name(node):
 	
+	if 'name' not in node:
+		return None
+	
 	#Split name on | and strip all numbers and spaces from beginning and end of each string
 	name = [s.strip('0123456789 ') for s in node['name'].split('|')]
 	

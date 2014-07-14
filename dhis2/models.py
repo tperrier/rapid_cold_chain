@@ -68,7 +68,7 @@ class OrganisationBase(DHIS2Object,util.models.TimeStampedModel):
 			_id = node['id']
 			_code = node['code'] if 'code' in node else None
 			_level = node['level']
-			_name = node['name'] if 'name' in node else None
+			_name = dhis2.orgs.parse_name(node)
 			_parent = node['parent']['id'] if node['parent'] else None
 			
 			#set cls var to the correct class based on Facility type

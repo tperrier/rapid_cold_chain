@@ -27,12 +27,12 @@ class Message(util.TimeStampedModel):
 		return self.report_set.count()
 	
 	@classmethod
-	def from_msg(cls,msg,parsed):
+	def from_msg(cls,msg):
 		'''
 		Create a new message from a rapidsms msg object and parser result
 		'''
-		submission = False if 'NO_KEYWORD_FOUND' in parsed.errors else True #ERROR_CODE
-		return cls.objects.create(message=msg.logger_msg,cleaned=parsed.cleaned,is_submission=submission)
+		submission = False if 'NO_KEYWORD_FOUND' in msg.ccem_parsed.errors else True #ERROR_CODE
+		return cls.objects.create(message=msg.logger_msg,cleaned=msg.ccem_parsed.cleaned,is_submission=submission)
 
 class SubmissionMessageManager(models.Manager):
 	
@@ -88,14 +88,19 @@ class Report(util.TimeStampedModel):
 	response = models.OneToOneField('messagelog.Message',null=True,blank=True)
 	
 	@classmethod
-	def from_ccem(cls,msg,parsed):
+	def from_msg(cls,msg):
 		'''
 		Create a new report from a CCEM message and parsed object
 		'''
 		
-		has_error = False if len(parsed.errors)==0 else True
+		has_error = False if len(msg.ccem_parsed.errors)==0 else True
 		
-		return cls.objects.create(commands=parsed.commands,errors=parsed.errors,message=msg,has_error=has_error)
+		return cls.objects.create(
+			commands=msg.ccem_parsed.commands,
+			errors=msg.ccem_parsed.errors,
+			message=msg.ccem,
+			has_error=has_error
+		)
 	
 	@classmethod
 	def add_latest_response(cls,response):

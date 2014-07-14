@@ -46,14 +46,27 @@ def parse_name(node):
 		return {'ke':name[0]}
 	elif len(name) > 0:
 		return {'lo':'1'+name[0],'ke':name[1]}
+		
+def has_children(node):
 	
+	if 'children' not in node:
+		return False
+	elif len(node['children'])==0:
+		return False
+	else:
+		return True
 	
 def is_health_facility(node):
 	'''
 	Returns True if Node is in the Health Facility Group
 	Otherwise returns False
 	'''
-	if 'organisationUnitGroups' not in node:
+	
+	#Level 2 and Level 3 Health Facilities do not have Lao names and have no children
+	name = parse_name(node)
+	if name and len(name)==1 and not has_children(node):
+		return True 
+	elif 'organisationUnitGroups' not in node:
 		return False
 	orgGroups = node['organisationUnitGroups']
 	

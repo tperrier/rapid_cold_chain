@@ -78,7 +78,7 @@ class OrganisationBase(DHIS2Object,util.models.TimeStampedModel):
 				dhis2_id=_id,
 				dhis2_code=_code,
 				level=_level,
-				i18n_name=[_name],
+				i18n_name=_name,
 				parent=util.get_or_none(OrganisationUnit,pk=_parent),
 				)
 			cls_obj.save()

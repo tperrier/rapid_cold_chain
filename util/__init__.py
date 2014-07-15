@@ -2,8 +2,10 @@
 Collection of utility functions
 '''
 
+import models
 
-def get_or_none(self,cls,**kwargs):
+
+def get_or_none(cls,**kwargs):
 	'''
 	Utility function for get or none
 	'''

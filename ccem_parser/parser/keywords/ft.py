@@ -15,7 +15,7 @@ class ft(utils.Keyword):
 				self.label = msg[self.pos]
 				self.pos += 1
 				self.parse_alarms(msg)
-				if self.error is not None:
+				if self.error:
 					return self.args,self.error,self.pos
 		if len(self.args) == 0:
 			self.error = 'NO_ALARMS'

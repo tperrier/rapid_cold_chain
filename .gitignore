@@ -13,3 +13,4 @@ public/media/
 *-env/
 rapidsms.log
 *.json
+ignore*

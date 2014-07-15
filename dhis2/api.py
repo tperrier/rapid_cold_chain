@@ -7,9 +7,9 @@ ses = requests.Session()
 ses.auth = (settings.DHIS2_USERNAME,settings.DHIS2_PASSWORD)
 ses.headers.update({'Accept':'application/json'})	
 
-def get(api_call,**kwargs):
+def get(api_call,json=False):
 	r = ses.get(url+api_call)
-	if 'json' in kwargs and kwargs['json']:
+	if json:
 		return r.json()
 	return r
 

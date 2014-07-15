@@ -1,0 +1,43 @@
+{% load static from staticfiles %}
+
+<!DOCTYPE html>
+<html>
+	
+	<head>
+		
+		<meta charset="UTF-8">{# keep this right after <head> #}
+        <title>{% block title %}CCEM SIM{% endblock %}</title>
+        
+        {% block stylesheets %}
+        <link href='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css' rel='stylesheet'>
+        <link href="{% static 'ccem_sim/css/base.css' %}" rel='stylesheet'>
+		{% endblock %}
+		
+		{%block extra_stylesheets %}
+		{% endblock %}
+		
+		{% block javascript %}
+		<script src='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>
+		<script type='text/javascript' src='//code.jquery.com/jquery-2.1.1.js'></script>
+		{% endblock %}
+		
+		{% block extra_javascript %}
+		{% endblock %}
+		
+		
+	</head>
+	
+	<body>
+		
+		{% block header %}
+			<h1> Default Header </h1>
+		{% endblock %}
+		
+		{% block content %}
+			<h3> Default Content</h3>
+			<p>base.html should be extended with a new template</p>
+		{% endblock %}
+		
+	</body>
+	
+</html>

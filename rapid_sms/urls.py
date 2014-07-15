@@ -8,6 +8,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
+    (r'^ak/', include('admin_interface.urls')),
     # RapidSMS core URLs
     (r'^accounts/', include('rapidsms.urls.login_logout')),
     url(r'^$', 'rapidsms.views.dashboard', name='rapidsms-dashboard'),

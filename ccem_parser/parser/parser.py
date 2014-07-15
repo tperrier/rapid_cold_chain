@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import re,code
-import utils,models
+import utils
 
 #Regular Expression of characters to be removed when cleaning messages
 MSG_REMOVE_CHARS = r'[\s]'

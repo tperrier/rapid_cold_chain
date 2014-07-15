@@ -13,3 +13,15 @@ class StoredMessage(models.Model):
 	message = models.CharField(max_length=200)
 	
 	
+	@classmethod
+	def get_from_keyword(cls,keyword,language='en',**kwargs):
+		keyword_msgs = cls.objects.filter(keyword=keyword)
+		
+		language_msgs = keyword_msgs.filter(language=language)
+		
+		if language_msgs.count() > 0:
+			return language_msgs[0].message.format(**kwargs)
+		elif keyword_msgs.count() > 0:
+			return keyword_msgs[0].message.format(**kwargs)
+		else:
+			return keyword

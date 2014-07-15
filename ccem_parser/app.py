@@ -3,7 +3,7 @@ import logging, code
 from rapidsms.apps.base import AppBase
 from . import default_parser as parser
 import messagelog as mlog 
-import django_ccem.models as ccem
+import django_ccem.models as ccem, models
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ class CCEIParser(AppBase):
 		
 		#The message looks like a report submission. So generate report.
 		report = ccem.Report.from_msg(msg)
-		if not msg.ccem_parsed.errors: #Not other errors
+		if not msg.ccem_parsed.errors: #No other errors
 			response = msg.respond(str(msg.ccem_parsed.commands))
 		else: #there were errors
 			response = msg.respond(str(msg.ccem_parsed.errors))
@@ -47,4 +47,5 @@ class CCEIParser(AppBase):
 		
 		#create CCEM Report
 		msg.ccem = ccem.Report.add_latest_response(msg)
-		print 'OUTGOING'
+		
+		logger.debug('CCEI Outgoing: %s',msg.raw_text)

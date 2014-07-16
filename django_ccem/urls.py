@@ -5,4 +5,5 @@ from views import *
 urlpatterns = patterns('',
 	url(r'^$',base_view),
 	url(r'c.*$',custom_view),
+	url(r'messages',messages),
 )

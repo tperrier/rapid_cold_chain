@@ -28,14 +28,55 @@
 	</head>
 	
 	<body>
-		
-		{% block header %}
-			<h1> Default Header </h1>
+		{% block nav %}
+		<nav class="navbar navbar-default" style="margin-bottom:0px;" role="navigation">
+			<div class="navbar-header">
+				<span class="navbar-brand">Laos SMS Manager</span>
+			</div>
+			<div class="container">
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav navbar-right">
+						<li class="active"><a href="#">Messages</a></li>
+						<li><a href="#">Configuration</a></li>
+						<li><a href="/">RapidSMS</a></li>
+						<li><a href="/admin">Django Admin</a></li>
+						<li style="width:200px;">&nbsp;</li>
+						<li><a href="#">Logout</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
 		{% endblock %}
 		
-		{% block content %}
-			<h3> Default Content</h3>
-			<p>base.html should be extended with a new template</p>
+		<div class="container-fluid" style="top:-5px;">
+			<div class="row">
+			  <div class="col-md-2" style="padding-top:20px; height:600px; background-color:white;">
+			  	<!-- Start Left Panel option block-->
+			  	{% block left_panel %}
+			  	<ul class="nav nav-pills nav-stacked">
+				  <li class="active"><a href="#">Received</a></li>
+				  <li><a href="#">Sent</a></li>
+				  <li><a href="#">Flagged</a></li>
+				</ul>
+				{% endblock %}	
+				<!-- End Block-->
+			  </div>
+			  <div class="col-md-10 mainContainer" style="padding-top:20px; height:600px; background-color:white;">
+			  	<!-- Start Content Block-->
+			  	{% block content %}
+			  	<table class="table table-striped">
+			  		<tr><th>Date</th><th>Message</th><th>Status</th><th>Response</th></tr>
+			  		<tr><td>Date</td><td>Messagslskdlk skdlksd ksldk lk sdlk sdlk sdklsk e</td><td>Status</td><td>Response</td></tr>
+			  		<tr><td>Date</td><td>Message</td><td>Status</td><td>Response</td></tr>
+			  		<tr><td>Date</td><td>Message</td><td>Status</td><td>Response</td></tr>
+				</table>
+				{% endblock %}
+			  	<!-- ENd Content Block-->
+			  </div>
+			</div>
+		</div>
+		{% block header %}
+			
 		{% endblock %}
 		
 	</body>

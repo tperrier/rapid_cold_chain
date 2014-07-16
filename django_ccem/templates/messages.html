@@ -1,0 +1,35 @@
+{% extends 'ccem_sim/base.html' %}
+
+{% block content %}
+
+<table class='.table table-bordered'>
+<tr>
+	<th>Date</th>
+	<th>Message</th>
+</tr>
+{% for m in messages %}
+<tr>
+	<td>{{ m.created }}</td>
+	<td>{{ m.message.text }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<div class='pager'>
+
+{% if messages.has_previous %}
+	<li><a href='?page={{ messages.previous_page_number }}'>Previous</a></li>
+{% else  %}
+	<li class='disabled'><a href='#'>Previous</a><li>
+{% endif %}
+
+Page {{messages.number}} of {{messages.paginator.num_pages }}
+
+{% if messages.has_next %}
+	<li><a href='?page={{ messages.next_page_number }}'>Next</a></li>
+{% else  %}
+	<li class='disabled'><a href='#'>Next</a></li>
+{% endif %}
+
+
+{% endblock %}

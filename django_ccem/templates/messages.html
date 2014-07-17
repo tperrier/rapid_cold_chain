@@ -1,8 +1,8 @@
 {% extends 'ccem_sim/base.html' %}
 
 {% block content %}
-
-<table class='.table table-bordered'>
+{{request.path}}
+<table class="table table-striped table-bordered">
 <tr>
 	<th>Date</th>
 	<th>Message</th>
@@ -10,7 +10,20 @@
 {% for m in messages %}
 <tr>
 	<td>{{ m.created }}</td>
-	<td>{{ m.message.text }}</td>
+	<td onclick="document.getElementById('ele_{{ m.id }}').style.display='block';">{{ m.message.text }}
+		<div class="panel panel-default" style="display:none" id="ele_{{ m.id }}">
+		  <div class="panel-body">
+		  	<ul>
+		    {% for r in m.report_set.all %}
+		    	<li>{{ r.response.text }}</li>
+		    {% empty %}
+		    	<li>No Report</li>
+		    {% endfor %}
+			</ul>
+		  </div>
+		</div>
+	</td>
+	<td>{{ m.message.connection.identity }}</td>
 </tr>
 {% endfor %}
 </table>

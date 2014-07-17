@@ -10,9 +10,11 @@ def base_view(request):
 def custom_view(request):
 	return render(request, 'custom.html')
 	
-def messages(request):
+def messages(request,filter=None):
 	
 	message_list = ccem.Message.objects.all()
+	if filter:
+		message_list=message_list.filter(is_submission=True if filter=="submission" else False)
 	paginator = Paginator(message_list,10)
 	
 	page = request.GET.get('page',1)
@@ -24,5 +26,6 @@ def messages(request):
 	except EmptyPage:
 		# If page is out of range (e.g. 9999), deliver last page of results.
 		messages = paginator.page(paginator.num_pages)
-		
+
+	print dir(messages[0].from_msg)
 	return render(request,'messages.html',{'messages':messages})

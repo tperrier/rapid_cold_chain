@@ -123,7 +123,7 @@ class ContactProfile(util.models.TimeStampedModel):
 	A user who interacts with the CCEM system through SMS
 	'''
 	
-	contact = models.OneToOneField('rapidsms.Contact',primary_key=True)
+	contact = models.OneToOneField('rapidsms.Contact',primary_key=True,related_name='profile')
 	
 	facility = models.ForeignKey(Facility,blank=True,null=True)
 	

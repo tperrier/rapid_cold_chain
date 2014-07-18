@@ -360,6 +360,66 @@
     }
 },
 {
+    "pk": 31, 
+    "model": "django_ccem.message", 
+    "fields": {
+        "created": "2014-06-03T19:00:00Z", 
+        "modified": "2014-07-18T18:41:12.733Z", 
+        "has_error": true, 
+        "cleaned": "ft99sl100", 
+        "message": 61, 
+        "is_submission": true
+    }
+},
+{
+    "pk": 32, 
+    "model": "django_ccem.message", 
+    "fields": {
+        "created": "2014-06-06T19:00:00Z", 
+        "modified": "2014-07-18T18:41:13.936Z", 
+        "has_error": false, 
+        "cleaned": "ft01slp100", 
+        "message": 63, 
+        "is_submission": true
+    }
+},
+{
+    "pk": 33, 
+    "model": "django_ccem.message", 
+    "fields": {
+        "created": "2014-06-10T19:00:00Z", 
+        "modified": "2014-07-18T18:41:14.680Z", 
+        "has_error": false, 
+        "cleaned": "sorry,wedon'thaveany", 
+        "message": 65, 
+        "is_submission": false
+    }
+},
+{
+    "pk": 34, 
+    "model": "django_ccem.message", 
+    "fields": {
+        "created": "2014-07-03T19:00:00Z", 
+        "modified": "2014-07-18T18:41:15.890Z", 
+        "has_error": false, 
+        "cleaned": "ft01slp100", 
+        "message": 67, 
+        "is_submission": true
+    }
+},
+{
+    "pk": 35, 
+    "model": "django_ccem.message", 
+    "fields": {
+        "created": "2014-07-11T19:00:00Z", 
+        "modified": "2014-07-18T18:41:16.858Z", 
+        "has_error": false, 
+        "cleaned": "sorry,wedon'thaveany", 
+        "message": 69, 
+        "is_submission": false
+    }
+},
+{
     "pk": 1, 
     "model": "django_ccem.report", 
     "fields": {
@@ -591,6 +651,45 @@
         "has_error": false, 
         "message": 29, 
         "response": 58
+    }
+},
+{
+    "pk": 19, 
+    "model": "django_ccem.report", 
+    "fields": {
+        "commands": "{\"ft\":{\"null\":[\"9\",\"9\"]},\"sl\":{}}", 
+        "errors": "[\"INVALID_NEXT_KEYWORD\"]", 
+        "created": "2014-07-18T18:41:12.154Z", 
+        "modified": "2014-07-18T18:41:12.581Z", 
+        "has_error": true, 
+        "message": 31, 
+        "response": 62
+    }
+},
+{
+    "pk": 20, 
+    "model": "django_ccem.report", 
+    "fields": {
+        "commands": "{\"ft\":{\"null\":[\"0\",\"1\"]},\"sl\":{\"p\":\"100\"}}", 
+        "errors": "[]", 
+        "created": "2014-07-18T18:41:13.374Z", 
+        "modified": "2014-07-18T18:41:13.786Z", 
+        "has_error": false, 
+        "message": 32, 
+        "response": 64
+    }
+},
+{
+    "pk": 21, 
+    "model": "django_ccem.report", 
+    "fields": {
+        "commands": "{\"ft\":{\"null\":[\"0\",\"1\"]},\"sl\":{\"p\":\"100\"}}", 
+        "errors": "[]", 
+        "created": "2014-07-18T18:41:15.346Z", 
+        "modified": "2014-07-18T18:41:15.740Z", 
+        "has_error": false, 
+        "message": 34, 
+        "response": 68
     }
 },
 {
@@ -988,6 +1087,61 @@
         "created_on": "2014-07-18T07:28:48.572Z", 
         "contact": null, 
         "identity": "6789", 
+        "backend": 2
+    }
+},
+{
+    "pk": 7, 
+    "model": "rapidsms.connection", 
+    "fields": {
+        "modified_on": "2014-07-18T18:41:11.618Z", 
+        "created_on": "2014-07-18T18:41:11.618Z", 
+        "contact": null, 
+        "identity": "0001", 
+        "backend": 2
+    }
+},
+{
+    "pk": 8, 
+    "model": "rapidsms.connection", 
+    "fields": {
+        "modified_on": "2014-07-18T18:41:12.853Z", 
+        "created_on": "2014-07-18T18:41:12.853Z", 
+        "contact": null, 
+        "identity": "0002", 
+        "backend": 2
+    }
+},
+{
+    "pk": 9, 
+    "model": "rapidsms.connection", 
+    "fields": {
+        "modified_on": "2014-07-18T18:41:14.098Z", 
+        "created_on": "2014-07-18T18:41:14.098Z", 
+        "contact": null, 
+        "identity": "0003", 
+        "backend": 2
+    }
+},
+{
+    "pk": 10, 
+    "model": "rapidsms.connection", 
+    "fields": {
+        "modified_on": "2014-07-18T18:41:14.817Z", 
+        "created_on": "2014-07-18T18:41:14.817Z", 
+        "contact": null, 
+        "identity": "0004", 
+        "backend": 2
+    }
+},
+{
+    "pk": 11, 
+    "model": "rapidsms.connection", 
+    "fields": {
+        "modified_on": "2014-07-18T18:41:16.028Z", 
+        "created_on": "2014-07-18T18:41:16.028Z", 
+        "contact": null, 
+        "identity": "0005", 
         "backend": 2
     }
 },
@@ -1647,6 +1801,116 @@
         "date": "2014-07-18T07:28:52.999Z", 
         "text": "Sorry, RapidSMS could not understand your message.", 
         "connection": 6, 
+        "contact": null, 
+        "direction": "O"
+    }
+},
+{
+    "pk": 61, 
+    "model": "messagelog.message", 
+    "fields": {
+        "date": "2014-07-18T18:41:11.742Z", 
+        "text": "ft99sl100", 
+        "connection": 7, 
+        "contact": null, 
+        "direction": "I"
+    }
+},
+{
+    "pk": 62, 
+    "model": "messagelog.message", 
+    "fields": {
+        "date": "2014-07-18T18:41:12.307Z", 
+        "text": "['INVALID_NEXT_KEYWORD']", 
+        "connection": 7, 
+        "contact": null, 
+        "direction": "O"
+    }
+},
+{
+    "pk": 63, 
+    "model": "messagelog.message", 
+    "fields": {
+        "date": "2014-07-18T18:41:12.983Z", 
+        "text": "ft01slp100", 
+        "connection": 8, 
+        "contact": null, 
+        "direction": "I"
+    }
+},
+{
+    "pk": 64, 
+    "model": "messagelog.message", 
+    "fields": {
+        "date": "2014-07-18T18:41:13.527Z", 
+        "text": "{'ft': {None: (u'0', u'1')}, 'sl': {u'p': u'100'}}", 
+        "connection": 8, 
+        "contact": null, 
+        "direction": "O"
+    }
+},
+{
+    "pk": 65, 
+    "model": "messagelog.message", 
+    "fields": {
+        "date": "2014-07-18T18:41:14.270Z", 
+        "text": "Sorry, we don't have any", 
+        "connection": 9, 
+        "contact": null, 
+        "direction": "I"
+    }
+},
+{
+    "pk": 66, 
+    "model": "messagelog.message", 
+    "fields": {
+        "date": "2014-07-18T18:41:14.547Z", 
+        "text": "Sorry, RapidSMS could not understand your message.", 
+        "connection": 9, 
+        "contact": null, 
+        "direction": "O"
+    }
+},
+{
+    "pk": 67, 
+    "model": "messagelog.message", 
+    "fields": {
+        "date": "2014-07-18T18:41:14.946Z", 
+        "text": "ft01slp100", 
+        "connection": 10, 
+        "contact": null, 
+        "direction": "I"
+    }
+},
+{
+    "pk": 68, 
+    "model": "messagelog.message", 
+    "fields": {
+        "date": "2014-07-18T18:41:15.498Z", 
+        "text": "{'ft': {None: (u'0', u'1')}, 'sl': {u'p': u'100'}}", 
+        "connection": 10, 
+        "contact": null, 
+        "direction": "O"
+    }
+},
+{
+    "pk": 69, 
+    "model": "messagelog.message", 
+    "fields": {
+        "date": "2014-07-18T18:41:16.168Z", 
+        "text": "Sorry, we don't have any", 
+        "connection": 11, 
+        "contact": null, 
+        "direction": "I"
+    }
+},
+{
+    "pk": 70, 
+    "model": "messagelog.message", 
+    "fields": {
+        "date": "2014-07-18T18:41:16.420Z", 
+        "text": "Sorry, RapidSMS could not understand your message.", 
+        "connection": 11, 
         "contact": null, 
         "direction": "O"
     }

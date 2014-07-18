@@ -7,9 +7,6 @@ import models as ccem
 def base_view(request):
 	return render(request, 'ccem_sim/base.html')
 	
-def custom_view(request):
-	return render(request, 'custom.html')
-	
 def messages(request,filter=None):
 	
 	message_list = ccem.Message.objects.all()

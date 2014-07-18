@@ -1,7 +1,9 @@
 {% extends 'ccem_sim/base.html' %}
 
 {% block content %}
-{{request.path}}
+
+{% include 'form_filter.html' %}
+
 <table class="table table-striped table-bordered">
 <tr>
 	<th style="width:200px"><span class="glyphicon chevron-down"></span>Date</th>
@@ -12,23 +14,21 @@
 {% for m in messages %}
 <tr class="warning" >
 	<td>{{ m.created }}</td>
-	<td onclick="showHideMessagePanel('ele_{{ m.id }}')">{{ m.message.text }}<span style="float:right;" class="glyphicon glyphicon-edit"></span>
-		
-	</td>
-	<td><a href="{{request.path}}?contact={{m.message.connection.identity}}">{{ m.message.connection.dhis2_contact.name }}</a></td>
-	<td>01 ນະຄອນຫລວງວຽງຈັນ | Vientiane. C</td>
-</tr>
-<tr style="display:none;" id="ele_{{ m.id }}">
-	<td></td>
-	<td colspan="3">
-		<ul>
-			{% for r in m.report_set.all %}
+	<td onclick="showHideMessagePanel('ele_{{ m.id }}')">
+		<span class="alert alert-{% if not m.has_error %}info{% else %}danger{% endif %}">{{ m.message.text }}</span>
+		<span class="glyphicon glyphicon-{% if m.is_submission %}ok-sign{% else %}question-sign{% endif %}"></span>
+		<div class="panel panel-default" style="display:none" id="ele_{{ m.id }}">
+		  <div class="panel-body">
+		  	<ul>
+		    {% for r in m.report_set.all %}
 		    	<li>{{ r.response.text }}</li>
 		    {% empty %}
 		    	<li>No Report</li>
 		    {% endfor %}
 		</ul>
 	</td>
+	<td><a href="{{request.path}}?contact={{m.message.connection.identity}}">{{ m.message.connection.identity }}</a></td>
+	<td>{{m.message.connection.dhis2_contact.contact.facility}}</td>
 </tr>
 {% endfor %}
 </table>
@@ -41,7 +41,14 @@
 	<li class='disabled'><a href='#'>Previous</a><li>
 {% endif %}
 
-Page {{messages.number}} of {{messages.paginator.num_pages }}
+{% if messages.paginator.num_pages > 1 %}
+Page<form action='#', method='get'>
+	<input type='text' name='page' value='{{messages.number}}'/>
+	<input type='submit' value='Go'/>
+	</form> of {{messages.paginator.num_pages }}
+{% else %}
+	Page {{messages.number }} of 1
+{% endif %}
 
 {% if messages.has_next %}
 	<li><a href='?page={{ messages.next_page_number }}'>Next</a></li>

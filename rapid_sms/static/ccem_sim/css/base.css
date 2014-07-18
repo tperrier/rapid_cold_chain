@@ -1,2 +1,7 @@
 .nav-element{height:100%;}
 .mainContainer{border-left:1px solid #e7e7e7;}
+
+.pager form {display:inline-block;}
+.pager form input[type='text']{width:2em; padding-left:.5em;}
+
+.table .alert {padding: 2px; margin:0px;}

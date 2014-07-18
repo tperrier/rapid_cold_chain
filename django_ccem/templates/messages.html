@@ -12,7 +12,7 @@
 	<th>Health Unit</th>
 </tr>
 {% for m in messages %}
-<tr class="warning" >
+<tr>
 	<td>{{ m.created }}</td>
 	<td onclick="showHideMessagePanel('ele_{{ m.id }}')">
 		<span class="alert alert-{% if not m.has_error %}info{% else %}danger{% endif %}">{{ m.message.text }}</span>

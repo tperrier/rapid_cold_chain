@@ -104,7 +104,7 @@ class OrganisationUnit(OrganisationBase):
 class Facility(OrganisationBase):
 	
 	#The parent hierarchy related Manager is OrganisationUnit.facility_set.all()
-	parent = models.ForeignKey(OrganisationUnit,blank=True,null=True) 
+	parent = models.ForeignKey(OrganisationUnit,blank=True,null=True)
 	
 	dhis2_api_name = 'organisationUnits'
 	
@@ -117,19 +117,35 @@ class Equitment(DHIS2Object,util.models.TimeStampedModel):
 	working = models.BooleanField(default=True)
 	
 	dhis2_api_name = 'equipments'
-
-class ContactProfile(util.models.TimeStampedModel):
+	
+class Contact(util.models.TimeStampedModel):
 	'''
 	A user who interacts with the CCEM system through SMS
 	'''
 	
-	contact = models.OneToOneField('rapidsms.Contact',primary_key=True,related_name='profile')
+	name = models.CharField(max_length=100,blank=True)
+	
+	language = models.CharField(max_length=5,default='ke')
 	
 	facility = models.ForeignKey(Facility,blank=True,null=True)
 	
+	def __unicode__(self):
+		return "%s (%s)"%(self.name,self.facility)
 	
 	@property
 	def phone_number(self):
 		if self.contact and self.contact.connection_set.count() > 0:
 			return self.connection_set.all()[0].identity
 		return None
+		
+class ContactConnection(models.Model):
+	'''
+	A table to make a ManyToOne connection to between Contact and rapidsms.Connection
+	'''
+	
+	contact = models.ForeignKey(Contact,related_name='connection_set')
+	connection = models.OneToOneField('rapidsms.Connection',related_name='dhis2_contact')
+	
+	def __unicode__(self):
+		return '%s (%s)'%(self.contact.name,self.connection)
+

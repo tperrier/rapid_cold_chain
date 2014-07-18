@@ -12,7 +12,7 @@ class ReportInline(admin.TabularInline):
 
 class MessageAdmin(RelatedFieldAdmin):
 	
-	list_display = ('created','message__text','message__connection','num_reports')
+	list_display = ('created','message__text','message__connection','has_error','num_reports')
 	
 	readonly_fields = ('created','modified')
 	

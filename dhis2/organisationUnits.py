@@ -45,7 +45,7 @@ def parse_name(node):
 	if len(name) == 1:
 		return {'ke':name[0]}
 	elif len(name) > 0:
-		return {'lo':'1'+name[0],'ke':name[1]}
+		return {'lo':name[0],'ke':name[1]}
 		
 def has_children(node):
 	

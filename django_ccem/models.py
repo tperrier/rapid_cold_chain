@@ -19,6 +19,9 @@ class Message(util.TimeStampedModel):
 	#Boolean field if this messages looks like a submission
 	is_submission = models.BooleanField(default=True)
 	
+	#Boolean field if last report message has an error
+	has_error = models.BooleanField(default=False)
+	
 	def __unicode__(self):
 		return '#%i %s (%s)'%(self.id,self.created_str(),self.cleaned)
 	
@@ -86,6 +89,16 @@ class Report(util.TimeStampedModel):
 	message = models.ForeignKey(Message)
 	#Foreignkey link to outgoing message response. Can only be one.
 	response = models.OneToOneField('messagelog.Message',null=True,blank=True)
+	
+	def save(self,*args,**kwargs):
+		#Set the error status on the associated message object 
+		if self.has_error:
+			self.message.has_error = True
+			self.message.save()
+		else:
+			self.message.has_error = False
+			self.message.save()
+		super(Report,self).save(*args,**kwargs)
 	
 	@classmethod
 	def from_msg(cls,msg):

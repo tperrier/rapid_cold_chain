@@ -19,6 +19,11 @@ def messages(request,filter=None):
 	if contact is not None:
 		contact="+"+contact.strip() if contact.startswith(' ') else contact
 		message_list=message_list.filter(message__connection__identity=contact)
+	order = request.GET.get('order',None)
+	if order is not None:
+		if order=='date': order='created'
+		elif order=='contact': order='message__connection__identity'
+		message_list=message_list.order_by(order);
 	return message_render(request,message_list)
 
 def message_render(request,message_list):

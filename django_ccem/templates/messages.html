@@ -4,29 +4,31 @@
 {{request.path}}
 <table class="table table-striped table-bordered">
 <tr>
-	<th style="width:200px">Date</th>
+	<th style="width:200px"><span class="glyphicon chevron-down"></span>Date</th>
 	<th style="width:500px">Message</th>
 	<th style="width:150px">Contact</th>
 	<th>Health Unit</th>
 </tr>
 {% for m in messages %}
-<tr>
+<tr class="warning" >
 	<td>{{ m.created }}</td>
-	<td onclick="showHideMessagePanel('ele_{{ m.id }}')">{{ m.message.text }}
-		<div class="panel panel-default" style="display:none" id="ele_{{ m.id }}">
-		  <div class="panel-body">
-		  	<ul>
-		    {% for r in m.report_set.all %}
+	<td onclick="showHideMessagePanel('ele_{{ m.id }}')">{{ m.message.text }}<span style="float:right;" class="glyphicon glyphicon-edit"></span>
+		
+	</td>
+	<td><a href="{{request.path}}?contact={{m.message.connection.identity}}">{{ m.message.connection.dhis2_contact.name }}</a></td>
+	<td>01 ນະຄອນຫລວງວຽງຈັນ | Vientiane. C</td>
+</tr>
+<tr style="display:none;" id="ele_{{ m.id }}">
+	<td></td>
+	<td colspan="3">
+		<ul>
+			{% for r in m.report_set.all %}
 		    	<li>{{ r.response.text }}</li>
 		    {% empty %}
 		    	<li>No Report</li>
 		    {% endfor %}
-			</ul>
-		  </div>
-		</div>
+		</ul>
 	</td>
-	<td><a href="{{request.path}}?contact={{m.message.connection.identity}}">{{ m.message.connection.identity }}</a></td>
-	<td>01 ນະຄອນຫລວງວຽງຈັນ | Vientiane. C</td>
 </tr>
 {% endfor %}
 </table>

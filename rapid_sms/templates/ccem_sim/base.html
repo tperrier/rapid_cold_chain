@@ -1,4 +1,5 @@
 {% load static from staticfiles %}
+{% load url_extras %}
 
 <!DOCTYPE html>
 <html>
@@ -65,9 +66,9 @@
 			  	<!-- Start Left Panel option block-->
 			  	{% block left_panel %}
 			  	<ul class="nav nav-pills nav-stacked">
-				  <li {% if request.path == '/moderation/messages' %} class="active" {% endif %}><a href="/moderation/messages">All</a></li>
-				  <li {% if request.path == '/moderation/messages/regular' %} class="active" {% endif %}><a href="/moderation/messages/regular">Regular</a></li>
-				  <li {% if request.path == '/moderation/messages/submission' %} class="active" {% endif %}><a href="/moderation/messages/submission">Submission</a></li>
+				  <li {% if request.GET.submission == None %} class="active" {% endif %}><a href="/moderation/messages">All</a></li>
+				  <li {% if request.GET.submission == 'false' %} class="active" {% endif %}><a href="/moderation/messages/?{% url_replace request 'submission' 'false' %}">Regular</a></li>
+				  <li {% if request.GET.submission == 'true' %} class="active" {% endif %}><a href="/moderation/messages/?{% url_replace request 'submission' 'true' %}">Submission</a></li>
 				  <li><a href="#">Flagged</a></li>
 				</ul>
 				{% endblock %}	

@@ -1,4 +1,5 @@
 {% extends 'ccem_sim/base.html' %}
+{% load url_extras %}
 
 {% block content %}
 
@@ -18,7 +19,7 @@
 		<span class="alert alert-{% if not m.has_error %}info{% else %}danger{% endif %}">{{ m.message.text }}</span>
 		<span class="glyphicon glyphicon-{% if m.is_submission %}ok-sign{% else %}question-sign{% endif %}"></span>
 	</td>
-	<td><a href="{{request.path}}?contact={{m.message.connection.identity}}">{{ m.message.connection.identity }}</a></td>
+	<td><a href="?{% url_replace request 'contact' m.message.connection.identity %}">{{ m.message.connection.identity }}</a></td>
 	<td>{{m.message.connection.dhis2_contact.contact.facility}}</td>
 </tr>
 <tr id='msg_info_{{ m.id }}' class='collapse'>
@@ -39,13 +40,13 @@
 <div class='pager'>
 
 {% if messages.has_previous %}
-	<li><a href='?page={{ messages.previous_page_number }}'>Previous</a></li>
+	<li><a href="?{% url_replace request 'page' messages.previous_page_number %}">Previous</a></li>
 {% else  %}
 	<li class='disabled'><a href='#'>Previous</a><li>
 {% endif %}
 
 {% if messages.paginator.num_pages > 1 %}
-Page<form action='#', method='get'>
+Page <form action='#', method='get'>
 	<input type='text' name='page' value='{{messages.number}}'/>
 	<input type='submit' value='Go'/>
 	</form> of {{messages.paginator.num_pages }}
@@ -54,7 +55,7 @@ Page<form action='#', method='get'>
 {% endif %}
 
 {% if messages.has_next %}
-	<li><a href='?page={{ messages.next_page_number }}'>Next</a></li>
+	<li><a href="?{% url_replace request 'page' messages.next_page_number %}">Next</a></li>
 {% else  %}
 	<li class='disabled'><a href='#'>Next</a></li>
 {% endif %}

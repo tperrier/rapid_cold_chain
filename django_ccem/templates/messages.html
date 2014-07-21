@@ -1,6 +1,15 @@
 {% extends 'ccem_sim/base.html' %}
 {% load url_extras %}
 
+{% block left_panel %}
+	<ul class="nav nav-pills nav-stacked">
+		<li {% if request.GET.type == None %} class="active" {% endif %}><a href="/moderation/messages">All</a></li>
+		<li {% if request.GET.type == 'regular' %} class="active" {% endif %}><a href="/moderation/messages?type=regular">Regular</a></li>
+		<li {% if request.GET.type == 'submission' %} class="active" {% endif %}><a href="/moderation/messages?type=submission">Submission</a></li>
+		<li {% if request.GET.type == 'flagged' %} class='active' {% endif %}><a href="/moderation/messages?type=flagged">Flagged</a></li>
+	</ul>
+{% endblock %}	
+
 {% block content %}
 
 {% include 'form_filter.html' %}

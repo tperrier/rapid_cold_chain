@@ -8,6 +8,9 @@ import models as ccem
 
 def base_view(request):
 	return render(request, 'ccem_sim/base.html')
+
+def contacts(request):
+	return render(request, 'contacts.html')
 	
 def messages(request):
 	

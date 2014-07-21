@@ -16,11 +16,11 @@ def messages(request):
 	#filter based on message type
 	msg_type = request.GET.get('type',None)
 	if msg_type == 'submission':
-		message_list = message_list.filter(is_submission=true)
+		message_list = message_list.filter(is_submission=True)
 	elif msg_type == 'regular':
-		message_list = message_list.filter(is_submission=false)
+		message_list = message_list.filter(is_submission=False)
 	elif msg_type == 'flagged':
-		message_list = message_list.filter(has_error=true)
+		message_list = message_list.filter(has_error=True)
 	
 	#filter based on contact
 	contact = request.GET.get('contact',None)

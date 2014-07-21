@@ -4,18 +4,18 @@
 		<h4 class="panel-title">Filter</h4>
 	</div>
 	<div id='filter-form' class='panel-collapse collapse'><div class='panel-body'>
-		<form class='form-inline' action='#' method='GET'>
+		<form class='form-inline' action='' method='GET'>
 				<div class='form-group'>
 					<label for='start' >Start</label>
 					<div class='input-group date' data-provide='datepicker' data-date-format='dd/mm/yy' data-date-autoclose='true' data-date-clear-btn='true'>
-						<input class='form-control datepicker' placeholder='dd/mm/yy' type='text' name='start' id='start'/>
+						<input class='form-control datepicker' placeholder='dd/mm/yy' value='{{ request.GET.start }}' type='text' name='start' id='start'/>
 						<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 					</div>
 				</div>
 				<div class='form-group'>
 					<label for='end'>End</label>
 					<div class='input-group date' data-provide='datepicker' data-date-format='dd/mm/yy' data-date-autoclose='true' data-date-clear-btn='true'>
-						<input class='form-control'  placeholder='dd/mm/yy'  type='text' name='end' id='end'/>
+						<input class='form-control'  value='{{ request.GET.end }}' placeholder='dd/mm/yy'  type='text' name='end' id='end'/>
 						<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 					</div>
 				</div>

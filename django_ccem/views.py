@@ -1,4 +1,6 @@
 # Create your views here.
+import datetime
+
 from django.shortcuts import render
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 
@@ -11,22 +13,43 @@ def messages(request):
 	
 	message_list = ccem.Message.objects.all()
 	
-	submission = request.GET.get('submission',None)
-	if submission is not None:
-		message_list=message_list.filter(is_submission=submission=='true')
+	#filter based on message type
+	msg_type = request.GET.get('type',None)
+	if msg_type == 'submission':
+		message_list = message_list.filter(is_submission=true)
+	elif msg_type == 'regular':
+		message_list = message_list.filter(is_submission=false)
+	elif msg_type == 'flagged':
+		message_list = message_list.filter(has_error=true)
 	
+	#filter based on contact
 	contact = request.GET.get('contact',None)
 	if contact is not None:
 		contact="+"+contact.strip() if contact.startswith(' ') else contact
-		message_list=message_list.filter(message__connection__identity=contact)
-		
+		message_list = message_list.filter(message__connection__identity=contact)
+	
+	#filter based on date
+	start = _strpdate(request.GET.get('start',None))
+	end = _strpdate(request.GET.get('end',None))
+	
+	if start is not None:
+		message_list = message_list.filter(created__gte=start)
+	if end is not None:
+		message_list = message_list.filter(created__lte=end)
+	
 	order = request.GET.get('order',None)
 	if order is not None:
-		if order=='date': order='created'
-		elif order=='contact': order='message__connection__identity'
+		if order == 'date': order='created'
+		elif order == 'contact': order='message__connection__identity'
 		message_list=message_list.order_by(order);
 	
 	return message_render(request,message_list)
+
+def _strpdate(datestr,format='%d/%m/%y'):
+	try:
+		return datetime.datetime.strptime(datestr,format)
+	except ValueError:
+		return None
 
 def message_render(request,message_list):
 	paginator = Paginator(message_list,10)

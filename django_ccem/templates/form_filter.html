@@ -1,15 +1,27 @@
-<form action='#' method='GET'>
-	<div class='form-group'>
-		<div class='col-sm-4'>
-			<label for='start'>Start</label>
-			<input class='form-control' name='start' id='start' type='text'/>
-		</div>
-		<div class='col-sm-4'>
-			<label for='end'>End</label>
-			<input class='form-control' name='end' id='end' type='text'/>
-		</div>
-		<div class='col-sm-4'>
-			<input class='form-control' type='submit' value='Go'/>
-		</div>
+
+<div class="panel panel-primary">
+	<div class='panel-heading' data-toggle='collapse' data-target='#filter-form'>
+		<h4 class="panel-title">Filter</h4>
 	</div>
-</form>
+	<div id='filter-form' class='panel-collapse collapse'><div class='panel-body'>
+		<form class='form-inline' action='#' method='GET'>
+				<div class='form-group'>
+					<label for='start' >Start</label>
+					<div class='input-group date' data-provide='datepicker' data-date-format='dd/mm/yy' data-date-autoclose='true' data-date-clear-btn='true'>
+						<input class='form-control datepicker' placeholder='dd/mm/yy' type='text' name='start' id='start'/>
+						<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+					</div>
+				</div>
+				<div class='form-group'>
+					<label for='end'>End</label>
+					<div class='input-group date' data-provide='datepicker' data-date-format='dd/mm/yy' data-date-autoclose='true' data-date-clear-btn='true'>
+						<input class='form-control'  placeholder='dd/mm/yy'  type='text' name='end' id='end'/>
+						<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+					</div>
+				</div>
+				<div class='form-group'>
+					<input class='form-control' type='submit' value='Go'/>
+				</div>
+		</form>
+	</div></div>
+</div>

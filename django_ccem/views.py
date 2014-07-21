@@ -29,8 +29,8 @@ def messages(request):
 		message_list = message_list.filter(message__connection__identity=contact)
 	
 	#filter based on date
-	start = _strpdate(request.GET.get('start',None))
-	end = _strpdate(request.GET.get('end',None))
+	start = _strpdate(request.GET.get('start',''))
+	end = _strpdate(request.GET.get('end',''))
 	
 	if start is not None:
 		message_list = message_list.filter(created__gte=start)

@@ -1,9 +1,20 @@
 {% extends 'ccem_sim/base.html' %}
 {% load url_extras %}
 
+{% block script_onload %}
+	$('#filterClear').click(function(){
+		$('#filterForm').find('input[type="text"]').val('');
+	});
+	$('.panel-heading.chevron').click(function(){
+		$(this).find('span').toggleClass('glyphicon-chevron-down').toggleClass('glyphicon-chevron-up');
+	});
+{% endblock %}
+
 {% block content %}
 
 {% include 'form_filter.html' %}
+
+{% if messages %}
 
 <table class="table table-hover table-bordered">
 <tr class='info'>
@@ -13,9 +24,9 @@
 	<th>Health Unit</th>
 </tr>
 {% for m in messages %}
-<tr data-toggle='collapse' data-target='#msg_info_{{ m.id }}'>
+<tr>
 	<td>{{ m.created }}</td>
-	<td>
+	<td data-toggle='collapse' data-target='#msg_info_{{ m.id }}'>
 		<span class="alert alert-{% if not m.has_error %}info{% else %}danger{% endif %}">{{ m.message.text }}</span>
 		<span class="glyphicon glyphicon-{% if m.is_submission %}ok-sign{% else %}question-sign{% endif %}"></span>
 	</td>
@@ -51,8 +62,9 @@ Page <form action='#', method='get'>
 	<input type='submit' value='Go'/>
 	</form> of {{messages.paginator.num_pages }}
 {% else %}
-	Page {{messages.number }} of 1
+	Page 1 of 1
 {% endif %}
+({{ messages.paginator.count }} Messages)
 
 {% if messages.has_next %}
 	<li><a href="?{% url_replace request 'page' messages.next_page_number %}">Next</a></li>
@@ -60,5 +72,17 @@ Page <form action='#', method='get'>
 	<li class='disabled'><a href='#'>Next</a></li>
 {% endif %}
 
+{% else %}
+
+<div class='panel panel-warning'>
+	<div class='panel-heading'>
+		<h3 class='panel-title'>Message</h3>
+	</div>
+	<div class='panel-body'>
+		No messages were found for the given query.
+	</div>
+</div>
+
+{% endif %}
 
 {% endblock %}

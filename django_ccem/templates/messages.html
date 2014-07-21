@@ -4,31 +4,34 @@
 
 {% include 'form_filter.html' %}
 
-<table class="table table-striped table-bordered">
-<tr>
+<table class="table table-hover table-bordered">
+<tr class='info'>
 	<th style="width:200px"><span class="glyphicon chevron-down"></span>Date</th>
 	<th style="width:500px">Message</th>
 	<th style="width:150px">Contact</th>
 	<th>Health Unit</th>
 </tr>
 {% for m in messages %}
-<tr>
+<tr data-toggle='collapse' data-target='#msg_info_{{ m.id }}'>
 	<td>{{ m.created }}</td>
-	<td onclick="showHideMessagePanel('ele_{{ m.id }}')">
+	<td>
 		<span class="alert alert-{% if not m.has_error %}info{% else %}danger{% endif %}">{{ m.message.text }}</span>
 		<span class="glyphicon glyphicon-{% if m.is_submission %}ok-sign{% else %}question-sign{% endif %}"></span>
-		<div class="panel panel-default" style="display:none" id="ele_{{ m.id }}">
-		  <div class="panel-body">
-		  	<ul>
+	</td>
+	<td><a href="{{request.path}}?contact={{m.message.connection.identity}}">{{ m.message.connection.identity }}</a></td>
+	<td>{{m.message.connection.dhis2_contact.contact.facility}}</td>
+</tr>
+<tr id='msg_info_{{ m.id }}' class='collapse'>
+	<td></td>
+	<td colspan=3>
+		<ul>
 		    {% for r in m.report_set.all %}
 		    	<li>{{ r.response.text }}</li>
 		    {% empty %}
 		    	<li>No Report</li>
 		    {% endfor %}
-		</ul>
+		</ul
 	</td>
-	<td><a href="{{request.path}}?contact={{m.message.connection.identity}}">{{ m.message.connection.identity }}</a></td>
-	<td>{{m.message.connection.dhis2_contact.contact.facility}}</td>
 </tr>
 {% endfor %}
 </table>

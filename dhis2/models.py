@@ -134,8 +134,8 @@ class Contact(util.models.TimeStampedModel):
 	
 	@property
 	def phone_number(self):
-		if self.contact and self.contact.connection_set.count() > 0:
-			return self.connection_set.all()[0].identity
+		if self.connection_set.count() > 0:
+			return self.connection_set.all()[0].connection.identity
 		return None
 		
 class ContactConnection(models.Model):
@@ -144,7 +144,7 @@ class ContactConnection(models.Model):
 	'''
 	
 	contact = models.ForeignKey(Contact,related_name='connection_set')
-	connection = models.OneToOneField('rapidsms.Connection',related_name='dhis2_contact')
+	connection = models.OneToOneField('rapidsms.Connection',related_name='dhis2')
 	
 	def __unicode__(self):
 		return '%s (%s)'%(self.contact.name,self.connection)

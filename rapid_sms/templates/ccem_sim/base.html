@@ -48,9 +48,9 @@
 			<div class="container">
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav navbar-right">
-						<li {% if request.path == '/moderation/messages' %} class="active" {% endif %}><a href="/moderation/messages">Messages</a></li>
-						<li {% if request.path == '/moderation/contacts' %} class="active" {% endif %}><a href="/moderation/contacts">Contacts</a></li>
-						<li {% if request.path == '/moderation/facilities' %} class="active" {% endif %}><a href="/moderation/facilities">Facilities</a></li>
+						<li {% url 'django_ccem.views.messages' as m_url %}{% if request.path == m_url %} class="active" {% endif %}><a href="/moderation/messages">Messages</a></li>
+						<li {% url 'django_ccem.views.contacts' as c_url %}{% if request.path == c_url %} class="active" {% endif %}><a href="/moderation/contacts">Contacts</a></li>
+						<li {% url 'django_ccem.views.facilities' as f_url %}{% if request.path == f_url %} class="active" {% endif %}><a href="/moderation/facilities">Facilities</a></li>
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Configurations <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
@@ -59,7 +59,7 @@
 								<li><a href="/admin">Django Admin</a></li>
             				</ul>
 						</li>
-						
+						<li>{{ f_url }}</li>
 						<li style="width:200px;">&nbsp;</li>
 						<!--<li><a href="#">Logout</a></li>-->
 					</ul>
@@ -70,7 +70,7 @@
 		
 		<div class="container-fluid" style="top:-5px;">
 			<div class="row">
-			  <div class="col-md-2" style="padding-top:20px; height:600px; background-color:white;">
+			  <div class="col-md-2" style="padding-top:20px; min-height:600px; background-color:white;">
 			  	<!-- Start Left Panel option block-->
 			  	{% block left_panel %}
 			  	<ul class="nav nav-pills nav-stacked">
@@ -79,7 +79,7 @@
 				{% endblock %}	
 				<!-- End Block-->
 			  </div>
-			  <div class="col-md-10 mainContainer" style="padding-top:20px; height:600px; background-color:white;">
+			  <div class="col-md-10 mainContainer" style="padding-top:20px; min-height:600px; background-color:white;">
 			  	<!-- Start Content Block-->
 			  	{% block content %}
 			  	<table class="table table-striped table-bordered table-condensed">

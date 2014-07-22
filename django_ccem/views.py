@@ -4,16 +4,27 @@ import datetime
 from django.shortcuts import render
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 
-import models as ccem
+import models as ccem, dhis2.models as dhis2,rapidsms.models as rapid
 
 def base_view(request):
 	return render(request, 'ccem_sim/base.html')
 
 def contacts(request):
-	return render(request, 'contacts.html')
+	contact_list = dhis2.Contact.objects.all()
+	contact_detail, message_list = None, None
+	contact = request.GET.get('contact',None)
+	if contact is not None:
+		contact="+"+contact.strip() if contact.startswith(' ') else contact
+		contact_conn = dhis2.ContactConnection.objects.filter(connection__identity=contact)
+		#contact_conn = rapid.Connection.objects.filter(identity=contact)
+		if contact_conn.count()>0:
+			contact_detail = contact_conn[0].contact
+			message_list = ccem.Message.objects.filter(message__connection__identity=contact)
+	
+	return render(request, 'contacts.html',{'contacts':contact_list,'contact_detail':contact_detail,'messages':message_list})
 	
 def messages(request):
-	
+		
 	message_list = ccem.Message.objects.all()
 	
 	#filter based on message type

@@ -6,5 +6,7 @@
 
 .table .alert {padding: 2px; margin:0px;}
 
+.conversation .td{border:0px;}
+
 .date{width:12em;}
 [data-toggle='collapse']{cursor:pointer}

@@ -49,7 +49,7 @@ class Parser:
 			else:
 				break
 		if pos == 0: #no keyword found
-			raise utils.ParseError(_('No Keyword Found'))
+			raise utils.NoKeywordError()
 		elif pos < len(msg): # The are unparsed characters left on the message string
 			raise utils.ParseError(_('Unexpected Character %s')%(msg[pos],))
 		return msg_report

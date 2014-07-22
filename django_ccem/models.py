@@ -34,7 +34,7 @@ class Message(util.TimeStampedModel):
 		'''
 		Create a new message from a rapidsms msg object and parser result
 		'''
-		submission = False if 'NO_KEYWORD_FOUND' in msg.ccem_parsed.errors else True #ERROR_CODE
+		submission = False if hasattr(msg,'ccem_error') and isinstance(msg.ccem_error,utils.NoKeywordError) else True
 		return cls.objects.create(message=msg.logger_msg,cleaned=msg.ccem_parsed.cleaned,is_submission=submission)
 
 class SubmissionMessageManager(models.Manager):
@@ -105,12 +105,15 @@ class Report(util.TimeStampedModel):
 		'''
 		Create a new report from a CCEM message and parsed object
 		'''
-		
-		has_error = False if len(msg.ccem_parsed.errors)==0 else True
+		try:
+			error = msg.ccem_error
+		except:
+			error = None
+		has_error = False if error else True
 		
 		return cls.objects.create(
 			commands=msg.ccem_parsed.commands,
-			errors=msg.ccem_parsed.errors,
+			errors=[str(error)]
 			message=msg.ccem,
 			has_error=has_error
 		)

@@ -86,7 +86,9 @@ class SingleArgParseError(ParseError):
 	@property
 	def message(self):
 		return self.template % (self.arg,)
-		
+class NoKeywordError(ParseError):
+	message = _('No Keyword Found')
+	
 class MultipleKeyWordError(SingleArgParseError):
 	template = _('Keyword %s already present')
 

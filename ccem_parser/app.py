@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import logging, code
 from rapidsms.apps.base import AppBase
-from parser import default_parser as parser
+from parser import default_parser as parser, utils
 import messagelog as mlog 
 import django_ccem.models as ccem
 
@@ -22,7 +22,10 @@ class CCEIParser(AppBase):
 		Attach result as ccem_parsed
 		'''
 		logger.debug('CCEIParser: %s',msg.raw_text)
-		msg.ccem_parsed = parser.parse(msg.text)
+		try:
+			msg.ccem_parsed = parser.parse(msg.text)
+		except utils.ParseError as e:
+			msg.ccem_error =  e
 		
 	
 	def handle(self,msg):
@@ -30,7 +33,7 @@ class CCEIParser(AppBase):
 		#create CCEM Message and append to msg
 		msg.ccem = ccem.Message.from_msg(msg)
 		
-		if 'NO_KEYWORD_FOUND' in msg.ccem_parsed.errors: #ERROR CODE
+		if hasattr(msg,'ccem_error') and isinstance(msg.ccem_error,utils.NoKeywordError):
 			return False
 		
 		#The message looks like a report submission. So generate report.

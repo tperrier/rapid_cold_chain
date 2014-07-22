@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import re,code
 import utils
+from utils import _
 
 #Regular Expression of characters to be removed when cleaning messages
 MSG_REMOVE_CHARS = r'[\s]'
@@ -27,7 +28,7 @@ class Parser:
 	
 	def parse(self,msg,pos=0):
 		'''
-		The main parsing function
+		The main parsing function: Raises ParseError if an error was found
 		'''
 		# Clean Message and create report object
 		msg = self.clean(msg)
@@ -36,25 +37,21 @@ class Parser:
 			#Attempt to parse message keywords at currrent possition 
 			#kw = returned keyword
 			#args = dict of args for keyword
-			#errors = list of errors found
 			#pos = new position = old position + length parsed string
-			kw,args,errors,pos = self._parse(msg,pos)
+			kw,args,pos = self._parse(msg,pos)
 			if kw is not None:
 				if kw.name != 'short':  #the short kw is a special case and returns both an ft and sl.
 							#this can probably be made more elegant
-					msg_report.add(kw,args,errors)
+					msg_report.add(kw,args)
 				else:
-					msg_report.add('ft',args[0],None)
-					msg_report.add('sl',args[1],errors)
-				if errors:
-					self.pos = len(msg) #finish parsing
-					break
+					msg_report.add('ft',args[0])
+					msg_report.add('sl',args[1])
 			else:
 				break
 		if pos == 0: #no keyword found
-			msg_report.error('NO_KEYWORD_FOUND')
+			raise utils.ParseError(_('No Keyword Found'))
 		elif pos < len(msg): # The are unparsed characters left on the message string
-			msg_report.error('INVALID_NEXT_KEYWORD')
+			raise utils.ParseError(_('Unexpected Character %s')%(msg[pos],))
 		return msg_report
 		
 	def _parse(self,s,pos):
@@ -64,9 +61,9 @@ class Parser:
 		'''
 		for kw in self.keywords:
 			 if kw.test(s,pos):
-				 args,errors,pos = kw.parse(s,pos)
-				 return kw,args,errors,pos
-		return None,None,None,pos
+				 args,pos = kw.parse(s,pos)
+				 return kw,args,pos
+		return None,None,pos
 				 
 	def clean(self,s):
 		s = s.lower()
@@ -96,6 +93,9 @@ if __name__ == '__main__':
 	parser = Parser()
 	
 	for m in test_messages:
-		print m,parser.parse(m)
+		try:
+			print m,parser.parse(m)
+		except utils.ParseError as e:
+			print e
 		
 	code.interact(local=locals())

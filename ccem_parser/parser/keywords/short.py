@@ -42,8 +42,8 @@ class short(utils.Keyword):
 		match = self.parser.match(msg)
 		high,low,sl,stock = match.groups()
 		ft = {None:(high,low)}
-		sl,error = self.parse_stock(stock)
-		return (ft,sl),error,match.end()
+		sl = self.parse_stock(stock)
+		return (ft,sl),match.end()
 		
 	def parse_stock(self,stock):
 		pos = 0

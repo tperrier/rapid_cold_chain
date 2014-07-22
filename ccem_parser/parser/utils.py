@@ -1,12 +1,17 @@
 import re
 
+#from django.utils.translation import ugettext_lazy as _
+
+def _(s):
+	return s
+
 class Tokens:
 	'''
 	Regular expression tokens available for easy accesss
 	'''
 	integer = re.compile("\d+").match
 	whitespace = re.compile("\s+").match
-	singleletter = re.compile("[a-z]").match
+	singleletter = re.compile("[a-z][^a-z]").match
 	singledigit = re.compile("\d").match
 	variable = re.compile("[a-z]+").match
 
@@ -34,7 +39,6 @@ class Keyword(object):
 			pos: The possition in the string to start parsing
 		return:
 			args: dictionary of arguments found while parsing
-			erros: list of errors found while parsing
 			pos: the new position based on the end of parsing	
 		'''
 		pass
@@ -42,44 +46,55 @@ class Keyword(object):
 	def test(self,s,pos=0):
 		return self.reg.match(s,pos)
 		
-class ParseResult(dict):
+class ParseResult(object):
 	
-	def __init__(self,cleaned='',commands=None,errors=None):
+	def __init__(self,cleaned='',commands=None):
 		if commands is None:
 			commands = {}
-		if errors is None:
-			errors = []
 		self.cleaned = cleaned
-		self['commands'] = commands
-		self['errors'] = errors
+		self.commands = commands
 		
-	@property
-	def commands(self):
-		return self['commands']
-		
-	@property
-	def errors(self):
-		return self['errors']
-		
-	@property
-	def has_error():
-		return len(self['errors']) > 0
-		
-	def add(self,kw,args,error):
-		self.arg(kw,args)
-		self.error(error)
-		
-	def arg(self,kw,args):
+	def add(self,kw,args):
 		if not isinstance(kw,basestring):
 			kw = kw.name #passed a keyword object in
-		if kw not in self['commands']:
+		if kw not in self.commands:
 			self.commands[kw] = args
 		else:
-			self.errors.append('MULTIPLE_KEYWORD')
+			raise MultipleKeywordError(kw)
+			
+	def __repr__(self):
+		return repr(self.commands)
+
+class ParseError(Exception):
+	
+	message = _('There was an error in report format. Please Try again.')
+	
+	def __init__(self,message=None):
+		if message:
+			self.message = message
+			
+	def __str__(self):
+		return self.message
+	
+class SingleArgParseError(ParseError):
+	
+	def __init__(self,arg,message=None):
+		self.arg = arg
+		if message:
+			self.message = message
 		
-	def error(self,error):
-		if error:
-			self.errors.append(error)
+	@property
+	def message(self):
+		return self.template % (self.arg,)
+		
+class MultipleKeyWordError(SingleArgParseError):
+	template = _('Keyword %s already present')
+
+class InvalidAlarmsError(SingleArgParseError):
+	template = _('Invalid alarm value %s. Must be a digit')
+
+class InvalidStockError(SingleArgParseError):
+	template = _('Invalid Stock value %s. Must be a digit')
 
 class gobbler(object):
 	

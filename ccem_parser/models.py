@@ -1,6 +1,20 @@
 from django.db import models
+import utils
 
 # Create your models here.
+
+class StoredMessageManager(models.Manager):
+	
+	language = 'en'
+	
+	def get_from_error(self,error):
+		messages = super(StoredMessageManager,self).get_query_set().filter(keyword=error.keyword)
+		if messages.count() > 0:
+			return messages
+		messages = super(StoredMessageManager,self).get_query_set().filter(keyword=utils.DEFAULT_KEYWORD)
+		if messages.count() > 0:
+			return messages
+		return error.getMessage(language)
 
 class StoredMessage(models.Model):
 	
@@ -12,6 +26,8 @@ class StoredMessage(models.Model):
 	
 	message = models.CharField(max_length=200)
 	
+	
+	objects = StoredMessageManager()
 	
 	@classmethod
 	def get_from_keyword(cls,keyword,language='en',**kwargs):
@@ -25,3 +41,5 @@ class StoredMessage(models.Model):
 			return keyword_msgs[0].message.format(**kwargs)
 		else:
 			return keyword
+			
+

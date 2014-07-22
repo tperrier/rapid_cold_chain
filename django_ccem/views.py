@@ -22,6 +22,9 @@ def contacts(request):
 			message_list = ccem.Message.objects.filter(message__connection__identity=contact)
 	
 	return render(request, 'contacts.html',{'contacts':contact_list,'contact_detail':contact_detail,'messages':message_list})
+
+def facilities(request):
+	return render(request, 'facilities.html');
 	
 def messages(request):
 		

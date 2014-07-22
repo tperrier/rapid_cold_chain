@@ -9,7 +9,7 @@ urlpatterns = patterns('',
 	url(r'^admin/', include(admin.site.urls)),
 	# RapidSMS core URLs
 	(r'^accounts/', include('rapidsms.urls.login_logout')),
-	url(r'^$', 'rapidsms.views.dashboard', name='rapidsms-dashboard'),
+	url(r'^$', 'django_ccem.views.messages', name='rapidsms-dashboard'),
 	# RapidSMS contrib app URLs
 	(r'^httptester/', include('rapidsms.contrib.httptester.urls')),
 	#(r'^locations/', include('rapidsms.contrib.locations.urls')),

@@ -26,6 +26,9 @@ class CCEIParser(AppBase):
 			msg.ccem_parsed = parser.parse(msg.text)
 		except utils.ParseError as e:
 			msg.ccem_error =  e
+			msg.ccem_parsed = parser.parse(msg.text,fake=True)
+		else:
+			msg.ccem_error = False
 		
 	
 	def handle(self,msg):
@@ -33,15 +36,15 @@ class CCEIParser(AppBase):
 		#create CCEM Message and append to msg
 		msg.ccem = ccem.Message.from_msg(msg)
 		
-		if hasattr(msg,'ccem_error') and isinstance(msg.ccem_error,utils.NoKeywordError):
+		if isinstance(msg.ccem_error,utils.NoKeywordError):
 			return False
 		
 		#The message looks like a report submission. So generate report.
 		report = ccem.Report.from_msg(msg)
-		if not msg.ccem_parsed.errors: #No other errors
+		if not msg.ccem_error: #No other errors
 			response = msg.respond(str(msg.ccem_parsed.commands))
 		else: #there were errors
-			response = msg.respond(str(msg.ccem_parsed.errors))
+			response = msg.respond(str(msg.ccem_error))
 		return True
 		
 	def outgoing(self, msg):

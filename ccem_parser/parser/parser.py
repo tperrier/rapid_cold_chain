@@ -26,13 +26,15 @@ class Parser:
 		''' 
 		self.parse(msg,pos)
 	
-	def parse(self,msg,pos=0):
+	def parse(self,msg,pos=0,fake=False):
 		'''
 		The main parsing function: Raises ParseError if an error was found
 		'''
 		# Clean Message and create report object
 		msg = self.clean(msg)
 		msg_report = utils.ParseResult(msg)
+		if fake:
+			return msg_report #short circuit parsing
 		while True:
 			#Attempt to parse message keywords at currrent possition 
 			#kw = returned keyword

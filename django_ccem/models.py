@@ -1,6 +1,6 @@
 from django.db import models
 from jsonfield import JSONField
-import util.models as util
+import util.models as util, ccem_parser.parser.utils as utils
 
 # Create your models here.
 
@@ -34,7 +34,7 @@ class Message(util.TimeStampedModel):
 		'''
 		Create a new message from a rapidsms msg object and parser result
 		'''
-		submission = False if hasattr(msg,'ccem_error') and isinstance(msg.ccem_error,utils.NoKeywordError) else True
+		submission = False if isinstance(msg.ccem_error,utils.NoKeywordError) else True
 		return cls.objects.create(message=msg.logger_msg,cleaned=msg.ccem_parsed.cleaned,is_submission=submission)
 
 class SubmissionMessageManager(models.Manager):
@@ -105,15 +105,11 @@ class Report(util.TimeStampedModel):
 		'''
 		Create a new report from a CCEM message and parsed object
 		'''
-		try:
-			error = msg.ccem_error
-		except:
-			error = None
-		has_error = False if error else True
+		has_error = True if msg.ccem_error else False
 		
 		return cls.objects.create(
 			commands=msg.ccem_parsed.commands,
-			errors=[str(error)]
+			errors=[str(msg.ccem_error)],
 			message=msg.ccem,
 			has_error=has_error
 		)

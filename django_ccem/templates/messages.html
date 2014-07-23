@@ -15,6 +15,7 @@
 		<li {% if request.GET.type == None %} class="active" {% endif %}><a href="/moderation/messages">All</a></li>
 		<li {% if request.GET.type == 'regular' %} class="active" {% endif %}><a href="/moderation/messages?type=regular">Regular</a></li>
 		<li {% if request.GET.type == 'submission' %} class="active" {% endif %}><a href="/moderation/messages?type=submission">Submission</a></li>
+		<li {% if request.GET.type == 'outgoing' %} class="active" {% endif %}><a href="/moderation/messages?type=outgoing">Outgoing</a></li>
 		<li {% if request.GET.type == 'flagged' %} class='active' {% endif %}><a href="/moderation/messages?type=flagged">Flagged</a></li>
 	</ul>
 {% endblock %}
@@ -28,6 +29,7 @@
 <table class="table table-hover table-bordered">
 <tr class='info'>
 	<th style="width:200px"><span class="glyphicon chevron-down"></span>Date</th>
+	{% if request.GET.type == None %}<th>Direction</th>{% endif %}
 	<th style="width:500px">Message</th>
 	<th style="width:150px">Contact</th>
 	<th>Health Unit</th>
@@ -35,12 +37,13 @@
 {% for m in messages %}
 <tr>
 	<td>{{ m.created }}</td>
+	{% if request.GET.type == None %}<td>{{ m.get_direction_display }}</td>{% endif %}
 	<td data-toggle='collapse' data-target='#msg_info_{{ m.id }}'>
-		<span class="alert alert-{% if not m.has_error %}info{% else %}danger{% endif %}">{{ m.message.text }}</span>
+		<span class="alert alert-{% if not m.has_error %}info{% else %}danger{% endif %}">{{ m.text }}</span>
 		<span class="glyphicon glyphicon-{% if m.is_submission %}ok-sign{% else %}question-sign{% endif %}"></span>
 	</td>
-	<td><a href="{% url 'django_ccem.views.contacts' %}?contact={{ m.message.connection.identity }}">{{ m.message.connection.identity }}</a></td>
-	<td>{{m.message.connection.dhis2.contact.facility}}</td>
+	<td><a href="{% url 'django_ccem.views.contacts' %}?contact={{ m.message.connection.identity }}">{{ m.connection.identity }}</a></td>
+	<td>{{m.connection.dhis2.contact.facility}}</td>
 </tr>
 <tr id='msg_info_{{ m.id }}' class='collapse'>
 	<td></td>

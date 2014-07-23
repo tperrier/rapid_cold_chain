@@ -10,18 +10,21 @@ def base_view(request):
 	return render(request, 'ccem_sim/base.html')
 
 def contacts(request):
-	contact_list = dhis2.Contact.objects.all()
-	contact_detail, message_list = None, None
-	contact = request.GET.get('contact',None)
+	
+	#All Connections
+	connection_list = rapid.Connection.objects.all()
+	
+	#contact details
+	contact_detail, contact_message_list = None, None
+	contact = _get_contact(request)
 	if contact is not None:
-		contact="+"+contact.strip() if contact.startswith(' ') else contact
 		contact_conn = dhis2.ContactConnection.objects.filter(connection__identity=contact)
 		#contact_conn = rapid.Connection.objects.filter(identity=contact)
+		contact_message_list = ccem.Message.objects.filter(connection__identity=contact)
 		if contact_conn.count()>0:
 			contact_detail = contact_conn[0].contact
-			message_list = ccem.Message.objects.filter(message__connection__identity=contact)
 	
-	return render(request, 'contacts.html',{'contacts':contact_list,'contact_detail':contact_detail,'messages':message_list})
+	return render(request, 'contacts.html',{'contacts':connection_list,'contact_detail':contact_detail,'messages':contact_message_list})
 
 def facilities(request):
 	return render(request, 'facilities.html');
@@ -30,25 +33,25 @@ def messages(request):
 		
 	message_list = ccem.Message.objects.all()
 	
-	#filter based on message type
+	#filter based on get params
 	msg_type = request.GET.get('type',None)
 	if msg_type == 'submission':
 		message_list = message_list.filter(is_submission=True)
 	elif msg_type == 'regular':
-		message_list = message_list.filter(is_submission=False)
+		message_list = message_list.filter(is_submission=False,direction=ccem.Message.INCOMING)
+	elif msg_type == 'outgoing':
+		message_list = message_list.filter(direction=ccem.Message.OUTGOING)
 	elif msg_type == 'flagged':
 		message_list = message_list.filter(has_error=True)
 	
 	#filter based on contact
-	contact = request.GET.get('contact',None)
+	contact = _get_contact(request)
 	if contact is not None:
-		contact="+"+contact.strip() if contact.startswith(' ') else contact
 		message_list = message_list.filter(message__connection__identity=contact)
 	
 	#filter based on date
-	start = _strpdate(request.GET.get('start',''))
-	end = _strpdate(request.GET.get('end',''))
-	
+	start = _strpdate_or_none(request.GET.get('start',''))
+	end = _strpdate_or_none(request.GET.get('end',''))
 	if start is not None:
 		message_list = message_list.filter(created__gte=start)
 	if end is not None:
@@ -59,27 +62,36 @@ def messages(request):
 		if order == 'date': order='created'
 		elif order == 'contact': order='message__connection__identity'
 		message_list=message_list.order_by(order);
+	#End message_list filtering
 	
-	return message_render(request,message_list)
-
-def _strpdate(datestr,format='%d/%m/%y'):
-	try:
-		return datetime.datetime.strptime(datestr,format)
-	except ValueError:
-		return None
-
-def message_render(request,message_list):
+	#Make a paginator from message list 
 	paginator = Paginator(message_list,10)
 	
 	page = request.GET.get('page',1)
 	try:
-		messages = paginator.page(page)
+		message_page = paginator.page(page)
 	except PageNotAnInteger:
 		# If page is not an integer, deliver first page.
-		messages = paginator.page(1)
+		message_page = paginator.page(1)
 	except EmptyPage:
 		# If page is out of range (e.g. 9999), deliver last page of results.
-		messages = paginator.page(paginator.num_pages)
-		print "Debug Empty Page:",messages.has_next()
+		message_page = paginator.page(paginator.num_pages)
 
-	return render(request,'messages.html',{'messages':messages})
+	return render(request,'messages.html',{'messages':message_page})
+
+def _strpdate_or_none(datestr,format='%d/%m/%y'):
+	'''
+	Return a datetime objecet from a string or None
+	'''
+	try:
+		return datetime.datetime.strptime(datestr,format)
+	except ValueError:
+		return None
+		
+def _get_contact(request):
+	#gets contact from request if exists and adds + if need
+	contact = request.GET.get('contact',None)
+	if contact and contact.startswith(' '):
+		contact = '+'+contact.strip()
+	return contact
+

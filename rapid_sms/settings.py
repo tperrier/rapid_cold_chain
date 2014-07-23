@@ -178,7 +178,7 @@ LOGGING = {
 			'level': 'DEBUG',
 			'propagate': True,
 		},
-		'CCEMparser':{
+		'ccem_parser':{
 			'handlers':['console'],
 			'level':'DEBUG',
 			'propagate':True
@@ -211,7 +211,7 @@ INSTALLED_APPS = (
     "rapidsms.backends.database",
     #"rapidsms.contrib.handlers",
     "rapidsms.contrib.httptester",
-    "messagelog",
+    #"messagelog",
     "rapidsms.contrib.messaging",
     "rapidsms.contrib.registration",
     #"rapidsms.contrib.echo",

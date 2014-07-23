@@ -6,15 +6,23 @@ import util.models as util, ccem_parser.parser.utils as utils
 
 class Message(util.TimeStampedModel):
 	'''
-	A message model that links to the RapidSMS messagelog message
+	A message model that acts like rapidsms.messagelog.message
 	'''
 	
-	#The RapidSMS log message this message is based on.
-	#There can only be one incoming message that created this Message
-	message = models.OneToOneField('messagelog.Message')
+	INCOMING,OUTGOING = 'I','O'
+	DIRECTION_CHOICES = ((INCOMING,'Incoming'),(OUTGOING,'Outgoing'))
+	
+	#The raw text of the message
+	text = models.CharField(max_length=200)
 	
 	#The cleaned version of the message text used to parse the data
-	cleaned = models.CharField(max_length=200)
+	cleaned = models.CharField(max_length=200,null=True,blank=True)
+	
+	#The connection that sent this message
+	connection = models.ForeignKey('rapidsms.Connection',null=True,related_name='messages')
+	
+	#Direction of the message
+	direction = models.CharField(max_length=1,choices=DIRECTION_CHOICES)
 	
 	#Boolean field if this messages looks like a submission
 	is_submission = models.BooleanField(default=True)
@@ -22,8 +30,16 @@ class Message(util.TimeStampedModel):
 	#Boolean field if last report message has an error
 	has_error = models.BooleanField(default=False)
 	
+	class Meta:
+		ordering = ('-created',)
+	
+	def save(self,*args,**kwargs):
+		if self.direction == self.OUTGOING and self.is_submission:
+			self.is_submission = False
+		super(Message,self).save(*args,**kwargs)
+	
 	def __unicode__(self):
-		return '#%i %s (%s)'%(self.id,self.created_str(),self.cleaned)
+		return '#%i %s (%s)'%(self.id,self.created_str(),self.cleaned if self.cleaned else self.text)
 	
 	@property
 	def num_reports(self):
@@ -79,7 +95,7 @@ class Report(util.TimeStampedModel):
 	
 	#JSON serialized Python objects for the parsed commands and errors
 	commands = JSONField()
-	errors = JSONField()
+	error = models.CharField(max_length=50,null=True,blank=True)
 	
 	#Boolean indicating the presence of errors 
 	has_error = models.BooleanField(default=False)
@@ -88,14 +104,14 @@ class Report(util.TimeStampedModel):
 	#A message may have multiple reports so create a OneToManyField (Foreign Key)
 	message = models.ForeignKey(Message)
 	#Foreignkey link to outgoing message response. Can only be one.
-	response = models.OneToOneField('messagelog.Message',null=True,blank=True)
+	response = models.OneToOneField(Message,null=True,blank=True,related_name='response_to')
 	
 	def save(self,*args,**kwargs):
 		#Set the error status on the associated message object 
-		if self.has_error:
+		if self.has_error and not self.message.has_error:
 			self.message.has_error = True
 			self.message.save()
-		else:
+		elif not self.has_error and self.message.has_error:
 			self.message.has_error = False
 			self.message.save()
 		super(Report,self).save(*args,**kwargs)
@@ -109,8 +125,8 @@ class Report(util.TimeStampedModel):
 		
 		return cls.objects.create(
 			commands=msg.ccem_parsed.commands,
-			errors=[str(msg.ccem_error)],
-			message=msg.ccem,
+			error=str(msg.ccem_error.__class__.__name__) if msg.ccem_error else None,
+			message=msg.ccem_msg,
 			has_error=has_error
 		)
 	
@@ -119,7 +135,10 @@ class Report(util.TimeStampedModel):
 		'''
 		Given a rapidsms outgoing object attaches it to the correct report object if there is one
 		'''
-		report = response.in_response_to.logger_msg.message.report_set.latest('created')
-		report.response = response.logger_msg
-		report.save()
+		#report = response.in_response_to.logger_msg.message.report_set.latest('created')
+		#report.response = response.logger_msg
+		if response.in_response_to.ccem_msg.report_set.count() > 0:
+			report = response.in_response_to.ccem_msg.report_set.latest('created')
+			report.response = response.ccem_msg
+			report.save()
 		

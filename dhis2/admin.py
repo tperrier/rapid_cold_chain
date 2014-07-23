@@ -10,8 +10,15 @@ class FacilityAdmin(admin.ModelAdmin):
 class EquitmentAdmin(admin.ModelAdmin):
 	pass
 	
+class ContactConnectionInline(admin.TabularInline):
+	model = ContactConnection
+	extra = 1
+
 class ContactAdmin(admin.ModelAdmin):
-	pass
+	
+	list_display = ['name','facility']
+	
+	inlines = (ContactConnectionInline,)
 	
 class ContactConnectionAdmin(admin.ModelAdmin):
 	pass

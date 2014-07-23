@@ -22,8 +22,8 @@ def fix_date(message):
 def send(message,i=0):
 	connection = router.lookup_connections(BACKEND,[message['identity']])[0]
 	msg_in = router.receive(message['message'],connection)
-	msg_in.logger_msg.message.created = message['date']
-	msg_in.logger_msg.message.save()
+	msg_in.ccem_msg.created = message['date']
+	msg_in.ccem_msg.save()
 	print 'Sent',i,':',message['message']
 	return msg_in
 

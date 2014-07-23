@@ -23,11 +23,15 @@ if len(sys.argv) == 1:
 if sys.argv[1] == 'wipe':
 
 	def delete(obj):
-		if obj.objects.count() > 0:
-			obj.objects.all().delete()
-	
-	import messagelog.models as log
-	delete(log.Message)
+		objs = obj.objects.all()
+		count = objs.count()
+		print 'Deleting %i objects from %s'%(count,obj.__name__)
+		while obj.objects.all().count() > 0:
+			objs = [i[0] for i in obj.objects.all().values_list('pk')[:25]]
+			obj.objects.filter(pk__in=list(objs)).delete()
+
+	import rapidsms.backends.database.models as backend
+	delete(backend.BackendMessage)
 
 	import django_ccem.models as ccem
 	delete(ccem.Message)
@@ -45,7 +49,7 @@ if sys.argv[1] == 'wipe':
 else:
 	
 	def count(obj):
-		print obj,obj.objects.all().count()
+		print obj.__name__,obj.objects.all().count()
 	
 	import django_ccem.models as ccem
 	count(ccem.Message)
@@ -59,6 +63,3 @@ else:
 	
 	import rapidsms.models as rapid
 	count(rapid.Connection)
-	
-	import messagelog.models as log
-	count(log.Message)

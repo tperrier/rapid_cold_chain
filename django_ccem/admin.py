@@ -7,12 +7,12 @@ from models import *
 
 class ReportInline(admin.TabularInline):
 	model = Report
-	
+	fk_name = 'message'
 	extra = 1
 
 class MessageAdmin(RelatedFieldAdmin):
 	
-	list_display = ('created','message__text','message__connection','has_error','num_reports')
+	list_display = ('created','message__text','message__connection','has_error','direction','num_reports')
 	
 	readonly_fields = ('created','modified')
 	
@@ -20,7 +20,7 @@ class MessageAdmin(RelatedFieldAdmin):
 
 class ReportAdmin(RelatedFieldAdmin):
 	
-	list_display = ('created','commands','errors','has_error')
+	list_display = ('created','commands','error','has_error')
 
 
 admin.site.register(SubmissionMessage,MessageAdmin)

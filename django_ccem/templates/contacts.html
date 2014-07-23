@@ -5,15 +5,13 @@
 	<div style="height:400px; overflow:scroll;">
 	<ul class="nav nav-pills nav-stacked">
 		{% for c in contacts %}
-		<li {% if request.GET.contact == c.phone_number %} class="active" {% endif %}><a href="{% url 'django_ccem.views.contacts' %}?contact={{ c.phone_number }}">{{ c.name }} | {{ c.phone_number }}</a></li>
+		<li {% if request.GET.contact == c.identity %} class="active" {% endif %}>
+			<a href="{% url 'django_ccem.views.contacts' %}?contact={{ c.identity }}">{{ c.dhis2.contact.name }} | {{ c.identity }}</a>
+		</li>
 		{% endfor %}
 	</ul>
 	</div>
 {% endblock %}	
-
-
-
-
 
 
 {% block content %}
@@ -46,7 +44,25 @@
 		</div></div></div>
 	</div>
 </div>
-
+{% elif request.GET.contact != None and messages %}{### Anonymous Connection ###}
+<div class='panel panel-warning'>
+	<div class='panel-heading'>
+		<h3 class='panel-title'>Message</h3>
+	</div>
+	<div class='panel-body'>
+		Anonymous connection. No contact details found for {{request.GET.contact}}
+	</div>
+</div>
+{% else%} {### Connection not found ###}
+<div class='panel panel-warning'>
+	<div class='panel-heading'>
+		<h3 class='panel-title'>Message</h3>
+	</div>
+	<div class='panel-body'>
+		Please select a contact from the left panel.
+	</div>
+</div>
+{% endif %}
 
 {% if messages %}
 <div class='row'><div class='col-md-6 col-md-offset-3'><div class='panel panel-primary'>
@@ -56,20 +72,19 @@
 	<div class='panel-body container-fluid'>
 {% for m in messages %}
 	<div class='row'>
+	{% if m.direction = 'I' %}
 	<div class='panel panel-info col-md-6 col-md-offset-1'>
-		<span>{{ m.message.text }}</span>
+		<span>{{ m.text }}</span>
 		<span class="glyphicon glyphicon-{% if m.is_submission %}ok-sign{% else %}question-sign{% endif %}"></span>
 		<div><small>{{ m.created }}</small></div>
 	</div>
-	</div>
-	<div class='row'>
+	{% else %}
 	<div class='panel panel-success col-md-6 col-md-offset-5'>
-	{% for r in m.report_set.all %}
 		<span class="glyphicon glyphicon-share-alt"></span>
-		<span>{{ r.response.text }}</span>
-		<div><small>{{ r.created }}</small></div>
-	{% endfor %}
+		<span>{{ m.text }}</span>
+		<div><small>{{ m.created }}</small></div>
 	</div>
+	{% endif %}
 	</div>
 
 {% endfor %}
@@ -100,7 +115,7 @@ Page <form action='#', method='get'>
 
 </div></div></div>
 
-{% else %}
+{% elif contact_detail %}
 
 <div class='panel panel-warning'>
 	<div class='panel-heading'>
@@ -111,17 +126,6 @@ Page <form action='#', method='get'>
 	</div>
 </div>
 
-{% endif %}
-
-{% else %}
-<div class='panel panel-warning'>
-	<div class='panel-heading'>
-		<h3 class='panel-title'>Message</h3>
-	</div>
-	<div class='panel-body'>
-		Please select a contact from the left panel.
-	</div>
-</div>
 {% endif %}
 
 {% endblock %}

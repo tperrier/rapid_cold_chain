@@ -61,7 +61,7 @@ def is_health_facility(node):
 	Returns True if Node is in the Health Facility Group
 	Otherwise returns False
 	'''
-	return True if 'childen' in node and len(node['children'] > 0 else False
+	return True if 'childen' in node and len(node['children'])> 0 else False
 	'''
 	#Level 2 and Level 3 Health Facilities do not have Lao names and have no children
 	name = parse_name(node)
@@ -78,8 +78,9 @@ def is_health_facility(node):
 		
 	group_test = [_test(group) for group in orgGroups]
 	
-	return True in group_test
+	return True in group_test  
 	'''
+
 
 if __name__ == '__main__':
 	

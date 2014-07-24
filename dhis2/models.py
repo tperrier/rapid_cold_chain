@@ -148,4 +148,21 @@ class ContactConnection(models.Model):
 	
 	def __unicode__(self):
 		return '%s (%s)'%(self.contact.name,self.connection)
-
+		
+def make_organisation_list():
+	orgs_all = []
+	
+	#add OrganisationUnits
+	orgs_list = OrganisationUnit.objects.all().prefetch_related('facility_set','children')
+	for o in orgs_list:
+		node = {'id':o.dhis2_id,'name':o.i18n_name}
+		if o.children.count() > 0:
+			node['children'] = [c.dhis2_id for c in o.children.all()]
+		if o.facility_set.count() > 0:
+			node['children'].extend([c.dhis2_id for c in o.facility_set.all()])
+		orgs_all.append(node)
+	
+	#add Facilities
+	facility_list = Facility.objects.all()
+	orgs_all.extend([{'id':f.dhis2_id,'name':f.i18n_name} for f in facility_list])
+	return orgs_all

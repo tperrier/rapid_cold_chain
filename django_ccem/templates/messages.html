@@ -42,7 +42,7 @@
 		<span class="alert alert-{% if not m.has_error %}info{% else %}danger{% endif %}">{{ m.text }}</span>
 		<span class="glyphicon glyphicon-{% if m.is_submission %}ok-sign{% else %}question-sign{% endif %}"></span>
 	</td>
-	<td><a href="{% url 'django_ccem.views.contacts' %}?contact={{ m.message.connection.identity }}">{{ m.connection.identity }}</a></td>
+	<td><a href="{% url 'django_ccem.views.contacts' %}?contact={{ m.connection.identity }}">{{ m.connection.identity }}</a></td>
 	<td>{{m.connection.dhis2.contact.facility}}</td>
 </tr>
 <tr id='msg_info_{{ m.id }}' class='collapse'>

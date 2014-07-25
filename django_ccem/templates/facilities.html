@@ -1,9 +1,30 @@
 {% extends 'ccem_sim/base.html' %}
 {% load url_extras %}
-
+{%block extra_stylesheets %}
+<style>
+    .tree_head_ele {padding-left:5px;}
+    .tree_link_ele {padding-left:0px;}
+    .tree_link_ele1 {padding-left:15px;}
+</style>
+{% endblock %}
+{% block extra_javascript %}
+<script>		
+$(document).ready(function () {
+	$('label.tree-toggler').click(function () {
+		$(this).parent().children('ul.tree').toggle(300);
+	});
+    $('label.tree-toggler').parent().children('ul.tree').hide();
+});
+</script>
+{% endblock %}
 {% block left_panel %}
-	<div style="height:400px; overflow:scroll;">
-	</div>
+	<!--<div style="height:400px; overflow:scroll;">
+		<div class="well" style="width:300px; padding: 8px 0;">-->
+    <div style="overflow-y: scroll; overflow-x: hidden; height: 500px;">
+        {% include 'facility_list_cache.html' %}
+    </div>
+<!--</div>
+	</div>-->
 {% endblock %}	
 
 
@@ -12,5 +33,36 @@
 
 
 {% block content %}
-Facilities
+{{root_org}}
+<script>
+function print_facility(ele){
+    console.log(ele);
+    main_ele.append("haha");
+    if(ele.children){
+        for(var i=0; i<ele.children.length; i++){
+            var c = jdata[ele.children[i]];
+            console.log(c.name.ke);
+            print_facility(c)
+            //document.write(""+c.name.ke);
+        }
+    }
+}
+var jdata = {% autoescape off %} {{ root_org }} {% endautoescape %};
+//jdata = JSON.parse( data );
+var root_id = "{{root_id}}";
+var keys = Object.keys(jdata);
+var main_ele = $("#test12");
+console.log(main_ele);
+$("#test12");
+$("#facility_tree").append("facility_tree");
+//console.log(keys);
+//console.log(jdata[root_id]);
+var ele = jdata[root_id];
+print_facility(ele);
+
+</script>
+Facilities<br>
+{% include 'facility_heirarchy.html'%}
+<div id="test12">this is test msg</div>
 {% endblock %}
+

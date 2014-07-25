@@ -7,4 +7,5 @@ urlpatterns = patterns('',
 	url(r'messages/$',messages),
 	url(r'contacts/$',contacts),
 	url(r'facilities/$',facilities),
+	url(r'facility_list.html$',facility_list),
 )

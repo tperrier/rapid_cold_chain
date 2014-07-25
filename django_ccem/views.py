@@ -1,10 +1,11 @@
 # Create your views here.
-import datetime
+import datetime,json
 
 from django.shortcuts import render
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 
 import models as ccem, dhis2.models as dhis2,rapidsms.models as rapid
+from dhis2 import orgs_all as root_orgs
 
 def base_view(request):
 	return render(request, 'ccem_sim/base.html')
@@ -26,8 +27,29 @@ def contacts(request):
 	
 	return render(request, 'contacts.html',{'contacts':connection_list,'contact_detail':contact_detail,'messages':contact_message_list})
 
+def facility_list(request):
+	facility_list = dhis2.Facility.objects.all()
+	if facility_list.count()>0:
+		org = facility_list[0]
+		levels = facility_list[0].level
+		for i in range(0,(levels-1)): org = org.parent
+	return render(request, 'facility_list.html', {'facility_list':org, 'root_id': org.dhis2_id });
+
 def facilities(request):
-	return render(request, 'facilities.html');
+	facility_list = dhis2.Facility.objects.all()
+	if facility_list.count()>0:
+		org = facility_list[0]
+		levels = facility_list[0].level
+		print levels
+		for i in range(0,(levels-1)): org = org.parent
+		print org
+	c = org.children.all()
+	print c
+	for o in c:
+		print o
+	root_org = {'wbZtszn1b0R':{'name':{'ke':'Lao PDR'},'children':['FRmrFTE63D0']},'FRmrFTE63D0': {'name':{'lo': u'\u0e9a\u0ecd\u0ec8\u0ec1\u0e81\u0ec9\u0ea7', 'ke': 'Bokeo'}}}
+	#json.dumps(root_orgs)
+	return render(request, 'facilities.html', {'facility_list':org,'root_org': json.dumps(root_org), 'root_id': org.dhis2_id })
 	
 def messages(request):
 		

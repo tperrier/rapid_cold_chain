@@ -2,7 +2,7 @@ import re
 
 #from django.utils.translation import ugettext_lazy as _
 
-def _(s):
+def _(s): #fake i18n translation
 	return s
 
 class Tokens:
@@ -20,6 +20,9 @@ class Keyword(object):
 	'''
 	All parser keywords should inherit from the utils.Keyword class	
 	'''
+	
+	multiple = False #by default a keyword only return args for one keyword
+	repeat = False #by default a keyword can not repeat
 
 	def __init__(self):
 		#If the subclass has not set a kw property set one based on the class name
@@ -41,7 +44,7 @@ class Keyword(object):
 			args: dictionary of arguments found while parsing
 			pos: the new position based on the end of parsing	
 		'''
-		pass
+		raise NotImplementedError('Keyword subclass should override keyword.parse')
 		
 	def test(self,s,pos=0):
 		return self.reg.match(s,pos)
@@ -86,6 +89,7 @@ class SingleArgParseError(ParseError):
 	@property
 	def message(self):
 		return self.template % (self.arg,)
+
 class NoKeywordError(ParseError):
 	message = _('No Keyword Found')
 	
@@ -93,10 +97,10 @@ class MultipleKeyWordError(SingleArgParseError):
 	template = _('Keyword %s already present')
 
 class InvalidAlarmsError(SingleArgParseError):
-	template = _('Invalid alarm value %s. Must be a digit')
+	template = _('Invalid alarm value \'%s\'. Must be a digit')
 
 class InvalidStockError(SingleArgParseError):
-	template = _('Invalid Stock value %s. Must be a digit')
+	template = _('Invalid Stock value \'%s\', must be a digit')
 
 class gobbler(object):
 	

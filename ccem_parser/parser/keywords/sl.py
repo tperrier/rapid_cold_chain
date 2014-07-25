@@ -6,26 +6,22 @@ from ..utils import _
 class sl(utils.Keyword):
 	
 	def parse(self,msg,pos=0):
-		self.reset(pos=pos+len(self.kw))
-		while utils.Tokens.singleletter(msg,self.pos): 
-				self.label = msg[self.pos]
-				self.pos += 1
-				self.parse_stock(msg)
-		return self.args,self.pos
-		
-	def parse_stock(self,msg):
-		
-		m,self.pos = utils.gobble('\d+',msg,self.pos)
-		if not m:
-			raise utils.InvalidStockError(msg[self.pos])
-		else:
-			self.args[self.label] = m.group(0)
-			
-	def reset(self,pos=0):
-		self.pos = pos
-		self.args = {}
-		self.label = None
-		
+		pos += len(self.kw)
+		return self.__class__.parse_stock(msg,pos)
+	
+	@classmethod
+	def parse_stock(cls,stock,pos=0):
+		args = {}
+		while utils.Tokens.singleletter(stock,pos):
+			label = stock[pos]
+			pos += 1 #jump over stock label 
+			m,pos = utils.gobble('\d+',stock,pos)
+			if not m:
+				raise utils.InvalidStockError(stock[pos])
+			else:
+				args[label] = m.group(0)
+		return args,pos
+				
 if __name__ == '__main__':
 	'''
 	Basic Testing
@@ -33,7 +29,7 @@ if __name__ == '__main__':
 	test_messages = [
 		'slp50',
 		'slp50q50',
-		'slpp0',
+		'slp{0',
 	]
 	
 	parser = sl()

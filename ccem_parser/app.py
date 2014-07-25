@@ -57,7 +57,7 @@ class CCEIParser(AppBase):
 		#The message looks like a report submission. So generate report.
 		report = ccem.Report.from_msg(msg)
 		if not msg.ccem_error: #No other errors
-			response = msg.respond(str(msg.ccem_parsed.commands))
+			response = msg.respond(str(msg.ccem_parsed)))
 		else: #there were errors
 			response = msg.respond(str(msg.ccem_error))
 		return True

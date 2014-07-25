@@ -1,4 +1,4 @@
-import re
+import re,sys
 
 #from django.utils.translation import ugettext_lazy as _
 
@@ -49,6 +49,10 @@ class Keyword(object):
 	def test(self,s,pos=0):
 		return self.reg.match(s,pos)
 		
+	@classmethod
+	def get_msg(cls,args):
+		return '%s: %s'%(cls.__name__,str(args))
+		
 class ParseResult(object):
 	
 	def __init__(self,cleaned='',commands=None):
@@ -67,6 +71,29 @@ class ParseResult(object):
 			
 	def __repr__(self):
 		return repr(self.commands)
+		
+	def __str__(self):
+		if len(self.commands) == 0:
+			return _('No commands found')
+		msg = _('Message successfully parsed: Found:')
+		
+		for kw,args in self.commands.iteritems():
+			msg += self.__class__.get_kw_msg(kw,args)
+			
+		return msg
+
+	@classmethod
+	def get_kw_msg(cls,kw,args):
+		module = 'ccem_parser.parser.keywords.%s'%kw
+		print module
+		try:
+			__import__(module)
+		except ImportError:
+			return _('Keyword %s'%kw)
+		else:
+			kw_cls = sys.modules[module]
+			return getattr(kw_cls,kw).get_msg(args)
+			
 
 class ParseError(Exception):
 	

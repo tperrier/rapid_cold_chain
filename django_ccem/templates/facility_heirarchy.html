@@ -1,0 +1,19 @@
+<ul class="nav nav-pills nav-stacked tree tree_head_ele">
+{% for facility in facility_list.children.all %}
+	<li class="tree_link_ele1"><label class="tree-toggler nav-header">{{facility.i18n_name.ke}} | {{facility.i18n_name.lo}}</label>
+		{% if facility.children.count > 0 %}
+			{% with facility_list=facility template_name='facility_heirarchy.html' %}
+				{% include template_name %}
+			{% endwith %}
+		{% endif %}
+		{% if facility.facility_set.count > 0  %}
+			{{facility.facilities.count}}
+			<ul class="nav nav-pills nav-stacked tree tree_head_ele">
+			{% for facility in facility.facility_set.all %}
+				<li class="tree_link_ele" id="f_{{facility.dhis2_id}}"><a href="/moderation/facilities/?id={{facility.dhis2_id}}">{{facility.i18n_name.ke}}</a></li>
+			{% endfor %}
+			</ul>
+		{% endif %}
+	</li>
+{% endfor %}
+</ul>

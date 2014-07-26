@@ -39,16 +39,16 @@ def facilities(request):
 	if facility_list.count()>0:
 		org = facility_list[0]
 		levels = facility_list[0].level
-		print levels
 		for i in range(0,(levels-1)): org = org.parent
-		print org
-	c = org.children.all()
-	print c
-	for o in c:
-		print o
-	root_org = {'wbZtszn1b0R':{'name':{'ke':'Lao PDR'},'children':['FRmrFTE63D0']},'FRmrFTE63D0': {'name':{'lo': u'\u0e9a\u0ecd\u0ec8\u0ec1\u0e81\u0ec9\u0ea7', 'ke': 'Bokeo'}}}
+	facility_id = request.GET.get('id',None)
+	facility = None
+	print facility_id
+	if facility_id is not None:
+		facility = dhis2.Facility.objects.all().filter(dhis2_id=facility_id).get()
+		print facility.dhis2_id
+	#root_org = {'wbZtszn1b0R':{'name':{'ke':'Lao PDR'},'children':['FRmrFTE63D0']},'FRmrFTE63D0': {'name':{'lo': u'\u0e9a\u0ecd\u0ec8\u0ec1\u0e81\u0ec9\u0ea7', 'ke': 'Bokeo'}}}
 	#json.dumps(root_orgs)
-	return render(request, 'facilities.html', {'facility_list':org,'root_org': json.dumps(root_org), 'root_id': org.dhis2_id })
+	return render(request, 'facilities.html', {'facility_list':org,'facility': facility, 'root_id': org.dhis2_id })
 	
 def messages(request):
 		

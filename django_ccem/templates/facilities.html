@@ -1,68 +1,68 @@
 {% extends 'ccem_sim/base.html' %}
+
 {% load url_extras %}
+
 {%block extra_stylesheets %}
 <style>
-    .tree_head_ele {padding-left:5px;}
-    .tree_link_ele {padding-left:0px;}
-    .tree_link_ele1 {padding-left:15px;}
+    .tree_head_ele {padding-left:5px; font-size: 12px;}
+    .tree_link_ele {padding-left:0px; font-size: 12px;}
+    .tree_link_ele1 {padding-left:15px; font-size: 12px;}
 </style>
 {% endblock %}
+
 {% block extra_javascript %}
-<script>		
-$(document).ready(function () {
-	$('label.tree-toggler').click(function () {
-		$(this).parent().children('ul.tree').toggle(300);
-	});
-    $('label.tree-toggler').parent().children('ul.tree').hide();
-});
+<script>
+    var l = $('#f_{{facility.dhis2_id}}').parent();//f_xokBtfDD3Y8
+    var facility_id = "{{ request.GET.id }}";
+    $(document).ready(function () {
+    	$('label.tree-toggler').click(function () {
+    		$(this).parent().children('ul.tree').toggle(300);
+    	});
+        $('label.tree-toggler').parent().children('ul.tree').hide();
+        var p = $('#f_{{facility.dhis2_id}}').parent()
+        while(p.attr("id")!="facility_list_ctn"){
+            p.children('ul.tree').toggle(0);
+            p = p.parent();
+        }
+        var t = $("#f_"+facility_id);
+        t.attr("class","active "+$("#f_"+facility_id).attr("class"));
+    });
 </script>
 {% endblock %}
+
 {% block left_panel %}
-	<!--<div style="height:400px; overflow:scroll;">
-		<div class="well" style="width:300px; padding: 8px 0;">-->
-    <div style="overflow-y: scroll; overflow-x: hidden; height: 500px;">
+	<div id="facility_list_ctn" style="overflow-y: scroll; overflow-x: hidden; height: 500px;">
         {% include 'facility_list_cache.html' %}
     </div>
-<!--</div>
-	</div>-->
 {% endblock %}	
 
-
-
-
-
-
 {% block content %}
-{{root_org}}
-<script>
-function print_facility(ele){
-    console.log(ele);
-    main_ele.append("haha");
-    if(ele.children){
-        for(var i=0; i<ele.children.length; i++){
-            var c = jdata[ele.children[i]];
-            console.log(c.name.ke);
-            print_facility(c)
-            //document.write(""+c.name.ke);
-        }
-    }
-}
-var jdata = {% autoescape off %} {{ root_org }} {% endautoescape %};
-//jdata = JSON.parse( data );
-var root_id = "{{root_id}}";
-var keys = Object.keys(jdata);
-var main_ele = $("#test12");
-console.log(main_ele);
-$("#test12");
-$("#facility_tree").append("facility_tree");
-//console.log(keys);
-//console.log(jdata[root_id]);
-var ele = jdata[root_id];
-print_facility(ele);
+<div class='panel panel-primary'>
+    <div class='panel-heading'>
+        <h3 class='panel-title'>Facility Details</h3>
+    </div>
+    <div class='panel-body container-fluid'/>
+        <dl class="dl-horizontal">
+            <dt>ID:</dt><dd>{{facility.dhis2_id}}</dd>
+            <dt>Name:</dt><dd>{{facility.i18n_name.ke}}</dd>
+            <dt>Code:</dt><dd>{% if facility.dhis2_code %} {{facility.dhis2_code}} {% endif %}</dd>
+            <dt>Level:</dt><dd>{{facility.level}}</dd>
+            <dt>Contact:</dt>
+            <dd>
+                <div class="highlight" style="width:250px; text-align:center">
+                    {### for loop on contacts of this facility ###}
+                    <div class="panel panel-default">
+                      <div class="panel-heading">MA Khammone Louangsiyotha</div>
+                      <div class="panel-body">
+                        2028547465
+                      </div>
+                    </div>
+                    {### endfor ###}
+                </div>
+            </dd>
+        </dl>
+    </div>
+</div>
 
-</script>
-Facilities<br>
-{% include 'facility_heirarchy.html'%}
-<div id="test12">this is test msg</div>
 {% endblock %}
 

@@ -4,6 +4,8 @@ import datetime,json
 from django.shortcuts import render
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 
+import rapidsms.router as router
+
 import models as ccem, dhis2.models as dhis2,rapidsms.models as rapid
 
 def base_view(request):
@@ -18,10 +20,15 @@ def contacts(request):
 	contact_detail, contact_message_list = None, None
 	contact = _get_contact(request)
 	if contact is not None:
-		contact_conn = dhis2.ContactConnection.objects.filter(connection__identity=contact)
-		#contact_conn = rapid.Connection.objects.filter(identity=contact)
+		contact_conn = dhis2.ContactConnection.objects.filter(connection__identity=contact)		
 		contact_message_list = ccem.Message.objects.filter(connection__identity=contact)
 		if contact_conn.count()>0:
+			
+			#POST: Submit Message
+			if request.method == 'POST':
+				message = request.POST['message']
+				router.send(message,contact_conn[0].connection)
+			
 			contact_detail = contact_conn[0].contact
 	
 	return render(request, 'contacts.html',{'contacts':connection_list,'contact_detail':contact_detail,'messages':contact_message_list})

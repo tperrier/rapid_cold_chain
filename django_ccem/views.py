@@ -5,7 +5,6 @@ from django.shortcuts import render
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 
 import models as ccem, dhis2.models as dhis2,rapidsms.models as rapid
-from dhis2 import orgs_all as root_orgs
 
 def base_view(request):
 	return render(request, 'ccem_sim/base.html')

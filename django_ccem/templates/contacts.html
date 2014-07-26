@@ -2,7 +2,7 @@
 {% load url_extras %}
 
 {% block left_panel %}
-	<div style="height:400px; overflow:scroll;">
+	<div style="height:400px; overflow:auto;">
 	<ul class="nav nav-pills nav-stacked">
 		{% for c in contacts %}
 		<li {% if request.GET.contact == c.identity %} class="active" {% endif %}>

@@ -12,20 +12,21 @@
 
 {% block extra_javascript %}
 <script>
-    var l = $('#f_{{facility.dhis2_id}}').parent();//f_xokBtfDD3Y8
     var facility_id = "{{ request.GET.id }}";
     $(document).ready(function () {
     	$('label.tree-toggler').click(function () {
     		$(this).parent().children('ul.tree').toggle(300);
     	});
         $('label.tree-toggler').parent().children('ul.tree').hide();
-        var p = $('#f_{{facility.dhis2_id}}').parent()
-        while(p.attr("id")!="facility_list_ctn"){
-            p.children('ul.tree').toggle(0);
-            p = p.parent();
+        if(facility_id!=""){
+            var p = $('#f_{{facility.dhis2_id}}').parent()
+            while(p.attr("id")!="facility_list_ctn"){
+                p.children('ul.tree').toggle(0);
+                p = p.parent();
+            }
+            var t = $("#f_"+facility_id);
+            t.attr("class","active "+$("#f_"+facility_id).attr("class"));
         }
-        var t = $("#f_"+facility_id);
-        t.attr("class","active "+$("#f_"+facility_id).attr("class"));
     });
 </script>
 {% endblock %}
@@ -37,6 +38,7 @@
 {% endblock %}	
 
 {% block content %}
+{% if request.GET.id != None %}
 <div class='panel panel-primary'>
     <div class='panel-heading'>
         <h3 class='panel-title'>Facility Details</h3>
@@ -63,6 +65,16 @@
         </dl>
     </div>
 </div>
+{% else %}
+<div class='panel panel-warning'>
+    <div class='panel-heading'>
+        <h3 class='panel-title'>Facility</h3>
+    </div>
+    <div class='panel-body'>
+        Please select a facility from the left panel.
+    </div>
+</div>
+{% endif %}
 
 {% endblock %}
 

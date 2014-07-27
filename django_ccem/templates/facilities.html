@@ -46,21 +46,22 @@
     <div class='panel-body container-fluid'/>
         <dl class="dl-horizontal">
             <dt>ID:</dt><dd>{{facility.dhis2_id}}</dd>
-            <dt>Name:</dt><dd>{{facility.i18n_name.ke}}</dd>
+            <dt>Name:</dt><dd>{{facility}}</dd>
             <dt>Code:</dt><dd>{% if facility.dhis2_code %} {{facility.dhis2_code}} {% endif %}</dd>
             <dt>Level:</dt><dd>{{facility.level}}</dd>
-            <dt>Contact:</dt>
+            <dt>Contact{{contacts|pluralize}}:</dt>
             <dd>
-                <div class="highlight" style="width:250px; text-align:center">
-                    {### for loop on contacts of this facility ###}
-                    <div class="panel panel-default">
-                      <div class="panel-heading">MA Khammone Louangsiyotha</div>
-                      <div class="panel-body">
-                        2028547465
-                      </div>
-                    </div>
-                    {### endfor ###}
-                </div>
+               <table class='table'>
+                    {% for contact in contacts %}
+                    <tr><td>
+                        <a href='{% url "django_ccem.views.contacts" %}?contact={{contact.connection.identity}}'>
+                            {{ contact.contact.name }} | {{ contact.connection.identity }}
+                        </a>
+                    </td></tr>
+                    {% empty %}
+                        <tr><td>No Contacts</td></tr>
+                    {% endfor %}
+                </table>
             </dd>
         </dl>
     </div>

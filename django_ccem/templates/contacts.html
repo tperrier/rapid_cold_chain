@@ -24,7 +24,11 @@
 		<dl class="dl-horizontal">
 		  <dt>Name:</dt><dd>{{contact_detail.name}}</dd>
 		  <dt>Number:</dt><dd>{{contact_detail.phone_number}}</dd>
-		  <dt>Health Unit:</dt><dd>{{contact_detail.facility}}</dd>
+		  <dt>Health Unit:</dt><dd>
+				<a href='{% url "django_ccem.views.facilities" %}?id={{contact_detail.facility.dhis2_id}}'>
+					{{contact_detail.facility}}
+				</a>
+			 </dd>
 		</dl>
 		<div class='row'><div class='col-md-6 col-md-offset-3'><div class='panel panel-info'>
 			<div class='panel-heading' data-toggle='collapse' data-target='#sendForm'>

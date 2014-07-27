@@ -36,8 +36,9 @@ def contacts(request):
 def facilities(request):
 	facility_id = request.GET.get('id',None)
 	facility = util.get_or_none(dhis2.Facility,dhis2_id=facility_id)
-	print facility
-	return render(request, 'facilities.html', {'facility': facility})
+	contacts = dhis2.ContactConnection.objects.filter(contact__facility=facility)
+	print contacts
+	return render(request, 'facilities.html', {'facility': facility,'contacts':contacts})
 	
 def messages(request):
 		

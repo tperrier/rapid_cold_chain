@@ -35,8 +35,8 @@ class OrganisationBase(DHIS2Object,util.models.TimeStampedModel):
 		
 	def __unicode__(self):
 		if isinstance(self.i18n_name,dict):
-			return '|'.join([' '+i+' ' for i in self.i18n_name.values()])
-		return '|'.join([' '+i+' ' for i in self.i18n_name])
+			return '|'.join([' '+i.capitalize()+' ' for i in self.i18n_name.values()])
+		return '|'.join([' '+i.capitalize()+' ' for i in self.i18n_name])
 	
 	@classmethod
 	def create_if_not_exists(cls,dhis2_id,follow_up=False,follow_down=False):

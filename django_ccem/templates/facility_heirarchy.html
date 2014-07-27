@@ -1,7 +1,7 @@
 <ul class="nav nav-pills nav-stacked tree tree_head_ele">
 {% for facility in facility_list.children.all %}
 	<li class="tree_link_ele1">
-		<label class="tree-toggler nav-header">{{facility.i18n_name.ke|capfirst}} | {{facility.i18n_name.lo|capfirst}}</label>
+		<label class="tree-toggler nav-header">{{facility}}</label>
 		{% if facility.children.count > 0 %}
 			{% with facility_list=facility template_name='facility_heirarchy.html' %}
 				{% include template_name %}
@@ -13,7 +13,7 @@
 			{% for facility in facility.facility_set.all %}
 				<li class="tree_link_ele" id="f_{{facility.dhis2_id}}">
 					<a href="/moderation/facilities/?id={{facility.dhis2_id}}">
-						{{facility.i18n_name.ke|capfirst}} | {{facility.i18n_name.lo|capfirst}}
+						{{facility}}
 					</a>
 				</li>
 			{% endfor %}

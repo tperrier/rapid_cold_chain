@@ -6,7 +6,7 @@ from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 
 import rapidsms.router as router
 
-import models as ccem, dhis2.models as dhis2,rapidsms.models as rapid
+import models as ccem, dhis2.models as dhis2,rapidsms.models as rapid, util
 
 def base_view(request):
 	return render(request, 'ccem_sim/base.html')
@@ -42,20 +42,10 @@ def facility_list(request):
 	return render(request, 'facility_list.html', {'facility_list':org, 'root_id': org.dhis2_id });
 
 def facilities(request):
-	facility_list = dhis2.Facility.objects.all()
-	if facility_list.count()>0:
-		org = facility_list[0]
-		levels = facility_list[0].level
-		for i in range(0,(levels-1)): org = org.parent
 	facility_id = request.GET.get('id',None)
-	facility = None
-	print facility_id
-	if facility_id is not None:
-		facility = dhis2.Facility.objects.all().filter(dhis2_id=facility_id).get()
-		print facility.dhis2_id
-	#root_org = {'wbZtszn1b0R':{'name':{'ke':'Lao PDR'},'children':['FRmrFTE63D0']},'FRmrFTE63D0': {'name':{'lo': u'\u0e9a\u0ecd\u0ec8\u0ec1\u0e81\u0ec9\u0ea7', 'ke': 'Bokeo'}}}
-	#json.dumps(root_orgs)
-	return render(request, 'facilities.html', {'facility_list':org,'facility': facility, 'root_id': org.dhis2_id })
+	facility = util.get_or_none(dhis2.Facility,dhis2_id=facility_id)
+	print facility
+	return render(request, 'facilities.html', {'facility': facility})
 	
 def messages(request):
 		

@@ -12,7 +12,7 @@
 
 {% block extra_javascript %}
 <script>
-    var facility_id = "{{ request.GET.id }}";
+    var facility_id = "{{ facility.dhsi2_id }}";
     $(document).ready(function () {
     	$('label.tree-toggler').click(function () {
     		$(this).parent().children('ul.tree').toggle(300);
@@ -38,7 +38,7 @@
 {% endblock %}	
 
 {% block content %}
-{% if request.GET.id != None %}
+{% if facility != None %}
 <div class='panel panel-primary'>
     <div class='panel-heading'>
         <h3 class='panel-title'>Facility Details</h3>
@@ -71,7 +71,11 @@
         <h3 class='panel-title'>Facility</h3>
     </div>
     <div class='panel-body'>
+       {% if request.GET.id == None %}
         Please select a facility from the left panel.
+        {% else %}
+        Facility for that ID does not exist in database.
+        {% endif %}
     </div>
 </div>
 {% endif %}

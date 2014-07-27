@@ -33,14 +33,6 @@ def contacts(request):
 	
 	return render(request, 'contacts.html',{'contacts':connection_list,'contact_detail':contact_detail,'messages':contact_message_list})
 
-def facility_list(request):
-	facility_list = dhis2.Facility.objects.all()
-	if facility_list.count()>0:
-		org = facility_list[0]
-		levels = facility_list[0].level
-		for i in range(0,(levels-1)): org = org.parent
-	return render(request, 'facility_list.html', {'facility_list':org, 'root_id': org.dhis2_id });
-
 def facilities(request):
 	facility_id = request.GET.get('id',None)
 	facility = util.get_or_none(dhis2.Facility,dhis2_id=facility_id)

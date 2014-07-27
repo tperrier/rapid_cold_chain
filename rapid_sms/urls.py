@@ -16,11 +16,12 @@ urlpatterns = patterns('',
 	(r'^messagelog/', include('rapidsms.contrib.messagelog.urls')),
 	(r'^messaging/', include('rapidsms.contrib.messaging.urls')),
 	(r'^registration/', include('rapidsms.contrib.registration.urls')),
+	# Third party URLs
+	(r'^selectable/', include('selectable.urls')),
 	
 	#Custom URLS
 	(r'^moderation/',include('django_ccem.urls')),
-	# Third party URLs
-	(r'^selectable/', include('selectable.urls')),
+	(r'^dhis2/',include('dhis2.urls')),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 #urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

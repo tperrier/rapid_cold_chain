@@ -14,3 +14,14 @@ def get_parser(*args):
 	return P.Parser(args)
 
 default_parser = get_parser()
+
+def parse(msg):
+	
+	error = None
+	try:
+		parsed = default_parser.parse(msg)
+	except utils.ParseError as e:
+		error = e
+		parsed = default_parser.parse(msg,fake=True)
+	
+	return parsed,error

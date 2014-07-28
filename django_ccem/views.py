@@ -8,8 +8,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 
 import rapidsms.router as router
 
-import models as ccem, dhis2.models as dhis2,rapidsms.models as rapid, util
-from ccem_parser.parser import default_parser as parser,utils
+import models as ccem, dhis2.models as dhis2,rapidsms.models as rapid, util, ccem_parser.parser as parser
 
 def base_view(request):
 	return render(request, 'ccem_sim/base.html')
@@ -57,14 +56,7 @@ def messages(request):
 			message.save()
 		else: #Submit a fix report
 			text = request.POST['text']
-			
-			try:
-				parsed = parser.parse(text)
-			except utils.ParseError as e:
-				error = e
-				parsed = parser.parse(text,fake=True)
-			else:
-				error = None
+			parsed,error = parser.parse(text)
 				
 			report = ccem.Report.objects.create(
 				commands = parsed.commands,

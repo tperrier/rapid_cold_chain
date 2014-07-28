@@ -1,8 +1,8 @@
 #!/usr/bin/python
 import logging, code
 from rapidsms.apps.base import AppBase
-from parser import default_parser as parser, utils
-import django_ccem.models as ccem
+
+import django_ccem.models as ccem,parser
 
 logger = logging.getLogger(__name__)
 
@@ -34,16 +34,11 @@ class CCEIParser(AppBase):
 		Attach result as ccem_parsed
 		'''
 		#logger.debug('CCEIParser: %s',msg.raw_text)
-		try:
-			msg.ccem_parsed = parser.parse(msg.text)
-		except utils.ParseError as e:
-			msg.ccem_error =  e
-			msg.ccem_parsed = parser.parse(msg.text,fake=True)
-		else:
-			msg.ccem_error = None
+		
+		msg.ccem_parsed,msg.ccem_error = parser.parse(msg.text)
 			
 		#save msg.ccem_msg with data from parsed message
-		msg.ccem_msg.is_submission = False if isinstance(msg.ccem_error,utils.NoKeywordError) else True
+		msg.ccem_msg.is_submission = False if isinstance(msg.ccem_error,parser.utils.NoKeywordError) else True
 		msg.ccem_msg.save()
 		
 	def handle(self,msg):

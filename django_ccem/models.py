@@ -15,9 +15,6 @@ class Message(util.TimeStampedModel):
 	#The raw text of the message
 	text = models.CharField(max_length=200)
 	
-	#The cleaned version of the message text used to parse the data
-	cleaned = models.CharField(max_length=200,null=True,blank=True)
-	
 	#The connection that sent this message
 	connection = models.ForeignKey('rapidsms.Connection',null=True,related_name='messages')
 	
@@ -39,19 +36,11 @@ class Message(util.TimeStampedModel):
 		super(Message,self).save(*args,**kwargs)
 	
 	def __unicode__(self):
-		return '#%i %s (%s)'%(self.id,self.created_str(),self.cleaned if self.cleaned else self.text)
+		return '#%i %s (%s)'%(self.id,self.created_str(),self.text)
 	
 	@property
 	def num_reports(self):
 		return self.report_set.count()
-	
-	@classmethod
-	def from_msg(cls,msg):
-		'''
-		Create a new message from a rapidsms msg object and parser result
-		'''
-		submission = False if isinstance(msg.ccem_error,utils.NoKeywordError) else True
-		return cls.objects.create(message=msg.logger_msg,cleaned=msg.ccem_parsed.cleaned,is_submission=submission)
 
 class SubmissionMessageManager(models.Manager):
 	
@@ -100,6 +89,9 @@ class Report(util.TimeStampedModel):
 	#Boolean indicating the presence of errors 
 	has_error = models.BooleanField(default=False)
 	
+	#The cleaned version of the message text used to parse the data
+	cleaned = models.CharField(max_length=200,null=True,blank=True)
+	
 	#Foreignkey link to Message that generated this report
 	#A message may have multiple reports so create a OneToManyField (Foreign Key)
 	message = models.ForeignKey(Message)
@@ -125,8 +117,9 @@ class Report(util.TimeStampedModel):
 		
 		return cls.objects.create(
 			commands=msg.ccem_parsed.commands,
-			error=str(msg.ccem_error.__class__.__name__) if msg.ccem_error else None,
+			error='%s: %s'%(msg.ccem_error.__class__.__name__,msg.ccem_error) if msg.ccem_error else None,
 			message=msg.ccem_msg,
+			cleaned=msg.ccem_parsed.cleaned,
 			has_error=has_error
 		)
 	

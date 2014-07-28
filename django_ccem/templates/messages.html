@@ -12,11 +12,11 @@
 
 {% block left_panel %}
 	<ul class="nav nav-pills nav-stacked">
-		<li {% if request.GET.type == None %} class="active" {% endif %}><a href="/moderation/messages">All</a></li>
-		<li {% if request.GET.type == 'regular' %} class="active" {% endif %}><a href="/moderation/messages?type=regular">Regular</a></li>
-		<li {% if request.GET.type == 'submission' %} class="active" {% endif %}><a href="/moderation/messages?type=submission">Submission</a></li>
-		<li {% if request.GET.type == 'outgoing' %} class="active" {% endif %}><a href="/moderation/messages?type=outgoing">Outgoing</a></li>
-		<li {% if request.GET.type == 'flagged' %} class='active' {% endif %}><a href="/moderation/messages?type=flagged">Flagged</a></li>
+		<li {% if request.GET.type == None %} class="active" {% endif %}><a href="{% url 'django_ccem.views.messages' %}">All</a></li>
+		<li {% if request.GET.type == 'regular' %} class="active" {% endif %}><a href="{% url 'django_ccem.views.messages' %}?type=regular">Regular</a></li>
+		<li {% if request.GET.type == 'submission' %} class="active" {% endif %}><a href="{% url 'django_ccem.views.messages' %}?type=submission">Submission</a></li>
+		<li {% if request.GET.type == 'outgoing' %} class="active" {% endif %}><a href="{% url 'django_ccem.views.messages' %}?type=outgoing">Outgoing</a></li>
+		<li {% if request.GET.type == 'flagged' %} class='active' {% endif %}><a href="{% url 'django_ccem.views.messages' %}?type=flagged">Flagged</a></li>
 	</ul>
 {% endblock %}
 
@@ -38,25 +38,54 @@
 <tr>
 	<td>{{ m.created }}</td>
 	{% if request.GET.type == None %}<td>{{ m.get_direction_display }}</td>{% endif %}
-	<td data-toggle='collapse' data-target='#msg_info_{{ m.id }}'>
-		<span class="alert alert-{% if not m.has_error %}info{% else %}danger{% endif %}">{{ m.text }}</span>
-		<span class="glyphicon glyphicon-{% if m.is_submission %}ok-sign{% else %}question-sign{% endif %}"></span>
+	<td>
+	    {% if m.is_submission %}<span data-toggle='collapse' data-target='#msg_info_{{ m.id }}' class="glyphicon glyphicon-th-list"></span>{% endif %}
+	    <span class="alert alert-{% if not m.has_error %}info{% else %}danger{% endif %}">{{ m.text }}</span>
+	    <span class="glyphicon glyphicon-{% if m.has_error %}exclamation-sign{% elif m.is_submission %}ok-sign{% elif m.direction == 'O' %}share-alt{% else %}question-sign{% endif %}"></span>
 	</td>
 	<td><a href="{% url 'django_ccem.views.contacts' %}?contact={{ m.connection.identity }}">{{ m.connection.identity }}</a></td>
-	<td>{{m.connection.dhis2.contact.facility}}</td>
+	<td>
+	    <a href="{% url 'django_ccem.views.facilities' %}?id={{m.connection.dhis2.contact.facility.dhis2_id}}">
+	    {{m.connection.dhis2.contact.facility}}
+	    </a>
+	</td>
 </tr>
+{% if m.is_submission %}
 <tr id='msg_info_{{ m.id }}' class='collapse'>
 	<td></td>
 	<td colspan=3>
-		<ul>
+		<table class='table'>
+		    <tr>
+			<th>Cleaned</th>
+			<th>Valid</th>
+			<th>Result</th>
 		    {% for r in m.report_set.all %}
-		    	<li>{{ r.response.text }}</li>
-		    {% empty %}
-		    	<li>No Report</li>
+		    	<tr>
+			    <td> {{ r.cleaned }} </td>
+			    <td><span class="glyphicon glyphicon-{% if r.has_error %}exclamation-sign{% else %}ok-sign{% endif %}"></span> </td>
+			    <td>{% if r.has_error %} 
+				{{ r.error }}
+				
+				{% if forloop.last %} </td><td>
+				</tr>
+				<tr>
+				    <td colspan=4>
+					<form class='form-inline' method='POST'>
+					    {% csrf_token %}
+					    <input type='hidden' name='message' value='{{m.id}}'/>
+					    <input class='form-control' type='text' value='{{r.cleaned}}' name='text'></input>
+					    <input class='form-control' type='submit'/>
+					</form>
+			    {% endif %}
+			    {% else %}{{ r.commands }}
+			    {% endif %} 
+			    </td>
+			</tr>
 		    {% endfor %}
-		</ul
+		</table>
 	</td>
 </tr>
+{% endif %}
 {% endfor %}
 </table>
 

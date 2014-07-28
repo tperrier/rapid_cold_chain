@@ -44,8 +44,6 @@ class CCEIParser(AppBase):
 			
 		#save msg.ccem_msg with data from parsed message
 		msg.ccem_msg.is_submission = False if isinstance(msg.ccem_error,utils.NoKeywordError) else True
-		if msg.ccem_msg.is_submission:
-			msg.ccem_msg.cleaned = msg.ccem_parsed.cleaned # only add cleaned if submission
 		msg.ccem_msg.save()
 		
 	def handle(self,msg):

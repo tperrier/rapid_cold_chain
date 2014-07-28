@@ -7,6 +7,7 @@ from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 import rapidsms.router as router
 
 import models as ccem, dhis2.models as dhis2,rapidsms.models as rapid, util
+from ccem_parser.parser import default_parser as parser,utils
 
 def base_view(request):
 	return render(request, 'ccem_sim/base.html')
@@ -41,7 +42,29 @@ def facilities(request):
 	return render(request, 'facilities.html', {'facility': facility,'contacts':contacts})
 	
 def messages(request):
+	
+	#POST: Reparse report
+	if request.method == 'POST':
+		message = ccem.Message.objects.get(id=request.POST['message'])
+		text = request.POST['text']
 		
+		try:
+			parsed = parser.parse(text)
+		except utils.ParseError as e:
+			error = e
+			parsed = parser.parse(text,fake=True)
+		else:
+			error = None
+			
+		report = ccem.Report.objects.create(
+			commands = parsed.commands,
+			error = '%s: %s'%(error.__class__.__name__,error) if error else None,
+			message = message,
+			cleaned = parsed.cleaned,
+			has_error = True if error else False
+		)
+		
+	
 	message_list = ccem.Message.objects.all()
 	
 	#filter based on get params

@@ -66,17 +66,23 @@
 			    <td>{% if r.has_error %} 
 				{{ r.error }}
 				
-				{% if forloop.last %} </td><td>
+				{% if forloop.last%} {### Only show fix form on last message ###}
+				 </td><td>
 				</tr>
 				<tr>
+				{% if m.has_error  %}
 				    <td colspan=4>
 					<form class='form-inline' method='POST'>
 					    {% csrf_token %}
 					    <input type='hidden' name='message' value='{{m.id}}'/>
 					    <input class='form-control' type='text' value='{{r.cleaned}}' name='text'></input>
-					    <input class='form-control' type='submit'/>
+					    <input class='form-control' type='submit' vlue='Fix' name='fix'/>
+					    <input class='form-control' type='submit' value='Ignore' name='ignore'/>
 					</form>
-			    {% endif %}
+				{% else %}
+				    <td colspan=4>Report Ignored
+				{% endif %}
+				{% endif %}
 			    {% else %}{{ r.commands }}
 			    {% endif %} 
 			    </td>

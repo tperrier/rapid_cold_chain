@@ -3,6 +3,8 @@ import datetime,json
 
 from django.shortcuts import render
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
+from django.utils.datastructures import MultiValueDictKeyError
+
 
 import rapidsms.router as router
 
@@ -45,24 +47,32 @@ def messages(request):
 	
 	#POST: Reparse report
 	if request.method == 'POST':
+		
 		message = ccem.Message.objects.get(id=request.POST['message'])
-		text = request.POST['text']
 		
 		try:
-			parsed = parser.parse(text)
-		except utils.ParseError as e:
-			error = e
-			parsed = parser.parse(text,fake=True)
-		else:
-			error = None
+			request.POST['fix']
+		except MultiValueDictKeyError: #Not a fix submission so ignore message
+			message.has_error = False
+			message.save()
+		else: #Submit a fix report
+			text = request.POST['text']
 			
-		report = ccem.Report.objects.create(
-			commands = parsed.commands,
-			error = '%s: %s'%(error.__class__.__name__,error) if error else None,
-			message = message,
-			cleaned = parsed.cleaned,
-			has_error = True if error else False
-		)
+			try:
+				parsed = parser.parse(text)
+			except utils.ParseError as e:
+				error = e
+				parsed = parser.parse(text,fake=True)
+			else:
+				error = None
+				
+			report = ccem.Report.objects.create(
+				commands = parsed.commands,
+				error = '%s: %s'%(error.__class__.__name__,error) if error else None,
+				message = message,
+				cleaned = parsed.cleaned,
+				has_error = True if error else False
+			)
 		
 	
 	message_list = ccem.Message.objects.all()

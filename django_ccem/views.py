@@ -15,20 +15,35 @@ def base_view(request):
 
 def contacts(request):
 	
-	#All Connections
-	connection_list = rapid.Connection.objects.all()
+	#All Contacts
+	contact_list = dhis2.Contact.objects.all()
+	
+	#All anonymous connections without a contact 
+	anonymous_list = rapid.Connection.objects.filter(dhis2=None)
 	
 	#contact details
 	contact_detail, contact_message_list = None, None
 	contact = _get_contact(request)
 	if contact is not None:
-		contact_detail = util.get_or_none(dhis2.Contact,connection__identity=contact)		
+		contact_detail = util.get_or_none(dhis2.Contact,connection__identity=contact)
+		if contact_detail is not None:
+			connection = contact_detail.connection
+		else:
+			connection = util.get_or_none(rapid.Connection,identity=contact)
+			
 		contact_message_list = ccem.Message.objects.filter(connection__identity=contact)
+
 		#POST: Submit Message
 		if request.method == 'POST':
 			message = request.POST['message']
 			router.send(message,contact_detail.connection)	
-	return render(request, 'contacts.html',{'contacts':connection_list,'contact_detail':contact_detail,'messages':contact_message_list})
+	return render(request, 'contacts.html',{
+		'contacts':contact_list,
+		'anonymous':anonymous_list,
+		'connection':connection,
+		'contact':contact_detail,
+		'messages':contact_message_list}
+	)
 
 def facilities(request):
 	facility_id = request.GET.get('id',None)

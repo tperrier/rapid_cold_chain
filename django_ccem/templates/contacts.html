@@ -2,32 +2,36 @@
 {% load url_extras %}
 
 {% block left_panel %}
-	<div style="height:400px; overflow:auto;">
-	<ul class="nav nav-pills nav-stacked">
+	<ul class="nav nav-pills nav-stacked" style="overflow:auto;">
 		{% for c in contacts %}
-		<li {% if request.GET.contact == c.identity %} class="active" {% endif %}>
-			<a href="{% url 'django_ccem.views.contacts' %}?contact={{ c.identity }}">
-				{{ c.dhis2.name }} | {{ c.identity }}</a>
+		<li {% if request.GET.contact == c.connection.identity %} class="active" {% endif %}>
+			<a href="{% url 'django_ccem.views.contacts' %}?contact={{ c.connection.identity }}">
+				{{ c.name }} | {{ c.connection.identity }}</a>
+		</li>
+		{% endfor %}
+		
+		{% for c in anonymous %}
+			<li {% if request.GET.contact == c.identity %} class="active" {% endif %}>
+			<a href="{% url 'django_ccem.views.contacts' %}?contact={{ c.identity }}">{{ c.identity }}</a>
 		</li>
 		{% endfor %}
 	</ul>
-	</div>
 {% endblock %}	
 
 
 {% block content %}
-{% if contact_detail %}
+{% if connection %}
 <div class='panel panel-primary'>
 	<div class='panel-heading'>
 		<h3 class='panel-title'>Contact Details</h3>
 	</div>
 	<div class='panel-body container-fluid'/>
 		<dl class="dl-horizontal">
-		  <dt>Name:</dt><dd>{{contact_detail.name}}</dd>
-		  <dt>Number:</dt><dd>{{contact_detail.phone_number}}</dd>
+		  <dt>Name:</dt><dd>{{contact.name}}</dd>
+		  <dt>Number:</dt><dd>{{contact.phone_number}}</dd>
 		  <dt>Health Unit:</dt><dd>
-				<a href='{% url "django_ccem.views.facilities" %}?id={{contact_detail.facility.dhis2_id}}'>
-					{{contact_detail.facility}}
+				<a href='{% url "django_ccem.views.facilities" %}?id={{contact.facility.dhis2_id}}'>
+					{{contact.facility}}
 				</a>
 			 </dd>
 		</dl>
@@ -120,7 +124,7 @@ Page <form action='#', method='get'>
 
 </div></div></div>
 
-{% elif contact_detail %}
+{% elif contact %}
 
 <div class='panel panel-warning'>
 	<div class='panel-heading'>

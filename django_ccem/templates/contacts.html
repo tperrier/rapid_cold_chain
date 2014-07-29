@@ -6,7 +6,8 @@
 	<ul class="nav nav-pills nav-stacked">
 		{% for c in contacts %}
 		<li {% if request.GET.contact == c.identity %} class="active" {% endif %}>
-			<a href="{% url 'django_ccem.views.contacts' %}?contact={{ c.identity }}">{{ c.dhis2.contact.name }} | {{ c.identity }}</a>
+			<a href="{% url 'django_ccem.views.contacts' %}?contact={{ c.identity }}">
+				{{ c.dhis2.name }} | {{ c.identity }}</a>
 		</li>
 		{% endfor %}
 	</ul>

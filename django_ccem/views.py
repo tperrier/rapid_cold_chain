@@ -8,7 +8,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 
 import rapidsms.router as router
 
-import models as ccem, dhis2.models as dhis2,rapidsms.models as rapid, util, ccem_parser.parser as parser
+import models as ccem, dhis2.models as dhis2,rapidsms.models as rapid, ccem_parser.parser as parser, util
 
 def base_view(request):
 	return render(request, 'ccem_sim/base.html')
@@ -22,24 +22,18 @@ def contacts(request):
 	contact_detail, contact_message_list = None, None
 	contact = _get_contact(request)
 	if contact is not None:
-		contact_conn = dhis2.ContactConnection.objects.filter(connection__identity=contact)		
+		contact_detail = util.get_or_none(dhis2.Contact,connection__identity=contact)		
 		contact_message_list = ccem.Message.objects.filter(connection__identity=contact)
-		if contact_conn.count()>0:
-			
-			#POST: Submit Message
-			if request.method == 'POST':
-				message = request.POST['message']
-				router.send(message,contact_conn[0].connection)
-			
-			contact_detail = contact_conn[0].contact
-	
+		#POST: Submit Message
+		if request.method == 'POST':
+			message = request.POST['message']
+			router.send(message,contact_detail.connection)	
 	return render(request, 'contacts.html',{'contacts':connection_list,'contact_detail':contact_detail,'messages':contact_message_list})
 
 def facilities(request):
 	facility_id = request.GET.get('id',None)
 	facility = util.get_or_none(dhis2.Facility,dhis2_id=facility_id)
-	contacts = dhis2.ContactConnection.objects.filter(contact__facility=facility)
-	print contacts
+	contacts = dhis2.Contact.objects.filter(facility=facility)
 	return render(request, 'facilities.html', {'facility': facility,'contacts':contacts})
 	
 def messages(request):

@@ -123,28 +123,23 @@ class Contact(util.models.TimeStampedModel):
 	A user who interacts with the CCEM system through SMS
 	'''
 	
-	name = models.CharField(max_length=100,blank=True)
+	I18N_KE, I18N_EN, I18N_LO = 'ke','en','lo'
+	LANGUAGE_CHOICES = ((I18N_KE,'Keroke'),(I18N_EN,'English'),(I18N_LO,'Loa'))
 	
-	language = models.CharField(max_length=5,default='ke')
+	name = models.CharField(max_length=100,blank=True,null=True)
 	
-	facility = models.ForeignKey(Facility,blank=True,null=True)
+	language = models.CharField(max_length=5,default=I18N_KE,choices=LANGUAGE_CHOICES)
 	
+	facility = models.ForeignKey(Facility)
+	
+	connection = models.OneToOneField('rapidsms.Connection',related_name='dhis2')
+
 	def __unicode__(self):
 		return "%s (%s)"%(self.name,self.facility)
 	
 	@property
 	def phone_number(self):
-		if self.connection_set.count() > 0:
-			return self.connection_set.all()[0].connection.identity
+		if self.connection:
+			return self.connection.identity
 		return None
 		
-class ContactConnection(models.Model):
-	'''
-	A table to make a ManyToOne connection to between Contact and rapidsms.Connection
-	'''
-	
-	contact = models.ForeignKey(Contact,related_name='connection_set')
-	connection = models.OneToOneField('rapidsms.Connection',related_name='dhis2')
-	
-	def __unicode__(self):
-		return '%s (%s)'%(self.contact.name,self.connection)

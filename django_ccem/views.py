@@ -3,12 +3,13 @@ import datetime,json
 
 from django.shortcuts import render
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
 
 
 import rapidsms.router as router
 
-import models as ccem, dhis2.models as dhis2,rapidsms.models as rapid, ccem_parser.parser as parser, util
+import models as ccem, dhis2.models as dhis2,rapidsms.models as rapid, util, ccem_parser.parser as parser
 
 def base_view(request):
 	return render(request, 'ccem_sim/base.html')
@@ -22,21 +23,21 @@ def contacts(request):
 	anonymous_list = rapid.Connection.objects.filter(dhis2=None)
 	
 	#contact details
-	contact_detail, contact_message_list = None, None
 	contact = _get_contact(request)
-	if contact is not None:
-		contact_detail = util.get_or_none(dhis2.Contact,connection__identity=contact)
-		if contact_detail is not None:
-			connection = contact_detail.connection
-		else:
-			connection = util.get_or_none(rapid.Connection,identity=contact)
-			
+	connection = util.get_or_none(rapid.Connection,identity=contact)
+	if connection is not None:
+		try:
+			contact_detail = connection.dhis2.contact
+		except ObjectDoesNotExist:
+			contact_detail = None
+		#TODO: this will need to be a list off all numbers for the contact
 		contact_message_list = ccem.Message.objects.filter(connection__identity=contact)
-
 		#POST: Submit Message
 		if request.method == 'POST':
 			message = request.POST['message']
 			router.send(message,contact_detail.connection)	
+	else:
+		contact_detail, contact_message_list = None, None
 	return render(request, 'contacts.html',{
 		'contacts':contact_list,
 		'anonymous':anonymous_list,
@@ -48,7 +49,8 @@ def contacts(request):
 def facilities(request):
 	facility_id = request.GET.get('id',None)
 	facility = util.get_or_none(dhis2.Facility,dhis2_id=facility_id)
-	contacts = dhis2.Contact.objects.filter(facility=facility)
+	contacts = dhis2.ContactConnection.objects.filter(contact__facility=facility)
+	print contacts
 	return render(request, 'facilities.html', {'facility': facility,'contacts':contacts})
 	
 def messages(request):

@@ -45,8 +45,8 @@
 	</td>
 	<td><a href="{% url 'django_ccem.views.contacts' %}?contact={{ m.connection.identity }}">{{ m.connection.identity }}</a></td>
 	<td>
-	    <a href="{% url 'django_ccem.views.facilities' %}?id={{m.connection.dhis2.facility.dhis2_id}}">
-	    {{m.connection.dhis2.facility}}
+	    <a href="{% url 'django_ccem.views.facilities' %}?id={{m.connection.dhis2.contact.facility.dhis2_id}}">
+	    {{m.connection.dhis2.contact.facility}}
 	    </a>
 	</td>
 </tr>

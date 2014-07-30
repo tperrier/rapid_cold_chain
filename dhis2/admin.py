@@ -10,14 +10,22 @@ class FacilityAdmin(admin.ModelAdmin):
 class EquitmentAdmin(admin.ModelAdmin):
 	pass
 	
+class ContactConnectionInline(admin.TabularInline):
+	model = ContactConnection
+	extra = 1
+
 class ContactAdmin(admin.ModelAdmin):
 	
-	list_display = ['name','facility','connection','language']
+	list_display = ['name','facility']
 	
+	inlines = (ContactConnectionInline,)
 	
+class ContactConnectionAdmin(admin.ModelAdmin):
+	pass
 	
 admin.site.register(Facility,FacilityAdmin)
 admin.site.register(OrganisationUnit,FacilityAdmin)
 admin.site.register(Equitment,EquitmentAdmin)
 admin.site.register(Contact,ContactAdmin)
+admin.site.register(ContactConnection,ContactConnectionAdmin)
 

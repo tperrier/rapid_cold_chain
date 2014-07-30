@@ -46,7 +46,7 @@ class ft(utils.Keyword):
 	
 	@classmethod
 	def get_msg(cls,args):
-		out = ' '+_('Fridge')+' [ '
+		out = u' %s [ '%_('Fridge')
 		for label,alarms in args.iteritems():
 			out += '( %s%s%s ) '%(label if label is not None else '',alarms[0],alarms[1])
 		return out + ']'

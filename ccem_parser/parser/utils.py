@@ -115,7 +115,7 @@ class ParseError(Exception):
 			self.message = message
 			
 	def __str__(self):
-		return self.message
+		return unicode(self.message)
 	
 class SingleArgParseError(ParseError):
 	

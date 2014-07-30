@@ -1,8 +1,7 @@
 #!/usr/bin/python
 import re, code
 from .. import utils
-from sl import sl
-from ft import ft
+import ft,sl
 
 
 class short(utils.Keyword):

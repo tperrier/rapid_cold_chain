@@ -12,7 +12,7 @@
 
 {% block extra_javascript %}
 <script>
-    var facility_id = "{{ facility.dhsi2_id }}";
+    var facility_id = "{{ facility.dhis2_id }}";
     $(document).ready(function () {
     	$('label.tree-toggler').click(function () {
     		$(this).parent().children('ul.tree').toggle(300);

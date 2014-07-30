@@ -3,14 +3,7 @@ import re,code
 from .. import utils
 from ..utils import _
 
-class sl(utils.Keyword):
-	
-	def parse(self,msg,pos=0):
-		pos += len(self.kw)
-		return self.__class__.parse_stock(msg,pos)
-	
-	@classmethod
-	def parse_stock(cls,stock,pos=0):
+def parse_stock(stock,pos=0):
 		args = {}
 		while utils.Tokens.singleletter(stock,pos):
 			label = stock[pos]
@@ -21,6 +14,20 @@ class sl(utils.Keyword):
 			else:
 				args[label] = m.group(0)
 		return args,pos
+
+class sl(utils.Keyword):
+	
+	def parse(self,msg,pos=0):
+		pos += len(self.kw)
+		return parse_stock(msg,pos)
+	
+	@classmethod
+	def get_msg(cls,args):
+		out = ' '+_('Stock')+' [ '
+		for label,count in args.iteritems():
+			out += '(%s%s) '%(label,count)
+		return out + ']'
+	
 				
 if __name__ == '__main__':
 	'''

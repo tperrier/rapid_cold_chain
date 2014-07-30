@@ -2,8 +2,14 @@ import re,sys
 
 #from django.utils.translation import ugettext_lazy as _
 
-def _(s): #fake i18n translation
-	return s
+try: #try to set up django translation if available
+	from django.conf import settings
+	from django.core.exceptions import ImproperlyConfigured
+	settings.USE_I18N
+	from django.utils.translation import  ugettext_lazy as _
+except (ImportError, ImproperlyConfigured):
+	def _(s): #fake i18n translation
+		return s
 
 class Tokens:
 	'''
@@ -51,6 +57,9 @@ class Keyword(object):
 		
 	@classmethod
 	def get_msg(cls,args):
+		'''
+		Given the args for this keyword return a response message
+		'''
 		return '%s: %s'%(cls.__name__,str(args))
 		
 class ParseResult(object):
@@ -75,7 +84,7 @@ class ParseResult(object):
 	def __str__(self):
 		if len(self.commands) == 0:
 			return _('No commands found')
-		msg = _('Message successfully parsed: Found:')
+		msg = _('Message successfully parsed. Found:')
 		
 		for kw,args in self.commands.iteritems():
 			msg += self.__class__.get_kw_msg(kw,args)
@@ -89,6 +98,7 @@ class ParseResult(object):
 		try:
 			__import__(module)
 		except ImportError:
+			#Translators: keyword is our name for ft or sl ect.
 			return _('Keyword %s'%kw)
 		else:
 			kw_cls = sys.modules[module]
@@ -97,6 +107,7 @@ class ParseResult(object):
 
 class ParseError(Exception):
 	
+	#Translators: This is the default error message
 	message = _('There was an error in report format. Please Try again.')
 	
 	def __init__(self,message=None):
@@ -118,10 +129,10 @@ class SingleArgParseError(ParseError):
 		return self.template % (self.arg,)
 
 class NoKeywordError(ParseError):
-	message = _('No Keyword Found')
+	message = _('Sorry, we did not find a keyword in your message. A moderator is reviewing it.')
 	
 class MultipleKeyWordError(SingleArgParseError):
-	template = _('Keyword %s already present')
+	template = _('Duplicate Keyword: %s already present')
 
 class InvalidAlarmsError(SingleArgParseError):
 	template = _('Invalid alarm value \'%s\'. Must be a digit')

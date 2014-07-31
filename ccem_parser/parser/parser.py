@@ -59,7 +59,7 @@ class Parser:
 		if pos == 0: #no keyword found
 			raise utils.NoKeywordError()
 		elif pos < len(msg): # The are unparsed characters left on the message string
-			raise utils.ParseError(_('Unexpected Character %s')%(msg[pos],))
+			raise utils.UnexpectedCharError(msg[pos])
 		return msg_report
 		
 	def _parse(self,s,pos):
@@ -76,13 +76,6 @@ class Parser:
 	def clean(self,s):
 		s = s.lower()
 		return self.remove_chars.sub('',s)
-		
-def _auto_discovery():
-	'''
-	Attempts to load a keyword array from classes in keywords.KEYWORDS
-	'''
-	from keywords import KEYWORDS
-	return [kw() for kw in KEYWORDS]
 		
 		
 if __name__ == '__main__':

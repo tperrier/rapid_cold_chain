@@ -4,7 +4,7 @@
 {% block left_panel %}
 	<ul class="nav nav-pills nav-stacked" style="overflow:auto;">
 		{% for c in contacts %}
-		<li {% if request.GET.contact == c.connection.identity %} class="active" {% endif %}>
+		<li {% if request.GET.contact == c.phone_number %} class="active" {% endif %}>
 			<a href="{% url 'django_ccem.views.contacts' %}?contact={{ c.phone_number }}">
 				{{ c.name }} | {{ c.phone_number }}</a>
 		</li>

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-30 21:05-0700\n"
+"POT-Creation-Date: 2014-07-29 20:24-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,56 +20,58 @@ msgstr ""
 #: ccem_parser/parser/parser.py:62
 #, python-format
 msgid "Unexpected Character %s"
-msgstr ""
+msgstr "ຕົວອັກສອນທີ່ໃຊ້ບໍ່ເໝາະສົມ %s"
 
 #: ccem_parser/parser/utils.py:86
 msgid "No commands found"
-msgstr ""
+msgstr "ຄໍາສັ່ງບໍ່ພົບ"
 
 #: ccem_parser/parser/utils.py:87
 msgid "Message successfully parsed. Found:"
-msgstr ""
+msgstr "ການລາຍງານຂໍ້ຄວາມສໍາເລັດ. ພົບ:"
 
 #. Translators: keyword is our name for ft or sl ect.
 #: ccem_parser/parser/utils.py:102
 #, python-format
 msgid "Keyword %s"
-msgstr ""
+msgstr "ລະຫັດ %s"
 
 #. Translators: This is the default error message
 #: ccem_parser/parser/utils.py:111
 msgid "There was an error in report format. Please Try again."
-msgstr ""
+msgstr "ມີ​ຄວາມຜິດ​ພາດ​ຢູ່​ໃນ​ຮູບ​ແບບ​ບົດ​ລາຍ​ງານ​ນີ້​. ກະ​ລຸ​ນາ​ພະ​ຍາ​ຍາມ​ອີກ​ເທື່ອ​ຫນຶ່ງ​."
 
 #: ccem_parser/parser/utils.py:132
 msgid ""
 "Sorry, we did not find a keyword in your message. A moderator is reviewing "
 "it."
 msgstr ""
+"ຂໍອະໄພ, ພວກ​ເຮົາ​ບໍ່​ພົບລະຫັດຢູ່ໃນຂໍ້ຄວາມ. ກໍາລັງທົບທວນລະບົບ "
+"ມັນ."
 
 #: ccem_parser/parser/utils.py:135
 #, python-format
 msgid "Duplicate Keyword: %s already present"
-msgstr ""
+msgstr "ຄໍາທີ່ໃຊ້ແມ່ນຊໍ້າກັນ: %s ມີແລ້ວ"
 
 #: ccem_parser/parser/utils.py:138
 #, python-format
 msgid "Invalid alarm value '%s'. Must be a digit"
-msgstr ""
+msgstr "ຕົວອັກສອນການແຈ້ງເຕືອນອຸນຫະພູມບໍ່ຖືກຕ້ອງ '%s'. ຄວນເປັນຕົວເລກ"
 
 #: ccem_parser/parser/utils.py:141
 #, python-format
 msgid "Invalid Stock value '%s', must be a digit"
-msgstr ""
+msgstr "ຈໍານວນວັກຊີນບໍ່ຖືກຕ້ອງ '%s', ຄວນເປັນຕົວເລກ"
 
 #: ccem_parser/parser/keywords/ft.py:28 ccem_parser/parser/keywords/ft.py:38
 msgid "No Alarms Found"
-msgstr ""
+msgstr "ການແຈ້ງເຕືອນບໍ່ພົບ"
 
 #: ccem_parser/parser/keywords/ft.py:49
 msgid "Fridge"
-msgstr ""
+msgstr "ຕູ້ເຢັນ"
 
 #: ccem_parser/parser/keywords/sl.py:26
 msgid "Stock"
-msgstr ""
+msgstr "ຈໍານວນວັກຊີນ"

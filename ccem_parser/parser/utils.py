@@ -94,7 +94,6 @@ class ParseResult(object):
 	@classmethod
 	def get_kw_msg(cls,kw,args):
 		module = 'ccem_parser.parser.keywords.%s'%kw
-		print module
 		try:
 			__import__(module)
 		except ImportError:
@@ -119,10 +118,10 @@ class ParseError(Exception):
 	
 class SingleArgParseError(ParseError):
 	
-	def __init__(self,arg,message=None):
+	def __init__(self,arg,template=None):
 		self.arg = arg
-		if message:
-			self.message = message
+		if template:
+			self.template = template
 		
 	@property
 	def message(self):
@@ -130,6 +129,9 @@ class SingleArgParseError(ParseError):
 
 class NoKeywordError(ParseError):
 	message = _('Sorry, we did not find a keyword in your message. A moderator is reviewing it.')
+	
+class UnexpectedCharError(SingleArgParseError):
+	template = _('Unexpected Character %s')
 	
 class MultipleKeyWordError(SingleArgParseError):
 	template = _('Duplicate Keyword: %s already present')

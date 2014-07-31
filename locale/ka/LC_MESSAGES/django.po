@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-29 20:24-0700\n"
+"POT-Creation-Date: 2014-07-30 21:05-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,58 +20,57 @@ msgstr ""
 #: ccem_parser/parser/parser.py:62
 #, python-format
 msgid "Unexpected Character %s"
-msgstr "ຕົວອັກສອນທີ່ໃຊ້ບໍ່ເໝາະສົມ %s"
+msgstr "tua auk sone t sai bor moc som %s"
 
 #: ccem_parser/parser/utils.py:86
 msgid "No commands found"
-msgstr "ຄໍາສັ່ງບໍ່ພົບ"
+msgstr "kham sung bor phob"
 
 #: ccem_parser/parser/utils.py:87
 msgid "Message successfully parsed. Found:"
-msgstr "ການລາຍງານຂໍ້ຄວາມສໍາເລັດ. ພົບ:"
+msgstr "garn laiy ngarn khor khuam sum let. phob:"
 
 #. Translators: keyword is our name for ft or sl ect.
 #: ccem_parser/parser/utils.py:102
 #, python-format
 msgid "Keyword %s"
-msgstr "ລະຫັດ %s"
+msgstr "La hut %s"
 
 #. Translators: This is the default error message
 #: ccem_parser/parser/utils.py:111
 msgid "There was an error in report format. Please Try again."
-msgstr "ມີ​ຄວາມຜິດ​ພາດ​ຢູ່​ໃນ​ຮູບ​ແບບ​ບົດ​ລາຍ​ງານ​ນີ້​. ກະ​ລຸ​ນາ​ພະ​ຍາ​ຍາມ​ອີກ​ເທື່ອ​ຫນຶ່ງ​."
+msgstr "me khuam phit phard u nai houb beab garn laiy ngarn ne​. ka lou nar pha yar yarm ek theau neung."
 
 #: ccem_parser/parser/utils.py:132
 msgid ""
 "Sorry, we did not find a keyword in your message. A moderator is reviewing "
 "it."
-msgstr ""
-"ຂໍອະໄພ, ພວກ​ເຮົາ​ບໍ່​ພົບລະຫັດຢູ່ໃນຂໍ້ຄວາມ. ກໍາລັງທົບທວນລະບົບ "
-"ມັນ."
+msgstr "khor ah phai, phuak hao bor phob la hut u nai khir khuam. gum lung thob thuan la bop "
+"mun."
 
 #: ccem_parser/parser/utils.py:135
 #, python-format
 msgid "Duplicate Keyword: %s already present"
-msgstr "ຄໍາທີ່ໃຊ້ແມ່ນຊໍ້າກັນ: %s ມີແລ້ວ"
+msgstr "kham t sai man khue gun: %s me leo"
 
 #: ccem_parser/parser/utils.py:138
 #, python-format
 msgid "Invalid alarm value '%s'. Must be a digit"
-msgstr "ຈໍານວນການແຈ້ງເຕືອນອຸນຫະພູມບໍ່ຖືກຕ້ອງ '%s'. ຄວນເປັນຕົວເລກ"
+msgstr "tua uk sone garn jang teaun oun ha phoum bor theuk tong '%s'. khuan pen tua lek"
 
 #: ccem_parser/parser/utils.py:141
 #, python-format
 msgid "Invalid Stock value '%s', must be a digit"
-msgstr "ຈໍານວນວັກຊີນບໍ່ຖືກຕ້ອງ '%s', ຄວນເປັນຕົວເລກ"
+msgstr "jum nuan yar vaccine nai sarng bor theuk tong '%s', khuan pen tua lek"
 
 #: ccem_parser/parser/keywords/ft.py:28 ccem_parser/parser/keywords/ft.py:38
 msgid "No Alarms Found"
-msgstr "ການແຈ້ງເຕືອນບໍ່ພົບ"
+msgstr "garn jang teaun bor phob"
 
 #: ccem_parser/parser/keywords/ft.py:49
 msgid "Fridge"
-msgstr "ຕູ້ເຢັນ"
+msgstr "tou yen"
 
 #: ccem_parser/parser/keywords/sl.py:26
 msgid "Stock"
-msgstr "ຈໍານວນວັກຊີນ"
+msgstr "sarng"

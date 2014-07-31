@@ -58,14 +58,12 @@ class EnvayaView(View):
 					return HttpResponseNotFound('action not implemented [404]')
 			except KeyError as e:
 				logger.debug("Required POST value missing. "+str(e))
-				traceback.print_exc()
 				return HttpResponseBadRequest("Required POST value missing. "+str(e))
 		else:
 			return HttpResponseBadRequest('action required [400]')
 	
 	def get_model_kwargs(self,*extra_values): #throws KeyError
 		#add extra values to base values
-		print extra_values
 		event_values = ['phone_number','network','now','battery','power']
 		event_values.extend(extra_values)
 		#make kwarg dict of event name and request post value

@@ -46,12 +46,9 @@ class CCEIParser(AppBase):
 		
 	def handle(self,msg):
 		
-		#Do not handle if this is not a submission message
-		if not msg.ccem_msg.is_submission:
-			return False
-		
-		#The message looks like a report submission. So generate report.
-		report = ccem.Report.from_msg(msg)
+		if msg.ccem_msg.is_submission:
+			#The message looks like a report submission. So generate report.
+			report = ccem.Report.from_msg(msg)
 		language = msg.ccem_contact.language if msg.ccem_contact else 'ka'
 		translation.activate(language)
 		if not msg.ccem_error: #No other errors

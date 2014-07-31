@@ -126,8 +126,8 @@ class Contact(util.models.TimeStampedModel):
 	A user who interacts with the CCEM system through SMS
 	'''
 	
-	I18N_EN = 'en'; I18N_KA = 'ka'; I18N_LO = 'lo'; I18N_TH = 'th'
-	LANGUAGE_CHOCIES = ((I18N_EN,'English'),(I18N_KA,'Karaoke'),(I18N_LO,'Lao'),(I18N_TH,'Thai'))
+	I18N_EN = 'en'; I18N_KA = 'ka'; I18N_LA = 'la'; I18N_TH = 'th'
+	LANGUAGE_CHOCIES = ((I18N_EN,'English'),(I18N_KA,'Karaoke'),(I18N_LA,'Lao'),(I18N_TH,'Thai'))
 	
 	name = models.CharField(max_length=100,blank=True)
 	

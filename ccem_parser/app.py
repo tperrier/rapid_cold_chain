@@ -4,7 +4,7 @@ from rapidsms.apps.base import AppBase
 
 from django.utils import translation 
 
-import django_ccem.models as ccem,parser
+import django_ccem.models as ccem,parser, dhis2.models as dhis2
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +38,7 @@ class CCEIParser(AppBase):
 		#logger.debug('CCEIParser: %s',msg.raw_text)
 		
 		msg.ccem_parsed,msg.ccem_error = parser.parse(msg.text)
+		msg.ccem_contact = dhis2.Contact.from_connection(msg.connections[0])
 		
 		#save msg.ccem_msg with data from parsed message
 		msg.ccem_msg.is_submission = False if isinstance(msg.ccem_error,parser.utils.NoKeywordError) else True
@@ -51,7 +52,8 @@ class CCEIParser(AppBase):
 		
 		#The message looks like a report submission. So generate report.
 		report = ccem.Report.from_msg(msg)
-		translation.activate('ke')
+		language = msg.ccem_contact.language if msg.ccem_contact else 'ka'
+		translation.activate(language)
 		if not msg.ccem_error: #No other errors
 			response = msg.respond(unicode(msg.ccem_parsed))
 		else: #there were errors

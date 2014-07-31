@@ -40,12 +40,7 @@ TIME_ZONE = 'US/Pacific'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'ke'
-
-LANGUAGES = (
-	('en','English'),
-	('ke','Karaoke'),
-)
+LANGUAGE_CODE = 'ka'
 
 
 LOCALE_PATHS = ( os.path.join(PROJECT_ROOT,'locale'), )

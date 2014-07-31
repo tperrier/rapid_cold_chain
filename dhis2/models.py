@@ -1,4 +1,7 @@
 from django.db import models
+from django.core.exceptions import ObjectDoesNotExist
+
+import rapidsms.models as rapid
 from jsonfield import JSONField
 
 import util, dhis2
@@ -123,9 +126,12 @@ class Contact(util.models.TimeStampedModel):
 	A user who interacts with the CCEM system through SMS
 	'''
 	
+	I18N_EN = 'en'; I18N_KA = 'ka'; I18N_LO = 'lo'; I18N_TH = 'th'
+	LANGUAGE_CHOCIES = ((I18N_EN,'English'),(I18N_KA,'Karaoke'),(I18N_LO,'Lao'),(I18N_TH,'Thai'))
+	
 	name = models.CharField(max_length=100,blank=True)
 	
-	language = models.CharField(max_length=5,default='ke')
+	language = models.CharField(max_length=5,default=I18N_KA,choices=LANGUAGE_CHOCIES)
 	
 	facility = models.ForeignKey(Facility,blank=True,null=True)
 	
@@ -137,6 +143,22 @@ class Contact(util.models.TimeStampedModel):
 		if self.connection_set.count() > 0:
 			return self.connection_set.all()[0].connection.identity
 		return None
+		
+	@classmethod
+	def from_connection(cls,conn):
+		try:
+			return conn.dhis2.contact
+		except ObjectDoesNotExist as e:
+			return None
+			
+	@classmethod
+	def from_identity(cls,identity):
+		try:
+			conn = rapid.Connection.objects.get(identity=identity)
+			return cls.from_connection(conn)
+		except rapid.Connection.DoesNotExist as e:
+			return None
+		
 		
 class ContactConnection(models.Model):
 	'''

@@ -23,7 +23,7 @@ class sl(utils.Keyword):
 	
 	@classmethod
 	def get_msg(cls,args):
-		out = ' '+_('Stock')+' [ '
+		out = u' %s [ '%_('Stock')
 		for label,count in args.iteritems():
 			out += '(%s%s) '%(label,count)
 		return out + ']'

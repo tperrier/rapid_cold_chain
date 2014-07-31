@@ -45,21 +45,3 @@ if sys.argv[1] == 'wipe':
 	delete(dhis2.Facility)
 	delete(dhis2.Contact)
 	delete(dhis2.ContactConnection)
-
-else:
-	
-	def count(obj):
-		print obj.__name__,obj.objects.all().count()
-	
-	import django_ccem.models as ccem
-	count(ccem.Message)
-	count(ccem.Report)
-	
-	import dhis2.models as dhis2
-	count(dhis2.OrganisationUnit)
-	count(dhis2.Facility)
-	count(dhis2.Contact)
-	count(dhis2.ContactConnection)
-	
-	import rapidsms.models as rapid
-	count(rapid.Connection)

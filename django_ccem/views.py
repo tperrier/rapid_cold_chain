@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
+from django.contrib.auth.decorators import login_required
 
 
 import rapidsms.router as router
@@ -14,6 +15,7 @@ import models as ccem, dhis2.models as dhis2,rapidsms.models as rapid, util, cce
 def base_view(request):
 	return render(request, 'ccem_sim/base.html')
 
+@login_required
 def contacts(request):
 	
 	#All Contacts
@@ -46,13 +48,15 @@ def contacts(request):
 		'messages':contact_message_list}
 	)
 
+@login_required
 def facilities(request):
 	facility_id = request.GET.get('id',None)
 	facility = util.get_or_none(dhis2.Facility,dhis2_id=facility_id)
 	contacts = dhis2.ContactConnection.objects.filter(contact__facility=facility)
 	print contacts
 	return render(request, 'facilities.html', {'facility': facility,'contacts':contacts})
-	
+
+@login_required
 def messages(request):
 	
 	#POST: Reparse report

@@ -208,6 +208,7 @@ INSTALLED_APPS = (
     "django_ccem",
     "ccem_parser",
     "dhis2",
+    "envaya",
     
     # RapidSMS
     "rapidsms",

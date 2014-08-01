@@ -69,8 +69,8 @@ msgstr "garn jang teaun bor phob"
 
 #: ccem_parser/parser/keywords/ft.py:49
 msgid "Fridge"
-msgstr "tou yen"
+msgstr "garn jang teaun oun ha phoum khorng tou yen"
 
 #: ccem_parser/parser/keywords/sl.py:26
 msgid "Stock"
-msgstr "sarng"
+msgstr "jum nuan vaccines"

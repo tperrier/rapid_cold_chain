@@ -75,6 +75,8 @@ class Parser:
 				 
 	def clean(self,s):
 		s = s.lower()
+		if s.startswith('o'):
+			s = '0'+s[1:]
 		return self.remove_chars.sub('',s)
 		
 		

@@ -10,5 +10,7 @@ def facility_list(request):
 		org = facility_list[0]
 		levels = facility_list[0].level
 		for i in range(0,(levels-1)): org = org.parent
-	return render(request, 'facility_heirarchy.html', {'facility_list':org, 'root_id': org.dhis2_id });
+	else:
+		org = None
+	return render(request, 'facility_heirarchy.html', {'facility_list':org});
 

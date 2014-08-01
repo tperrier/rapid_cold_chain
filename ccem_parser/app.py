@@ -36,7 +36,8 @@ class CCEIParser(AppBase):
 		Attach result as ccem_parsed
 		'''
 		#logger.debug('CCEIParser: %s',msg.raw_text)
-		
+		if msg.text.startswith('o'):
+			msg.text = '0'+msg.text[1:]
 		msg.ccem_parsed,msg.ccem_error = parser.parse(msg.text)
 		msg.ccem_contact = dhis2.Contact.from_connection(msg.connections[0])
 		

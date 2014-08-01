@@ -228,6 +228,8 @@ INSTALLED_BACKENDS = {
     },
     "test_backend":{
 		"ENGINE": "rapidsms.backends.database.DatabaseBackend",},
+    "envaya":{
+		"ENGINE": "rapidsms.backends.database.DatabaseBackend",},
 }
 
 #~ LOGIN_REDIRECT_URL = '/'

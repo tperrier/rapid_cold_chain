@@ -113,11 +113,16 @@ class Facility(OrganisationBase):
 	
 class Equitment(DHIS2Object,util.models.TimeStampedModel):
 	
+	LABEL_CHOICES = [(chr(c),chr(c).capitalize()) for c in range(ord('a'),ord('z')+1)]
+	
 	facility = models.ForeignKey(Facility,blank=True,null=True)
 	
 	equitment_type = models.CharField(max_length=50)
 	
 	working = models.BooleanField(default=True)
+	
+	#Value for SMS reference to refrigerator
+	label = models.CharField(max_length=1,choices=LABEL_CHOICES,blank=True,null=True)
 	
 	dhis2_api_name = 'equipments'
 	
@@ -127,13 +132,15 @@ class Contact(util.models.TimeStampedModel):
 	'''
 	
 	I18N_EN = 'en'; I18N_KA = 'ka'; I18N_LA = 'la'; I18N_TH = 'th'
-	LANGUAGE_CHOCIES = ((I18N_EN,'English'),(I18N_KA,'Karaoke'),(I18N_LA,'Lao'),(I18N_TH,'Thai'))
+	LANGUAGE_CHOICES = ((I18N_EN,'English'),(I18N_KA,'Karaoke'),(I18N_LA,'Lao'),(I18N_TH,'Thai'))
 	
 	name = models.CharField(max_length=100,blank=True)
 	
-	language = models.CharField(max_length=5,default=I18N_KA,choices=LANGUAGE_CHOCIES)
+	language = models.CharField(max_length=5,default=I18N_KA,choices=LANGUAGE_CHOICES)
 	
 	facility = models.ForeignKey(Facility,blank=True,null=True)
+	
+	email = models.EmailField(blank=True,null=True)
 	
 	def __unicode__(self):
 		return "%s (%s)"%(self.name,self.facility)

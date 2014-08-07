@@ -27,6 +27,9 @@ class Message(util.TimeStampedModel):
 	#Boolean field if last report message has an error
 	has_error = models.BooleanField(default=False)
 	
+	#Boolean field if the last report message was ignored
+	ignored = models.BooleanField(default=False)
+	
 	class Meta:
 		ordering = ('-created',)
 	
@@ -40,7 +43,13 @@ class Message(util.TimeStampedModel):
 	
 	@property
 	def num_reports(self):
+		#return the number of reports for this message
 		return self.report_set.count()
+		
+	@property
+	def flagged(self):
+		#boolean if the message should be flagged or not
+		return self.has_error and not self.ignored
 
 class SubmissionMessageManager(models.Manager):
 	

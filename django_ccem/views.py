@@ -18,7 +18,7 @@ def base_view(request):
 def contacts(request):
 	
 	#All connections
-	connection_list = rapid.Connection.objects.filter(dhis2=None)
+	connection_list = rapid.Connection.objects.all()
 	
 	return render(request, 'contacts.html',{
 		'connections':connection_list,

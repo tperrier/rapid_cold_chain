@@ -1,7 +1,9 @@
 from django.db import models
+from django import forms
+from django.db.models import signals
+from django.dispatch import receiver
 from django.core.exceptions import ObjectDoesNotExist
 
-import rapidsms.models as rapid
 from jsonfield import JSONField
 
 import util, dhis2
@@ -142,14 +144,17 @@ class Contact(util.models.TimeStampedModel):
 	
 	email = models.EmailField(blank=True,null=True)
 	
-	def __unicode__(self):
-		return "%s (%s)"%(self.name,self.facility)
+	def add_connection(self,connection):
+		ContactConnection.objects.create(contact=self,connection=connection)
 	
 	@property
 	def phone_number(self):
 		if self.connection_set.count() > 0:
 			return self.connection_set.all()[0].connection.identity
 		return None
+		
+	def __unicode__(self):
+		return "%s (%s)"%(self.name,self.facility)
 		
 	@classmethod
 	def from_connection(cls,conn):
@@ -160,13 +165,18 @@ class Contact(util.models.TimeStampedModel):
 			
 	@classmethod
 	def from_identity(cls,identity):
+		from rapidsms.models import Connection
 		try:
-			conn = rapid.Connection.objects.get(identity=identity)
+			conn = Connection.objects.get(identity=identity)
 			return cls.from_connection(conn)
-		except rapid.Connection.DoesNotExist as e:
+		except Connection.DoesNotExist as e:
 			return None
-		
-		
+			
+class ContactForm(forms.ModelForm):
+	
+	class Meta:
+		model = Contact
+
 class ContactConnection(models.Model):
 	'''
 	A table to make a ManyToOne connection to between Contact and rapidsms.Connection
@@ -177,3 +187,5 @@ class ContactConnection(models.Model):
 	
 	def __unicode__(self):
 		return '%s (%s)'%(self.contact.name,self.connection)
+		
+	

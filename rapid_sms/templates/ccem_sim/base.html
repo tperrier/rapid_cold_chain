@@ -48,9 +48,9 @@
 			<div class="container">
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav navbar-right">
-						<li {% url 'django_ccem.views.messages' as m_url %}{% if request.path == m_url %} class="active" {% endif %}><a href="/moderation/messages">Messages</a></li>
-						<li {% url 'django_ccem.views.contacts' as c_url %}{% if request.path == c_url %} class="active" {% endif %}><a href="/moderation/contacts">Contacts</a></li>
-						<li {% url 'django_ccem.views.facilities' as f_url %}{% if request.path == f_url %} class="active" {% endif %}><a href="/moderation/facilities">Facilities</a></li>
+						<li {% url 'django_ccem.views.messages' as m_url %}{% if request.path == m_url %} class="active" {% endif %}><a href='{{m_url}}'>Messages</a></li>
+						<li {% url 'django_ccem.views.contacts' as c_url %}{% if request.path == c_url %} class="active" {% endif %}><a href='{{c_url}}'>Contacts</a></li>
+						<li {% url 'django_ccem.views.facilities' as f_url %}{% if request.path == f_url %} class="active" {% endif %}><a href='{{f_url}}'>Facilities</a></li>
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Configurations <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">

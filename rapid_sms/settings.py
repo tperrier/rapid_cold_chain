@@ -203,6 +203,11 @@ INSTALLED_APPS = (
     "django_tables2",
     "selectable",
     "south",
+    "bootstrap3",
+
+    # RapidSMS
+    "rapidsms",
+    "rapidsms.backends.database",
     
     #CCEM Parser Apps
     "django_ccem",
@@ -210,9 +215,6 @@ INSTALLED_APPS = (
     "dhis2",
     "envaya",
     
-    # RapidSMS
-    "rapidsms",
-    "rapidsms.backends.database",
     #"rapidsms.contrib.handlers",
     "rapidsms.contrib.httptester",
     "rapidsms.contrib.messagelog",

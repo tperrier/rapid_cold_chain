@@ -10,3 +10,7 @@
 
 .date{width:12em;}
 [data-toggle='collapse']{cursor:pointer}
+
+#contact-conversation {
+	#overflow-y:scroll;
+}

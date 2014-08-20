@@ -21,12 +21,11 @@ urlpatterns = [
 	url(r'^admin/', include(admin.site.urls)),
 	# RapidSMS core URLs
 	url(r'^accounts/', include('rapidsms.urls.login_logout')),
-	url(r'^$', 'django_ccem.views.messages', name='message-dashboard'),
 	#Custom URLS
-	url(r'^moderation/',include('django_ccem.urls')),
 	url(r'^dhis2/',include('dhis2.urls')),
+	url(r'',include('django_ccem.urls')),
 	url(r'^rapidsms/',include(rapidsms_urls)),
-	url(r'^envaya/',include('envaya.urls'))
+	url(r'^envaya/',include('envaya.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 #urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

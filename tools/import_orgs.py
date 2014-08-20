@@ -12,4 +12,5 @@ setup_environ(settings)
 
 import dhis2.models as dhis2
 
+#import PhaOudom http://212.71.248.145:8080/ccei_laos/api/organisationUnits/JkDRFRhTl7C
 dhis2.OrganisationUnit.create_if_not_exists('JkDRFRhTl7C',follow_up=True,follow_down=True)

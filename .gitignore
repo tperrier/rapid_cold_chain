@@ -15,3 +15,4 @@ rapidsms.log
 *.json
 ignore*
 !*/fixtures/*.json
+django_ccem/templates/facility_list_cache.html

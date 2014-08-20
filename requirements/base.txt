@@ -2,3 +2,4 @@ Django>=1.5,<1.6
 RapidSMS==0.16.0
 South==0.7.6
 jsonfield>=0.9.20
+django-braces>=1.4.0

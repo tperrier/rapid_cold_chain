@@ -7,7 +7,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib.auth.decorators import login_required
 
-
 import rapidsms.router as router
 
 import models as ccem, dhis2.models as dhis2,rapidsms.models as rapid, util, ccem_parser.parser as parser
@@ -18,35 +17,55 @@ def base_view(request):
 @login_required
 def contacts(request):
 	
+	#All connections
+	connection_list = rapid.Connection.objects.filter(dhis2=None)
+	
+	return render(request, 'contacts.html',{
+		'connections':connection_list,
+	})
+
+@login_required
+def contact(request,identity):
+	
 	#All Contacts
 	contact_list = dhis2.Contact.objects.all()
 	
 	#All anonymous connections without a contact 
 	anonymous_list = rapid.Connection.objects.filter(dhis2=None)
 	
+	
 	#contact details
-	contact = _get_contact(request)
-	connection = util.get_or_none(rapid.Connection,identity=contact)
+	connection = util.get_or_none(rapid.Connection,identity=identity)
 	if connection is not None:
 		try:
 			contact_detail = connection.dhis2.contact
+			contact_connection = connection.dhis2
 		except ObjectDoesNotExist:
-			contact_detail = None
+			contact_detail, contact_connection = None, None
 		#TODO: this will need to be a list off all numbers for the contact
-		contact_message_list = ccem.Message.objects.filter(connection__identity=contact)
-		#POST: Submit Message
-		if request.method == 'POST':
-			message = request.POST['message']
-			router.send(message,contact_detail.connection)	
+		contact_message_list = ccem.Message.objects.filter(connection__identity=identity)
+		
 	else:
 		contact_detail, contact_message_list = None, None
-	return render(request, 'contacts.html',{
+	
+	#POST: Submit Create Form Change
+	if request.method == 'POST':
+		contact_form = dhis2.ContactForm(instance=contact_detail,data=request.POST)
+		if contact_form.is_valid():
+			contact_form.save()
+			if contact_detail == None:
+				contact_form.instance.add_connection(connection)
+	else:
+		contact_form = dhis2.ContactForm(instance=contact_detail)
+		
+	return render(request, 'contact.html',{
 		'contacts':contact_list,
 		'anonymous':anonymous_list,
 		'connection':connection,
 		'contact':contact_detail,
-		'messages':contact_message_list}
-	)
+		'messages':contact_message_list,
+		'form':contact_form,
+	})
 
 @login_required
 def facilities(request):

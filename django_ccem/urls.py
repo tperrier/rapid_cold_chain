@@ -1,10 +1,11 @@
 from django.conf.urls import patterns, include, url
 
-from views import *
+import views
 
 urlpatterns = [
-	url(r'^$',messages),
-	url(r'messages/$',messages),
-	url(r'contacts/$',contacts),
-	url(r'facilities/$',facilities),
+	url(r'^$','django_ccem.views.messages'),
+	url(r'^messages/$','django_ccem.views.messages'),
+	url(r'^contacts/$','django_ccem.views.contacts'),
+	url(r'^contact/(?P<identity>\+?[0-9]{1,15})/$','django_ccem.views.contact'),
+	url(r'^facilities/$','django_ccem.views.facilities'),
 ]

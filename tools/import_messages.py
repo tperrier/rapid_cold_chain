@@ -24,6 +24,11 @@ def send(message,i=0):
 	msg_in = router.receive(message['message'],connection)
 	msg_in.ccem_msg.created = message['date']
 	msg_in.ccem_msg.save()
+	
+	msg_out = msg_in.connections[0].messages.all()[0]
+	msg_out.created = message['date']+datetime.timedelta(seconds=10)
+	msg_out.save()
+	
 	print 'Sent',i,':',message['message']
 	return msg_in
 
@@ -33,5 +38,5 @@ messages = [fix_date(m) for m in json.load(open(JSON_FILE))]
 for i,m in enumerate(messages):
 	send(m,i)
 
-code.interact(local=locals())
+#~ code.interact(local=locals())
 

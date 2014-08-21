@@ -1,11 +1,12 @@
 # Create your views here.
 import datetime,json
 
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib.auth.decorators import login_required
+import dhis2.settings as dhis2_settings
 
 import rapidsms.router as router
 
@@ -72,8 +73,17 @@ def facilities(request):
 	facility_id = request.GET.get('id',None)
 	facility = util.get_or_none(dhis2.Facility,dhis2_id=facility_id)
 	contacts = dhis2.ContactConnection.objects.filter(contact__facility=facility)
-	print contacts
-	return render(request, 'facilities.html', {'facility': facility,'contacts':contacts})
+	return render(request, 'facilities.html', {
+		'facility': facility,
+		'contacts':contacts,
+		'facility_list':get_facility_list(),
+		'parent_org':dhis2.OrganisationUnit.get_root()
+	})
+
+def get_facility_list():
+	if not getattr(dhis2_settings,'DHIS2_HEIRARCHY_CACHE',True):
+		return 'facility_heirarchy.html'
+	return 'facility_list_cache.html'
 
 @login_required
 def messages(request):

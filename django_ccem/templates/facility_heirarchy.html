@@ -1,9 +1,9 @@
 <ul class="nav nav-pills nav-stacked tree tree_head_ele">
-{% for facility in facility_list.children.all %}
+{% for facility in parent_org.children.all %}
 	<li class="tree_link_ele1">
 		<label class="tree-toggler nav-header">{{facility}}</label>
 		{% if facility.children.count > 0 %}
-			{% with facility_list=facility template_name='facility_heirarchy.html' %}
+			{% with parent_org=facility template_name='facility_heirarchy.html' %}
 				{% include template_name %}
 			{% endwith %}
 		{% endif %}

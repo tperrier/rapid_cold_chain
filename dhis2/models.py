@@ -6,7 +6,10 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from jsonfield import JSONField
 
-import util, dhis2
+import util, dhis2, logging
+
+logger = logging.getLogger(__name__)
+#~ logger = logging.getLogger('none')
 
 # Create your models here.
 
@@ -65,9 +68,9 @@ class OrganisationBase(DHIS2Object,util.models.TimeStampedModel):
 		#Create this unit if necessary
 		try:
 
-			return cls.objects.get(pk=dhis2_id)
+			cls_obj = cls.objects.get(pk=dhis2_id)
 		except cls.DoesNotExist:
-			#add loging
+			logger.debug('Creating OrgansationUnit %s'%dhis2_id)
 			node = dhis2.orgs.from_id(dhis2_id,json=True)
 			#read node information
 			_id = node['id']
@@ -87,6 +90,8 @@ class OrganisationBase(DHIS2Object,util.models.TimeStampedModel):
 				parent=util.get_or_none(OrganisationUnit,pk=_parent),
 				)
 			cls_obj.save()
+		else:
+			logger.debug('OrganizationUnit %s already exits'%cls_obj)
 		
 		#Create child organisationUnits if necessary
 		if follow_down and 'children' in node and node['children']:
@@ -94,6 +99,13 @@ class OrganisationBase(DHIS2Object,util.models.TimeStampedModel):
 				cls.create_if_not_exists(child['id'],follow_down=True)
 		
 		return cls_obj
+		
+	@classmethod
+	def get_root(cls):
+		root = OrganisationUnit.objects.filter(parent=None)
+		if root.count()>0:
+			return root[0]
+		return None
 	
 class OrganisationUnit(OrganisationBase):
 	"""

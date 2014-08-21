@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 
-from views import *
+import views
 
 urlpatterns = [
-	url(r'facility_list_cache.html$',facility_list),
+	url(r'facility_list_cache.html$',views.facility_list),
 ]

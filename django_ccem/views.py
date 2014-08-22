@@ -88,6 +88,8 @@ def get_facility_list():
 @login_required
 def messages(request):
 	
+	MESSAGES_PER_PAGE = 15
+	
 	#POST: Reparse report
 	if request.method == 'POST':
 		
@@ -145,7 +147,7 @@ def messages(request):
 	#End message_list filtering
 	
 	#Make a paginator from message list 
-	paginator = Paginator(message_list,10)
+	paginator = Paginator(message_list,MESSAGES_PER_PAGE)
 	
 	page = request.GET.get('page',1)
 	try:

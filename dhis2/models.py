@@ -4,6 +4,11 @@ from django.db.models import signals
 from django.dispatch import receiver
 from django.core.exceptions import ObjectDoesNotExist
 
+from django.utils.safestring import mark_safe
+from django.utils.html import conditional_escape, format_html
+from django.forms.util import flatatt, to_current_timezone
+from django.utils.encoding import force_text
+
 from jsonfield import JSONField
 
 import util, dhis2, logging
@@ -125,6 +130,17 @@ class Facility(OrganisationBase):
 	
 	dhis2_api_name = 'organisationUnits'
 	
+	@classmethod
+	def get_facility_groups(cls):
+		facilities = Facility.objects.all()
+		groups = {}
+		for f in facilities:
+			try:
+				groups[unicode(f.parent)].append(f)
+			except KeyError as e:
+				groups[unicode(f.parent)] = [f]
+		return groups
+	
 class Equitment(DHIS2Object,util.models.TimeStampedModel):
 	
 	LABEL_CHOICES = [(chr(c),chr(c).capitalize()) for c in range(ord('a'),ord('z')+1)]
@@ -183,11 +199,49 @@ class Contact(util.models.TimeStampedModel):
 			return cls.from_connection(conn)
 		except Connection.DoesNotExist as e:
 			return None
+
+class FacilitySelect(forms.Select):
+	
+	def __init__(self, attrs=None, choices=()):
+		super(FacilitySelect, self).__init__(attrs)
+		# choices can be any iterable, but we may need to render this widget
+		# multiple times. Thus, collapse it into a list so it can be consumed
+		# more than once.
+		self.choices = list(choices)
+	
+	def render(self, name, value, attrs=None, choices=()):
+		if value is None:
+			value = ''
+		final_attrs = self.build_attrs(attrs, name=name)
+		output = [format_html('<select{0}>', flatatt(final_attrs))]
+		output.append('<option value="">---------</option>')
+		
+		options = self.render_options(value)
+		if options:
+			output.append(options)
+		
+		output.append('</select>')
+		return mark_safe('\n'.join(output)) 
+		
+	def render_options(self,value):
+		output = []
+		value = [force_text(value)]
+		for parent, facilities in Facility.get_facility_groups().iteritems():
+			if isinstance(facilities, (list, tuple)):
+				output.append('<optgroup label="%s">'%parent)
+				for facility in facilities:
+					output.append(self.render_option(value, unicode(facility.dhis2_id),unicode(facility)))
+				output.append('</optgroup>')
+		return '\n'.join(output)
 			
 class ContactForm(forms.ModelForm):
 	
 	class Meta:
 		model = Contact
+		widgets = {
+			'facility':FacilitySelect()
+		}
+	
 
 class ContactConnection(models.Model):
 	'''

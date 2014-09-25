@@ -70,11 +70,10 @@ class OrganisationBase(DHIS2Object,util.models.TimeStampedModel):
 				for p in path_to_root:
 					OrganisationUnit.create_if_not_exists(p)
 		
-		#Create this unit if necessary
-		try:
-
-			cls_obj = cls.objects.get(pk=dhis2_id)
-		except cls.DoesNotExist:
+		#Create this unit if no OrgUnit of Facility alread exists with that id
+		orgs = OrganisationUnit.objects.filter(pk=dhis2_id)
+		facs = Facility.objects.filter(pk=dhis2_id)
+		if not (orgs or facs):
 			logger.debug('Creating OrgansationUnit %s'%dhis2_id)
 			node = dhis2.orgs.from_id(dhis2_id,json=True)
 			#read node information
@@ -96,6 +95,7 @@ class OrganisationBase(DHIS2Object,util.models.TimeStampedModel):
 				)
 			cls_obj.save()
 		else:
+			cls_obj = orgs[0] if orgs else facs[0] # set cls_obj to already existing OrgUnit
 			logger.debug('OrganizationUnit %s already exits'%cls_obj)
 		
 		#Create child organisationUnits if necessary

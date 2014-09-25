@@ -5,7 +5,8 @@ from models import *
 
 
 class FacilityAdmin(admin.ModelAdmin):
-	pass
+	
+	list_display = ['__unicode__','dhis2_id','dhis2_code','level']
 	
 class EquitmentAdmin(admin.ModelAdmin):
 	pass

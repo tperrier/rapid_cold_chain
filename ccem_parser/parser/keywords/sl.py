@@ -3,6 +3,11 @@ import re,code
 from .. import utils
 from ..utils import _
 
+vaccine_map = {
+	'p':'PCV',
+	'd':'Penta',
+}
+
 def parse_stock(stock,pos=0):
 		args = {}
 		while utils.Tokens.singleletter(stock,pos):
@@ -23,10 +28,12 @@ class sl(utils.Keyword):
 	
 	@classmethod
 	def get_msg(cls,args):
-		out = u' %s [ '%_('Stock')
+		out = _('Stock')
 		for label,count in args.iteritems():
-			out += '(%s%s) '%(label,count)
-		return out + ']'
+			if label in vaccine_map:
+				label = vaccine_map[label]
+			out += u' %s (%s)'%(label,count)
+		return out+'\n'
 	
 				
 if __name__ == '__main__':

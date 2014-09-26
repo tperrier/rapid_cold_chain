@@ -12,8 +12,7 @@ class Parser:
 	
 	def __init__(self,*args):
 		'''
-		Set the list of keywords based on keyword argument if present
-		or _auto_discovery() if not
+		Set the list of keywords based on arguments
 		'''
 		if len(args) == 0:
 			raise ValueError('Parser must have at least one Keyword')
@@ -22,11 +21,11 @@ class Parser:
 		else:
 			self.keywords = args
 	
-	def __call__(self,msg,pos=0):
+	def __call__(self,msg,pos=0,fake=False):
 		'''
 		Make the parser object callable so my_parser() is equivalent to my_parser.parse()
 		''' 
-		self.parse(msg,pos)
+		self.parse(msg,pos,fake)
 	
 	def parse(self,msg,pos=0,fake=False):
 		'''

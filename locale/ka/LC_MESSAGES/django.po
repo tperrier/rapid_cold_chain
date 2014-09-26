@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-30 21:05-0700\n"
+"POT-Creation-Date: 2014-09-27 02:52+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,48 +17,53 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ccem_parser/parser/parser.py:62
-#, python-format
-msgid "Unexpected Character %s"
-msgstr "tua auk sone t sai bor moc som %s"
-
-#: ccem_parser/parser/utils.py:86
+#: ccem_parser/parser/utils.py:96
 msgid "No commands found"
 msgstr "kham sung bor phob"
 
-#: ccem_parser/parser/utils.py:87
-msgid "Message successfully parsed. Found:"
-msgstr "garn laiy ngarn khor khuam sum let. phob:"
+#: ccem_parser/parser/utils.py:97
+msgid "Thanks. Message successfully submitted."
+msgstr "khop jai. garn song khor khuam sum let."
 
 #. Translators: keyword is our name for ft or sl ect.
-#: ccem_parser/parser/utils.py:102
+#: ccem_parser/parser/utils.py:115
 #, python-format
 msgid "Keyword %s"
 msgstr "La hut %s"
 
 #. Translators: This is the default error message
-#: ccem_parser/parser/utils.py:111
+#: ccem_parser/parser/utils.py:124
 msgid "There was an error in report format. Please Try again."
-msgstr "me khuam phit phard u nai houb beab garn laiy ngarn ne​. ka lou nar pha yar yarm ek theau neung."
+msgstr ""
+"me khuam phit phard u nai houb beab garn laiy ngarn ne​. ka lou nar pha yar "
+"yarm ek theau neung."
 
-#: ccem_parser/parser/utils.py:132
+#: ccem_parser/parser/utils.py:145
 msgid ""
 "Sorry, we did not find a keyword in your message. A moderator is reviewing "
 "it."
-msgstr "khor ah phai, phuak hao bor phob la hut u nai khir khuam. gum lung thob thuan la bop "
-"mun."
+msgstr ""
+"khor ah phai, phuak hao bor phob la hut u nai khir khuam. gum lung thob "
+"thuan la bop mun."
 
-#: ccem_parser/parser/utils.py:135
+#: ccem_parser/parser/utils.py:148
+#, python-format
+msgid "Unexpected Character %s"
+msgstr "tua auk sone t sai bor moc som %s"
+
+#: ccem_parser/parser/utils.py:151
 #, python-format
 msgid "Duplicate Keyword: %s already present"
 msgstr "kham t sai man khue gun: %s me leo"
 
-#: ccem_parser/parser/utils.py:138
+#: ccem_parser/parser/utils.py:154
 #, python-format
 msgid "Invalid alarm value '%s'. Must be a digit"
-msgstr "tua uk sone garn jang teaun oun ha phoum bor theuk tong '%s'. khuan pen tua lek"
+msgstr ""
+"tua uk sone garn jang teaun oun ha phoum bor theuk tong '%s'. khuan pen tua "
+"lek"
 
-#: ccem_parser/parser/utils.py:141
+#: ccem_parser/parser/utils.py:157
 #, python-format
 msgid "Invalid Stock value '%s', must be a digit"
 msgstr "jum nuan yar vaccine nai sarng bor theuk tong '%s', khuan pen tua lek"
@@ -67,10 +72,19 @@ msgstr "jum nuan yar vaccine nai sarng bor theuk tong '%s', khuan pen tua lek"
 msgid "No Alarms Found"
 msgstr "garn jang teaun bor phob"
 
+# Old string: msgstr "garn jang teaun oun ha phoum khorng tou yen"
 #: ccem_parser/parser/keywords/ft.py:49
 msgid "Fridge"
-msgstr "garn jang teaun oun ha phoum khorng tou yen"
+msgstr "oun ha phoum"
 
-#: ccem_parser/parser/keywords/sl.py:26
+#: ccem_parser/parser/keywords/ft.py:51
+msgid "high"
+msgstr "soung"
+
+#: ccem_parser/parser/keywords/ft.py:51
+msgid "low"
+msgstr "tum"
+
+#: ccem_parser/parser/keywords/sl.py:31
 msgid "Stock"
 msgstr "jum nuan vaccines"

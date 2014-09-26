@@ -1,14 +1,13 @@
 import re,sys
 
-#from django.utils.translation import ugettext_lazy as _
-
 try: #try to set up django translation if available
 	from django.conf import settings
 	from django.core.exceptions import ImproperlyConfigured
 	settings.USE_I18N
 	from django.utils.translation import  ugettext_lazy as _
 except (ImportError, ImproperlyConfigured):
-	def _(s): #fake i18n translation
+	#otherwise define our own fake i18n translation
+	def _(s):
 		return s
 
 class Tokens:
@@ -27,7 +26,15 @@ class Keyword(object):
 	All parser keywords should inherit from the utils.Keyword class	
 	'''
 	
-	multiple = False #by default a keyword only return args for one keyword
+	'''
+	By default a keyword only return args for one keyword
+	Set multiple to True if multiple keywords will be returned
+	Formate:
+	 {keyword1:[*args],
+	  keyword2: [*args]
+	  }
+	'''
+	multiple = False
 	repeat = False #by default a keyword can not repeat
 
 	def __init__(self):
@@ -82,9 +89,12 @@ class ParseResult(object):
 		return repr(self.commands)
 		
 	def __str__(self):
+		'''
+		Returns a lazzy i18n object that can be compiled in the users language.
+		'''
 		if len(self.commands) == 0:
 			return _('No commands found')
-		msg = _('Message successfully parsed. Found:')
+		msg = _('Thanks. Message successfully submitted.')+'\n'
 		
 		for kw,args in self.commands.iteritems():
 			msg += self.__class__.get_kw_msg(kw,args)
@@ -93,6 +103,10 @@ class ParseResult(object):
 
 	@classmethod
 	def get_kw_msg(cls,kw,args):
+		'''
+		Keyword Models should declare a get_msg function that takes parsed arguments
+		and returns a lazzy i18n object.
+		'''
 		module = 'ccem_parser.parser.keywords.%s'%kw
 		try:
 			__import__(module)
@@ -143,7 +157,10 @@ class InvalidStockError(SingleArgParseError):
 	template = _('Invalid Stock value \'%s\', must be a digit')
 
 class gobbler(object):
-	
+	'''
+	Class that compares a regx to the given string and advances the match position
+	forward if a match is found.
+	'''
 	def __init__(self,regx):
 		self.regx = re.compile(regx)
 		

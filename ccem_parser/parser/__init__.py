@@ -16,7 +16,12 @@ def get_parser(*args):
 default_parser = get_parser()
 
 def parse(msg):
-	
+	'''
+	@msg: string contents of message to be parsed
+	Return:
+	- parsed: utils.ParseResult object
+	- error: the error thrown or None
+	'''
 	error = None
 	try:
 		parsed = default_parser.parse(msg)

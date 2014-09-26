@@ -46,10 +46,10 @@ class ft(utils.Keyword):
 	
 	@classmethod
 	def get_msg(cls,args):
-		out = u' %s [ '%_('Fridge')
+		out = _('Fridge')
 		for label,alarms in args.iteritems():
-			out += '( %s%s%s ) '%(label if label is not None else '',alarms[0],alarms[1])
-		return out + ']'
+			out += u' %s: (%s %s %s %s)'%(label if label is not None else '',alarms[0],_('high'),alarms[1],_('low'))
+		return out+'\n'
 		
 if __name__ == '__main__':
 	'''

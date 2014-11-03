@@ -2,8 +2,6 @@ from django.db import models
 from jsonfield import JSONField
 import util.models as util, ccem_parser.parser.utils as utils
 
-# Create your models here.
-
 class Message(util.TimeStampedModel):
 	'''
 	A message model that acts like rapidsms.messagelog.message

@@ -12,7 +12,6 @@ from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFou
 
 #rapidsms imports
 from rapidsms.router import receive, lookup_connections, send
-from rapidsms.backends.http.views import GenericHttpBackendView
 
 #envaya imports
 from response import EnvayaResponse

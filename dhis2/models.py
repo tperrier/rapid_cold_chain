@@ -253,5 +253,12 @@ class ContactConnection(models.Model):
 	
 	def __unicode__(self):
 		return '%s (%s)'%(self.contact.name,self.connection)
+	
+	@property
+	def identity(self):
+		return self.connection.identity
 		
+	@property
+	def backend(self):
+		return self.connection.backend
 	

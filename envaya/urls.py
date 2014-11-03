@@ -1,8 +1,10 @@
 from django.conf.urls import patterns, url
-from . import views
+
+import views
 
 
 urlpatterns = [
-	url(r"^$", views.EnvayaView.as_view(backend_name="envaya")),
-	url(r"^test/?",views.TestView.as_view()),
+	url(r"^$", views.EnvayaView.as_view()),
+	url(r"^test_receive/?",views.ReceiveView.as_view()),
+	url(r"^test_send/?",views.SendView.as_view()),
 ]

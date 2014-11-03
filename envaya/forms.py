@@ -1,7 +1,6 @@
 import logging
 
 from django.forms import widgets
-
 from django import forms
 
 
@@ -10,7 +9,7 @@ from rapidsms.backends.http.forms import BaseHttpForm
 
 logger = logging.getLogger(__name__)
 
-class EnvayaForm(BaseHttpForm):
+class EnvayaReceiveForm(forms.Form):
 	
 	
 	phone_number = forms.CharField(initial="1111-test")
@@ -31,16 +30,12 @@ class EnvayaForm(BaseHttpForm):
 	timestamp = forms.CharField(initial="1390433248000")
 	
 	def __init__(self,*args,**kwargs):
-		super(EnvayaForm,self).__init__(*args,**kwargs)
+		super(EnvayaReceiveForm,self).__init__(*args,**kwargs)
 		self.fields['from'] = forms.CharField(initial="1234")
 		
-	def get_incoming_data(self):
-		fields = self.cleaned_data.copy()
-		# save message_id as external_id so RapidSMS will handle it properly
-		#fields['external_id'] = self.cleaned_data['message_id']
-		#connections = self.lookup_connections([self.cleaned_data['from']])
-		return {'identity': self.cleaned_data['from'],
-			'text': self.cleaned_data['message'],
-			'fields': fields}
 	
+class EnvayaSendForm(forms.Form):
+	phone_number = forms.CharField(max_length=15,initial='1234')
+	message = forms.CharField(widget=widgets.Textarea)
+		
 	

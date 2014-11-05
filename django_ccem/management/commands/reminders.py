@@ -63,11 +63,13 @@ class Command(BaseCommand):
 		
 		connections = []
 		for facility in facilities:
+			self.write(facility)
 			for contact in facility.contact_set.all():
 				for conn in contact.connection_set.all():
 					connections.append(conn.connection)
+					self.write('   %s'%conn)
 		
-		self.send_batch(message,connections)
+		self.send_batch(message,connections,verbose=False)
 		
 		
 	def missed_facilities(self):
@@ -87,18 +89,19 @@ class Command(BaseCommand):
 		return dhis2.Facility.objects.exclude(dhis2_id__in=facilities)
 		
 		
-	def send_batch(self,message,connections):
+	def send_batch(self,message,connections,verbose=True):
 		'''
 		Send a single message to a list of connections
 		'''
-		self.write("Sending: %s"%self.options['send'])
-		self.write("Messages to Send: %i"%len(connections))
+		self.write("Sending: %s"%self.options['send'],verbose=verbose)
+		self.write("Messages to Send: %i"%len(connections),verbose=verbose)
 		for i,conn in enumerate(connections):
-			self.write('   %i: %s'%(i+1,conn))
+			self.write('   %i: %s'%(i+1,conn),verbose=verbose)
 			if self.options['send']:
 				send(message,conn)
 				
-	def write(self,*args):
-		if not self.options['silent']:
+	def write(self,*args,**kwargs):
+		verbose = kwargs['verbose'] if 'verbose' in kwargs else True
+		if not self.options['silent'] and verbose:
 			self.stdout.write(*[str(a) for a in args])
 			

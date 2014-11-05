@@ -241,3 +241,9 @@ INSTALLED_BACKENDS = {
 
 #~ LOGIN_REDIRECT_URL = '/'
 
+#Local Settings
+try:
+    #Import local settings
+    from settings_local import *
+except ImportError as e:
+    print e

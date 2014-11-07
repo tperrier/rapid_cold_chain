@@ -21,7 +21,7 @@ class Command(BaseCommand):
 	
 	help = 'send remindes to facilities and managers'
 	
-	action_list = ['monthly','missed']
+	action_list = ['monthly','missed','test']
 	
 	
 	option_list = BaseCommand.option_list + (
@@ -37,6 +37,8 @@ class Command(BaseCommand):
 			self.monthly_reminders()
 		elif kwargs['action'] == 'missed':
 			self.missed_reminders()
+		elif kwargs['action'] == 'test':
+			self.test()
 		
 	
 	def monthly_reminders(self):
@@ -88,7 +90,6 @@ class Command(BaseCommand):
 				
 		return dhis2.Facility.objects.exclude(dhis2_id__in=facilities)
 		
-		
 	def send_batch(self,message,connections,verbose=True):
 		'''
 		Send a single message to a list of connections
@@ -105,3 +106,13 @@ class Command(BaseCommand):
 		if not self.options['silent'] and verbose:
 			self.stdout.write(*[str(a) for a in args])
 			
+	def test(self):
+		self.write('Test')
+		F = dhis2.Facility.objects.all()
+		self.write('All: %i'%F.count())
+			
+		self.write('Reporting: %i'%dhis2.Facility.objects.reporting().count())
+		
+		self.write('Missed: %i'%dhis2.Facility.objects.non_reporting().count())
+		
+		code.interact(local=locals())

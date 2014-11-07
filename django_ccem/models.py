@@ -66,7 +66,6 @@ class SubmissionMessage(Message):
 	
 	objects = SubmissionMessageManager()
 	
-	
 	class Meta:
 		proxy = True #make this a proxy model 
 		

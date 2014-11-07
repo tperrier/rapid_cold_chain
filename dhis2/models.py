@@ -6,12 +6,14 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape, format_html
+import django.utils.timezone as timezone
 from django.forms.util import flatatt, to_current_timezone
 from django.utils.encoding import force_text
 
 from jsonfield import JSONField
 
-import util, dhis2, logging
+import util, dhis2, logging,code, datetime
+import django_ccem.models as ccem
 
 logger = logging.getLogger(__name__)
 #~ logger = logging.getLogger('none')
@@ -122,15 +124,94 @@ class OrganisationUnit(OrganisationBase):
 	#API Name for access to DHIS2
 	dhis2_api_name = 'organisationUnits'
 	
+class FacilityManager(models.Manager):
 	
-class Facility(OrganisationBase):
+	def non_reporting(self,month=None):
+		return self.get_query_set().exclude(dhis2_id__in=self.reporting(month))
+		
+	def reporting(self,month=None):
+		today = datetime.date.today()
+		if month is None:
+			start = datetime.date(today.year,today.month,1)
+		elif isinstance(month,tuple):
+			start = datetime.date(month[0],month[1],1)
+		else:
+			start = util.get_month_offset(today,month*-1)
+			
+		end = util.get_month_offset(start,1)
+		
+		return self.get_query_set().filter(
+			contact__connection_set__connection__messages__created__range=(start,end),
+			contact__connection_set__connection__messages__is_submission=True
+		).distinct()
+		
+class GetMessagesByMonthMixin(object):
+	
+	def get_messages_by_month(self,start=None,end=None,direction=None,submission=None):
+		'''
+		Return all messages based on month offset
+			start: if tuple (yyyy,mm) if, int i months back, if none start of the current month.
+			end: number of months to count. 
+			direction: 'I','O' or None for no filter.
+			
+			By default gets the messages for the current month
+		'''
+		today = datetime.date.today()
+		if start is None:
+			start = datetime.date(today.year,today.month,1)
+		elif isinstance(start,tuple):
+			start = datetime.date(start[0],start[1],1)
+		else:
+			start = util.get_month_offset(today,start*-1)
+			
+		if end == None:
+			end = util.get_month_offset(today,1)
+		elif isinstance(end,tuple):
+			end = datetime.date(end[0],end[1],1)
+		else:
+			end = util.get_month_offset(start,end)
+			
+		return self.get_messages(start,end,direction,submission)
+		
+	def date_filter_messages(self,start=None,end=None,direction=None,submission=None):
+		'''
+		Return all messages for contact based on parameters:
+			start: the date to start on or None for no filter 
+			end: the date to end on or None for no filter
+			direction: the direction of messages.  'I','O' or None for no filter
+		'''
+		
+		if start is not None:
+			messages = messages.filter(created__gte=start)
+		if end is not None:
+			messages = messages.filter(created__lte=end)
+		if direction is not None:
+			messages = messages.filter(direction=direction)
+		if submission is not None:
+			messages = messages.filter(is_submission=submission)
+		
+		return messages
+		
+	
+class Facility(OrganisationBase,GetMessagesByMonthMixin):
 	
 	#The parent hierarchy related Manager is OrganisationUnit.facility_set.all()
 	parent = models.ForeignKey(OrganisationUnit,blank=True,null=True)
 	
 	dhis2_api_name = 'organisationUnits'
 	
+	#set default manager
+	objects = FacilityManager()
+	
+	def get_messages(self,start=None,end=None,direction=None,submission=None):
+		'''
+		Use GetMessagesByMonthMixin to return filtered messages
+		'''
+		messages = ccem.Message.objects.filter(connection__dhis2__contact__facility=self)
+		return self.date_filter_messages(messages)
+	
 	@classmethod
+	#TODO: Move to manager
 	def get_facility_groups(cls):
 		facilities = Facility.objects.all()
 		groups = {}
@@ -156,7 +237,7 @@ class Equitment(DHIS2Object,util.models.TimeStampedModel):
 	
 	dhis2_api_name = 'equipments'
 	
-class Contact(util.models.TimeStampedModel):
+class Contact(util.models.TimeStampedModel,GetMessagesByMonthMixin):
 	'''
 	A user who interacts with the CCEM system through SMS
 	'''
@@ -177,9 +258,24 @@ class Contact(util.models.TimeStampedModel):
 	
 	@property
 	def phone_number(self):
-		if self.connection_set.count() > 0:
-			return self.connection_set.all()[0].connection.identity
-		return None
+		try:
+			return self.connection_set.all()[0].identity
+		except IndexError as e:
+			return None
+			
+	def last_submission(self):
+		try:
+			return ccem.Message.objects.filter(is_submission=True,connection__in=self.connection_set.all()).order_by('-created')[0]
+		except IndexError as e:
+			return None
+	
+	def get_messages(self,start=None,end=None,direction=None,submission=None):
+		'''
+		Use GetMessagesByMonthMixin to return filtered messages
+		'''
+		messages = ccem.Message.objects.filter(connection__in=self.connection_set.all())
+		
+		return self.date_filter_messages(messages)
 		
 	def __unicode__(self):
 		return "%s (%s)"%(self.name,self.facility)

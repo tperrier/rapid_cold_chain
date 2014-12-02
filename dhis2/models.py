@@ -11,6 +11,7 @@ from django.forms.util import flatatt, to_current_timezone
 from django.utils.encoding import force_text
 
 from jsonfield import JSONField
+import rapidsms.models as rapidsms
 
 import util, dhis2, logging,code, datetime
 import django_ccem.models as ccem
@@ -145,6 +146,17 @@ class FacilityManager(models.Manager):
 			contact__connection_set__connection__messages__is_submission=True
 		).distinct()
 		
+	def facility_groups(cls):
+		facilities = Facility.objects.all()
+		groups = {}
+		for f in facilities:
+			try:
+				groups[unicode(f.parent)].append(f)
+			except KeyError as e:
+				groups[unicode(f.parent)] = [f]
+		return groups
+	
+		
 class GetMessagesByMonthMixin(object):
 	
 	def get_messages_by_month(self,start=None,end=None,direction=None,submission=None):
@@ -210,18 +222,6 @@ class Facility(OrganisationBase,GetMessagesByMonthMixin):
 		messages = ccem.Message.objects.filter(connection__dhis2__contact__facility=self)
 		return self.date_filter_messages(messages)
 	
-	@classmethod
-	#TODO: Move to manager
-	def get_facility_groups(cls):
-		facilities = Facility.objects.all()
-		groups = {}
-		for f in facilities:
-			try:
-				groups[unicode(f.parent)].append(f)
-			except KeyError as e:
-				groups[unicode(f.parent)] = [f]
-		return groups
-	
 class Equitment(DHIS2Object,util.models.TimeStampedModel):
 	
 	LABEL_CHOICES = [(chr(c),chr(c).capitalize()) for c in range(ord('a'),ord('z')+1)]
@@ -251,21 +251,22 @@ class Contact(util.models.TimeStampedModel,GetMessagesByMonthMixin):
 	
 	facility = models.ForeignKey(Facility,blank=True,null=True)
 	
+	connection = models.OneToOneField(rapidsms.Connection,blank=True,null=True,related_name='dhis2')
+	
 	email = models.EmailField(blank=True,null=True)
 	
 	def add_connection(self,connection):
-		ContactConnection.objects.create(contact=self,connection=connection)
+		self.connection = connection
+		self.save()
 	
-	@property
 	def phone_number(self):
-		try:
-			return self.connection_set.all()[0].identity
-		except IndexError as e:
-			return None
+		if self.connection:
+			return self.connection.identity
+		return None
 			
 	def last_submission(self):
 		try:
-			return ccem.Message.objects.filter(is_submission=True,connection__in=self.connection_set.all()).order_by('-created')[0]
+			return ccem.Message.objects.filter(is_submission=True,connection=self.connection).order_by('-created')[0]
 		except IndexError as e:
 			return None
 	
@@ -273,7 +274,7 @@ class Contact(util.models.TimeStampedModel,GetMessagesByMonthMixin):
 		'''
 		Use GetMessagesByMonthMixin to return filtered messages
 		'''
-		messages = ccem.Message.objects.filter(connection__in=self.connection_set.all())
+		messages = ccem.Message.objects.filter(connection=self.connection)
 		
 		return self.date_filter_messages(messages)
 		
@@ -281,14 +282,20 @@ class Contact(util.models.TimeStampedModel,GetMessagesByMonthMixin):
 		return "%s (%s)"%(self.name,self.facility)
 		
 	@classmethod
-	def from_connection(cls,conn):
+	def from_connection(cls,connection):
+		'''
+		Return a Contact from a connection
+		'''
 		try:
-			return conn.dhis2.contact
+			return connection.contact
 		except ObjectDoesNotExist as e:
 			return None
 			
 	@classmethod
 	def from_identity(cls,identity):
+		'''
+		Return a Contact from a phonenumber (identity)
+		'''
 		from rapidsms.models import Connection
 		try:
 			conn = Connection.objects.get(identity=identity)
@@ -322,7 +329,7 @@ class FacilitySelect(forms.Select):
 	def render_options(self,value):
 		output = []
 		value = [force_text(value)]
-		for parent, facilities in Facility.get_facility_groups().iteritems():
+		for parent, facilities in Facility.objects.facility_groups().iteritems():
 			if isinstance(facilities, (list, tuple)):
 				output.append('<optgroup label="%s">'%parent)
 				for facility in facilities:
@@ -338,7 +345,7 @@ class ContactForm(forms.ModelForm):
 			'facility':FacilitySelect()
 		}
 	
-
+"""
 class ContactConnection(models.Model):
 	'''
 	A table to make a ManyToOne connection to between Contact and rapidsms.Connection
@@ -357,4 +364,4 @@ class ContactConnection(models.Model):
 	@property
 	def backend(self):
 		return self.connection.backend
-	
+"""

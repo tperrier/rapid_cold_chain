@@ -99,10 +99,14 @@ class Report(util.TimeStampedModel):
 	cleaned = models.CharField(max_length=200,null=True,blank=True)
 	
 	#Foreignkey link to Message that generated this report
-	#A message may have multiple reports so create a OneToManyField (Foreign Key)
+	#A message may have multiple reports: OneToManyField (Foreign Key)
 	message = models.ForeignKey(Message)
+	
 	#Foreignkey link to outgoing message response. Can only be one.
 	response = models.OneToOneField(Message,null=True,blank=True,related_name='response_to')
+	
+	#Foreignkey link to facility that sent this message
+	facility = models.ForeignKey('dhis2.Facility',null=True,blank=True)
 	
 	def save(self,*args,**kwargs):
 		#Set the error status on the associated message object 
@@ -136,8 +140,11 @@ class Report(util.TimeStampedModel):
 		'''
 		#report = response.in_response_to.logger_msg.message.report_set.latest('created')
 		#report.response = response.logger_msg
-		if response.in_response_to.ccem_msg.report_set.count() > 0:
-			report = response.in_response_to.ccem_msg.report_set.latest('created')
-			report.response = response.ccem_msg
-			report.save()
-		
+		try:
+			if response.in_response_to and response.in_response_to.ccem_msg.report_set.count() > 0:
+				report = response.in_response_to.ccem_msg.report_set.latest('created')
+				report.response = response.ccem_msg
+				report.save()
+				return report
+		except AttributeError as e:
+			pass

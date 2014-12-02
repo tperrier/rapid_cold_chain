@@ -29,8 +29,8 @@
 		{% for c in connections %}
 			<tr href='{{ c.identity }}'>
 				<td>{{ c.identity }}</td>
-				<td>{{ c.dhis2.contact.name }}</td>
-				<td>{{ c.dhis2.contact.facility }}</td>
+				<td>{{ c.dhis2.name }}</td>
+				<td>{{ c.dhis2.facility }}</td>
 			</tr>
 		{% endfor %}
 	</tbody>

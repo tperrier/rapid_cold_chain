@@ -39,10 +39,9 @@ def contact(request,identity):
 	connection = util.get_or_none(rapid.Connection,identity=identity)
 	if connection is not None:
 		try:
-			contact_detail = connection.dhis2.contact
-			contact_connection = connection.dhis2
+			contact_detail = connection.dhis2
 		except ObjectDoesNotExist:
-			contact_detail, contact_connection = None, None
+			contact_detail = None
 		#TODO: this will need to be a list off all numbers for the contact
 		contact_message_list = ccem.Message.objects.filter(connection__identity=identity)
 		
@@ -69,10 +68,9 @@ def contact(request,identity):
 	})
 
 @login_required
-def facilities(request):
-	facility_id = request.GET.get('id',None)
-	facility = util.get_or_none(dhis2.Facility,dhis2_id=facility_id)
-	contacts = dhis2.ContactConnection.objects.filter(contact__facility=facility)
+def facilities(request,id=None):
+	facility = util.get_or_none(dhis2.Facility,dhis2_id=id)
+	contacts = dhis2.Contact.objects.filter(facility=facility)
 	return render(request, 'facilities.html', {
 		'facility': facility,
 		'contacts':contacts,
@@ -88,7 +86,8 @@ def get_facility_list():
 @login_required
 def messages(request):
 	
-	MESSAGES_PER_PAGE = 15
+	MESSAGES_PER_PAGE = 20
+	
 	
 	#POST: Reparse report
 	if request.method == 'POST':

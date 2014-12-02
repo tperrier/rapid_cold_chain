@@ -64,4 +64,4 @@ class CCEIParser(AppBase):
 		#add to correct CCEM Report if it exists
 		msg.ccem_report = ccem.Report.add_latest_response(msg)
 		
-		#logger.debug('CCEI Outgoing: %s',msg.raw_text)
+		return True

@@ -20,7 +20,7 @@ class MessageAdmin(RelatedFieldAdmin):
 
 class ReportAdmin(RelatedFieldAdmin):
 	
-	list_display = ('created','commands','error','has_error')
+	list_display = ('created','commands','error','has_error','facility')
 
 
 admin.site.register(SubmissionMessage,MessageAdmin)

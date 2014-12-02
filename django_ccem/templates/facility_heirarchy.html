@@ -12,7 +12,7 @@
 			<ul class="nav nav-pills nav-stacked tree tree_head_ele">
 			{% for facility in facility.facility_set.all %}
 				<li class="tree_link_ele" id="f_{{facility.dhis2_id}}">
-					<a href="/moderation/facilities/?id={{facility.dhis2_id}}">
+					<a href="{% url 'facility' id=facility.dhis2_id %}">
 						{{facility}}
 					</a>
 				</li>

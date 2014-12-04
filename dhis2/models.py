@@ -142,8 +142,8 @@ class FacilityManager(models.Manager):
 		end = util.get_month_offset(start,1)
 		
 		return self.get_query_set().filter(
-			contact__connection_set__connection__messages__created__range=(start,end),
-			contact__connection_set__connection__messages__is_submission=True
+			contact__connection__messages__created__range=(start,end),
+			contact__connection__messages__is_submission=True
 		).distinct()
 		
 	def facility_groups(cls):
@@ -151,9 +151,9 @@ class FacilityManager(models.Manager):
 		groups = {}
 		for f in facilities:
 			try:
-				groups[unicode(f.parent)].append(f)
+				groups[f.parent].append(f)
 			except KeyError as e:
-				groups[unicode(f.parent)] = [f]
+				groups[f.parent] = [f]
 		return groups
 	
 		
@@ -221,6 +221,12 @@ class Facility(OrganisationBase,GetMessagesByMonthMixin):
 		'''
 		messages = ccem.Message.objects.filter(connection__dhis2__contact__facility=self)
 		return self.date_filter_messages(messages)
+		
+	def last_report(self):
+		try:
+			return self.report_set.order_by('-created')[0]
+		except IndexError as e:
+			return None
 	
 class Equitment(DHIS2Object,util.models.TimeStampedModel):
 	

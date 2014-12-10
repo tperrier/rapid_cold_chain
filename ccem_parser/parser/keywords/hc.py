@@ -21,8 +21,6 @@ class hc(utils.Keyword):
 			
 		hc_code = hc_code.group(0)
 		
-		if len(hc_code) < 6:
-			raise utils.ParseError(_('Facility Code To Short'))
 		if len(hc_code) >6:
 			raise utils.ParseError(_('Facility Code To Long'))
 			

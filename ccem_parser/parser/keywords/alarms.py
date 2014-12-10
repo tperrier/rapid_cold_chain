@@ -68,16 +68,17 @@ class keyword_fridge(utils.Keyword):
 	Valid Formats: kw or kw [a-z]
 	'''
 	
+	fridge_lable = re.compile(r'[a-z]$|[a-z]{3}?').match
+	
 	def parse(self,msg,pos=0):
 		pos += len(self.kw)
 
-		letter = utils.Tokens.singleletter(msg,pos)
+		letter = self.fridge_lable(msg,pos)
 		
 		if not letter:
 			return None,pos
 			
-		fridge_letter = letter.group(0)
-		return fridge_letter,pos+len(fridge_letter)
+		return msg[pos],pos+1
 		
 class uh(keyword_fridge):
 	'''

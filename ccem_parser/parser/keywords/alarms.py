@@ -4,6 +4,13 @@ from .. import utils
 from ..utils import _
 
 fridge = utils.gobbler(r'[a-z]\d{1,2}')
+'''
+Fridge Tag Related Keywords:
+	ft: monthly fridge tag report 
+	uh: unresoved hot alarm
+	uc: unresoved cold alarm
+	rt: replace fridge tag
+'''
 
 def parse_alarms(alarms,pos=0):
 	match,pos = utils.gobble('\d{1,2}',alarms,pos) #gobble 1 or 2 digits
@@ -30,6 +37,10 @@ def parse_multiple_alarms(alarms,pos=0):
 	return args,pos
 
 class ft(utils.Keyword):
+	'''
+	Fridge Tag Alarm Keyword Class.
+	Valid Format: ft \d\d  or ft ([a-z]\d\d)*
+	'''
 	
 	def parse(self,msg,pos=0):
 		pos += len(self.kw)
@@ -51,9 +62,73 @@ class ft(utils.Keyword):
 			out += u' %s: (%s %s %s %s)'%(label if label is not None else '',alarms[0],_('high'),alarms[1],_('low'))
 		return out+'\n'
 		
+class keyword_fridge(utils.Keyword):
+	'''
+	Unresoved Hot or Cold Alarms Keyword Class
+	Valid Formats: kw or kw [a-z]
+	'''
+	
+	def parse(self,msg,pos=0):
+		pos += len(self.kw)
+
+		letter = utils.Tokens.singleletter(msg,pos)
+		
+		if not letter:
+			return None,pos
+			
+		fridge_letter = letter.group(0)
+		return fridge_letter,pos+len(fridge_letter)
+		
+class uh(keyword_fridge):
+	'''
+	Unresolved Hot Alarms
+	'''
+	@classmethod
+	def get_msg(cls,args):
+		out = _('Hot Alarm')
+		return out + ': %s'%args
+	
+class uc(keyword_fridge):
+	'''
+	Unresolved Cold Alarms
+	'''
+	@classmethod
+	def get_msg(cls,args):
+		out = _('Cold Alarm')
+		return out + ': %s'%args
+	
+class rt(keyword_fridge):
+	'''
+	Replace Tag: fridge tag needs to be replaced 
+	'''
+	@classmethod
+	def get_msg(cls,args):
+		out = _('Replace')
+		return out + ': %s'%args
+	
+class nf(keyword_fridge):
+	'''
+	Equipment Not Functioning
+	'''
+	@classmethod
+	def get_msg(cls,args):
+		out = _('Not Functioning')
+		return out + ': %s'%args
+	
+class ok(keyword_fridge):
+	'''
+	Equipment OK
+	'''
+	@classmethod
+	def get_msg(cls,args):
+		out = _('OK')
+		return out + ': %s'%args
+		
 if __name__ == '__main__':
 	'''
 	Basic Testing
+	'''
+	
 	'''
 	test_messages = [
 		'ft0',
@@ -63,8 +138,16 @@ if __name__ == '__main__':
 		'ft',
 		'ft*',
 	]
+	'''
 	
-	parser = ft()
+	test_messages = [
+		'uh',
+		'uha',
+		'uhb',
+		'uhuf',
+	]
+	
+	parser = uh()
 
 	print 'Start: ',parser.name,parser.kw
 	for m in test_messages:

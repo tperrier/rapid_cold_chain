@@ -21,6 +21,9 @@ def parse_stock(stock,pos=0):
 		return args,pos
 
 class sl(utils.Keyword):
+	'''
+	Stock Level Report sl (vaccine_label stock)+
+	'''
 	
 	def parse(self,msg,pos=0):
 		pos += len(self.kw)
@@ -34,8 +37,30 @@ class sl(utils.Keyword):
 				label = vaccine_map[label]
 			out += u' %s (%s)'%(label,count)
 		return out+'\n'
+
+class so(utils.Keyword):
+	'''
+	Stock Out Event: so [a-z]
+	'''
 	
-				
+	def parse(self,msg,pos=0):
+		pos += len(self.kw)
+		
+		letter = utils.Tokens.startsletter(msg,pos)
+		
+		if not letter:
+			raise utils.ParseError(_('Stock Out Error: No Vaccine Label'))
+			
+		letter = letter.group(0)
+		return letter,pos+1
+	
+	@classmethod
+	def get_msg(cls,args):
+		out = _('Stock Out')
+		label = vaccine_map[label] if label in vaccine_map else label
+		return out + ': %s'%args
+		
+		
 if __name__ == '__main__':
 	'''
 	Basic Testing

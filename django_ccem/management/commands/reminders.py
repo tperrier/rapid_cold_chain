@@ -27,7 +27,7 @@ class Command(BaseCommand):
 	option_list = BaseCommand.option_list + (
 		make_option('-s','--send',help='send messages',action='store_true',default=False),
 		make_option('--silent',help='don\t print output',action='store_true',default=False),
-		make_option('-a','--action',help='action to preform',choices=action_list,default='monthly')
+		make_option('-a','--action',help='action to preform [%s]'%' '.join(action_list),choices=action_list,default='monthly')
 	)
 	
 	

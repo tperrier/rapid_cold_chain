@@ -26,6 +26,7 @@ urlpatterns = [
 	url(r'',include('django_ccem.urls')),
 	url(r'^rapidsms/',include(rapidsms_urls)),
 	url(r'^envaya/',include('envaya.urls')),
+	url(r'^test_message/$','ccem_parser.views.test_message'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 #urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import re, code
 from .. import utils
-import ft,sl
+import alarms,sl
 
 
 class short(utils.Keyword):
@@ -24,7 +24,7 @@ class short(utils.Keyword):
 		args = {}
 		if stock and not high:
 			#no alarms so stock is really multiple fridge alarms
-			args['ft'],pos = ft.parse_multiple_alarms(stock)
+			args['ft'],pos = alarms.parse_multiple_alarms(stock)
 		elif stock:
 			stock,pos = sl.parse_stock(stock)
 			if stock:

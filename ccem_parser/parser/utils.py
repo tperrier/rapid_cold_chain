@@ -16,7 +16,8 @@ class Tokens:
 	'''
 	integer = re.compile("\d+").match
 	whitespace = re.compile("\s+").match
-	singleletter = re.compile("[a-z][^a-z]").match
+	singleletter = re.compile("[a-z](?:[^a-z]|$)").match
+	startsletter = re.compile("[a-z]").match
 	singledigit = re.compile("\d").match
 	variable = re.compile("[a-z]+").match
 

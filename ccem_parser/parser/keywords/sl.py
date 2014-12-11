@@ -15,7 +15,10 @@ def parse_stock(stock,pos=0):
 			pos += 1 #jump over stock label 
 			m,pos = utils.gobble('\d+',stock,pos)
 			if not m:
-				raise utils.InvalidStockError(stock[pos])
+				try:
+					raise utils.InvalidStockError(stock[pos])
+				except IndexError as e:
+					raise utils.NoStockFoundError(label)
 			else:
 				args[label] = m.group(0)
 		return args,pos
@@ -27,6 +30,8 @@ class sl(utils.Keyword):
 	
 	def parse(self,msg,pos=0):
 		pos += len(self.kw)
+		if pos == len(msg):
+			raise utils.NoVaccineFoundError()
 		return parse_stock(msg,pos)
 	
 	@classmethod
@@ -57,7 +62,7 @@ class so(utils.Keyword):
 	@classmethod
 	def get_msg(cls,args):
 		out = _('Stock Out')
-		label = vaccine_map[label] if label in vaccine_map else label
+		args = vaccine_map[args] if args in vaccine_map else args
 		return out + ': %s'%args
 		
 		

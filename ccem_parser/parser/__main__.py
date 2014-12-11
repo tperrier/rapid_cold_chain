@@ -1,5 +1,6 @@
 import argparse
 import __init__ as P
+import tests
 
 #################
 # Argument Parser
@@ -30,11 +31,11 @@ def live():
 		
 def test():
 	
-	if args.valid:
-		process_messages(VALID_LIST,valid=True)
-		
 	if args.invalid:
-		process_messages(INVALID_LIST,valid=False)
+		process_messages(tests.VALID_LIST,valid=True)
+		
+	if args.valid:
+		process_messages(tests.INVALID_LIST,valid=False)
 
 def process_messages(messages,valid=True):
 	'''
@@ -82,31 +83,5 @@ def output_str(msg,level=0):
 	if args.verbose >= level:
 		return msg
 	return ''
-	
-VALID_LIST = [
-	'ft 0 sl p 1000 d 1000',
-	'ft a 0 b 0 sl p 1000 d		1000',
-	'ft 11 sl p 10000 d 1000',
-	'ft a 11 b11 sld1000p1000',
-	'uc',
-	'UH',
-	'nf',
-	'oK',
-	'rt',
-	'uc a',
-	'uh a',
-	'nf a',
-	'ok a',
-	'rt a',
-	'so P',
-	'NF hc 101010',
-	'rt hc 1010',
-	'uh A HC 101010',
-	'Ok C HC 1010',
-]
-
-INVALID_LIST = [
-	'uc aa',
-]
 	
 locals()[args.action]()

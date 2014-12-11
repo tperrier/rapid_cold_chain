@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	 <link href='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css' rel='stylesheet'>
+	 
+	<style>
+		dd {
+			padding-left:50px;
+		} 
+	</style>
+</head>
+
+<body>
+	
+	<form action='.' method='get'>
+		{% if  not verbose %}
+			<input type='submit' name='verbose' value='Verbose'/>
+		{% else %}
+			<input type='submit' name='verbose' value='Simple'/>
+		{% endif %}
+	</form>
+	
+	<div class='container-fluid'>
+	<div class='row'>
+		<!-- first column valid messages -->
+		<div class='col-sm-6'>
+			<h2>Valid Message Tests</h2>
+			<ul>
+			{% for msg in valid %}
+				<li>
+				<b>Message:</b> {{ msg.message }} 
+				{% if msg.parsed == '{}' %}
+				<span style='color:red; font-weight:bold' class='glyphicon glyphicon-remove'></span></li>
+				{% else %}
+				<span style='color:limegreen; font-weight:bold' class='glyphicon glyphicon-ok'></span></li>
+				{% endif %}
+				{% if verbose %}
+				<ul>
+					{% if msg.parsed != '{}' %}
+						<li><b>Cleaned:</b> {{msg.cleaned}}</li>
+						<li><b>Parsed:</b> {{msg.parsed}}</li>
+						<li><b>Response:</b> {{msg.response}} </li>
+					{% elif msg.error %}
+						<li><b>Error:</b> {{msg.error}}</li>
+					{% endif %}
+				</ul>
+				{% endif %}
+				</li>
+			{% empty %}
+				<li>No Messages<li>
+			{% endfor %}
+			</ul>
+		</div>
+		
+		<!-- second column invalid messages -->
+		<div class='col-sm-6'>
+			<h2>Invalid Message Tests</h2>
+			<ul>
+			{% for msg in invalid %}
+				<li>
+					<b>Message:</b> {{ msg.message }}
+				{% if msg.parsed == '{}' %}
+				<span style='color:red; font-weight:bold' class='glyphicon glyphicon-remove'></span></li>
+				{% else %}
+				<span style='color:limegreen; font-weight:bold' class='glyphicon glyphicon-ok'></span></li>
+				{% endif %}
+				{% if verbose %}
+				<ul>
+					{% if msg.parsed != '{}' %}
+						<li><b>Cleaned:</b> {{msg.cleaned}}</li>
+						<li><b>Parsed:</b> {{msg.parsed}}</li>
+						<li><b>Response:</b> {{msg.response}} </li>
+					{% elif msg.error %}
+						<li><b>Error:</b> {{msg.error}}</li>
+					{% endif %}
+				</ul>
+				</li>
+				{% endif %}
+			{% empty %}
+				<li>No Messages<li>
+			{% endfor %}
+			</ul>
+		</div>
+		
+	</div>
+	</div>
+	
+	{% if message %}
+	<dl>
+		<dt>Message:</dt><dd>{{message}}</dd>
+		<dt>Parsed:</dt><dd>{{parsed}}</dd>
+		<dt>Error:</dt><dd>{{error}}</dd>
+		<dt>Response:</dt><dd>{{response}}</dd>
+	</dl>
+	{% endif %}
+	
+</body>
+
+</html>

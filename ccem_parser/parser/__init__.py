@@ -1,4 +1,5 @@
 import utils
+from tests import *
 
 
 def get_parser(*args):

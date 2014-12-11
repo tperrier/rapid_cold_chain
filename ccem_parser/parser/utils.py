@@ -94,11 +94,11 @@ class ParseResult(object):
 		Returns a lazzy i18n object that can be compiled in the users language.
 		'''
 		if len(self.commands) == 0:
-			return _('No commands found')
+			return _('No commands found')+'\n'
 		msg = _('Thanks. Message successfully submitted.')+'\n'
 		
 		for kw,args in self.commands.iteritems():
-			msg += self.__class__.get_kw_msg(kw,args)
+			msg += self.__class__.get_kw_msg(kw,args)+''
 			
 		return msg
 
@@ -108,15 +108,14 @@ class ParseResult(object):
 		Keyword Models should declare a get_msg function that takes parsed arguments
 		and returns a lazzy i18n object.
 		'''
-		module = 'ccem_parser.parser.keywords.%s'%kw
+		from keywords import KEYWORDS
 		try:
-			__import__(module)
-		except ImportError:
+			kw_cls = [k for k in KEYWORDS if k.__name__ == kw][0]
+		except IndexError as e:
 			#Translators: keyword is our name for ft or sl ect.
 			return _('Keyword %s'%kw)
 		else:
-			kw_cls = sys.modules[module]
-			return getattr(kw_cls,kw).get_msg(args)
+			return kw_cls.get_msg(args)
 			
 
 class ParseError(Exception):
@@ -145,6 +144,9 @@ class SingleArgParseError(ParseError):
 class NoKeywordError(ParseError):
 	message = _('Sorry, we did not find a keyword in your message. A moderator is reviewing it.')
 	
+class NoVaccineFoundError(ParseError):
+	message = _('No vaccine lable found')
+	
 class UnexpectedCharError(SingleArgParseError):
 	template = _('Unexpected Character %s')
 	
@@ -153,6 +155,9 @@ class MultipleKeyWordError(SingleArgParseError):
 
 class InvalidAlarmsError(SingleArgParseError):
 	template = _('Invalid alarm value \'%s\'. Must be a digit')
+	
+class NoStockFoundError(SingleArgParseError):
+	template = _('No Value For Stock %s Found')
 
 class InvalidStockError(SingleArgParseError):
 	template = _('Invalid Stock value \'%s\', must be a digit')

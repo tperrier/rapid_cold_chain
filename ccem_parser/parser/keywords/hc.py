@@ -28,8 +28,7 @@ class hc(utils.Keyword):
 	
 	@classmethod
 	def get_msg(cls,args):
-		out = _('Health Facility')
-		return out+': '+str(args)
+		return _('Health Facility: %s \n')%str(args)
 		
 if __name__ == '__main__':
 	'''

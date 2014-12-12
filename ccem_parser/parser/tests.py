@@ -9,19 +9,19 @@ VALID_LIST = [
 	'uc',
 	'UH',
 	'nf',
-	'oK',
+	'wF',
 	'rt',
 	'uc a',
 	'uh a',
 	'nf a',
-	'ok a',
+	'wf a',
 	'rt a',
 	'so P',
 	'SO\tdhc10',
 	'NF hc 101010',
 	'rt hc 1010',
 	'uh A HC 101010',
-	'Ok C HC 1010',
+	'Wf C HC 1010',
 ]
 
 INVALID_LIST = [

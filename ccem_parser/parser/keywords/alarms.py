@@ -116,9 +116,9 @@ class nf(keyword_fridge):
 		out = _('Not Functioning')
 		return out + ': %s'%args
 	
-class ok(keyword_fridge):
+class wf(keyword_fridge):
 	'''
-	Equipment OK
+	Working Fridge
 	'''
 	@classmethod
 	def get_msg(cls,args):

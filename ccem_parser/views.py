@@ -2,6 +2,7 @@
 import code
 
 from django.shortcuts import render, render_to_response
+from django.utils import translation
 
 import parser
 
@@ -14,6 +15,8 @@ def test_message(request):
 	return render_to_response('test_message.html',msg_dict(message,parsed,error))
 	
 def test_message_list(request):
+	
+	translation.activate('ka')
 	
 	valid,invalid = [],[]
 	verbose = True if request.GET.get('verbose','Simple') =='Verbose' else False

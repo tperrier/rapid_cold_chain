@@ -54,7 +54,7 @@
                <table class='table'>
                     {% for contact in contacts %}
                     <tr><td>
-                        <a href='{% url "django_ccem.views.contacts" %}?contact={{contact.connection.identity}}'>
+                        <a href='{% url "django_ccem.views.contacts" %}{{contact.connection.identity}}'>
                             {{ contact.contact.name }} | {{ contact.connection.identity }}
                         </a>
                     </td></tr>

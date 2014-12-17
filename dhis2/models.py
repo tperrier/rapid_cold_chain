@@ -337,12 +337,12 @@ class FacilitySelect(forms.Select):
 		value = [force_text(value)]
 		for parent, facilities in Facility.objects.facility_groups().iteritems():
 			if isinstance(facilities, (list, tuple)):
-				output.append('<optgroup label="%s">'%parent)
+				output.append(u'<optgroup label="%s">'%parent)
 				for facility in facilities:
-					output.append(self.render_option(value, unicode(facility.dhis2_id),unicode(facility)))
-				output.append('</optgroup>')
-		return '\n'.join(output)
-			
+					output.append(self.render_option(value, str(facility.dhis2_id),unicode(facility)))
+				output.append(u'</optgroup>')
+		return u'\n'.join(output).encode('utf-8').decode('utf-8')
+
 class ContactForm(forms.ModelForm):
 	
 	class Meta:

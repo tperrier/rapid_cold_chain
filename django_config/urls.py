@@ -29,6 +29,7 @@ urlpatterns = [
 	url(r'^test_message/$','ccem_parser.views.test_message'),
 	url(r'^test_message_list/$','ccem_parser.views.test_message_list'),
 ]
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 
 if 'rosetta' in settings.INSTALLED_APPS:

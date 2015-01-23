@@ -78,7 +78,7 @@ STATIC_URL = '/static/'
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/public/static/"
 if ON_OPENSHIFT:
-    STATIC_ROOT = os.path.join(os.environ.get('OPENSHIFT_REPO_DIR'), 'wsgi', 'static')
+    STATIC_ROOT = os.path.join(os.environ.get('OPENSHIFT_REPO_DIR'),'static_collect')
 else:
     STATIC_ROOT = os.path.join(PROJECT_ROOT, STATIC_URL.strip("/"))
 

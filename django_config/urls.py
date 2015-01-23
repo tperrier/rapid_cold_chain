@@ -28,8 +28,10 @@ urlpatterns = [
 	url(r'^envaya/',include('envaya.urls')),
 	url(r'^test_message/$','ccem_parser.views.test_message'),
 	url(r'^test_message_list/$','ccem_parser.views.test_message_list'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-#urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
+
+if not settings.ON_OPENSHIFT:
+	urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 
 if 'rosetta' in settings.INSTALLED_APPS:

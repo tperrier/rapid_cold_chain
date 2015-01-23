@@ -73,10 +73,10 @@ class Parser:
 		return None,None,pos
 				 
 	def clean(self,s):
-		s = s.lower()
+		s = self.remove_chars.sub('',s.lower())
 		if re.match(r'^o[^k]',s):
 			s = '0'+s[1:]
-		return self.remove_chars.sub('',s)
+		return s
 		
 		
 if __name__ == '__main__':

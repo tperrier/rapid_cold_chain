@@ -2,15 +2,15 @@
 
 import os
 
+#Determain if we are running on OpenShift
+ON_OPENSHIFT = True if os.environ.has_key('OPENSHIFT_REPO_DIR') else False
+
 # The top directory for this project. Contains requirements/, manage.py,
-# and README.rst, a rapid_cold_chain directory with settings etc (see
-# PROJECT_PATH), as well as a directory for each Django app added to this
-# project.
 PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 
 # The directory with this project's templates, settings, urls, static dir,
 # wsgi.py, fixtures, etc.
-PROJECT_PATH = os.path.join(PROJECT_ROOT, 'rapid_sms')
+PROJECT_PATH = os.path.join(PROJECT_ROOT, 'django_config')
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -21,14 +21,15 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+# Database
+# https://docs.djangoproject.com/en/1.7/ref/settings/#databases
+
+SQLITE_DB_FOLDER = os.environ['OPENSHIFT_DATA_DIR'] if ON_OPENSHIFT else PROJECT_PATH
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(PROJECT_PATH,'rapid_sms.db'),
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
+        'NAME': os.path.join(SQLITE_DB_FOLDER, 'rapid_sms.db'),
     }
 }
 
@@ -71,7 +72,7 @@ MEDIA_URL = '/media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/public/static/"
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'public', 'static')
+STATIC_ROOT = os.path.join(PROJECT_PATH, 'static_collect')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -120,10 +121,10 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.locale.LocaleMiddleware',
 )
 
-ROOT_URLCONF = 'rapid_sms.urls'
+ROOT_URLCONF = 'django_config.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'rapid_sms.wsgi.application'
+WSGI_APPLICATION = 'wsgi.application'
 
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_PATH, 'templates'),
@@ -176,6 +177,12 @@ LOGGING = {
 	    'level': 'ERROR',
 	    'propagate': True,
 	},
+	
+    }
+}
+
+'''
+Other Logging Information
 	'rapidsms': {
 	    'handlers': ['file'],
 	    'level': 'DEBUG',
@@ -191,8 +198,8 @@ LOGGING = {
 	    'level':'DEBUG',
 	    'propagate':True,
 	}
-    }
-}
+	
+	'''
 
 INSTALLED_APPS = (
     "django.contrib.auth",
@@ -207,7 +214,6 @@ INSTALLED_APPS = (
     #"djtables",  # required by rapidsms.contrib.locations
     "django_tables2",
     "selectable",
-    "south",
     "bootstrap3",
 
     # RapidSMS
@@ -239,11 +245,11 @@ INSTALLED_BACKENDS = {
 		"ENGINE": "envaya.outgoing.EnvayaBackend",},
 }
 
-#~ LOGIN_REDIRECT_URL = '/'
-
+'''
 #Local Settings
 try:
     #Import local settings
     from settings_local import *
 except ImportError as e:
     print e
+'''

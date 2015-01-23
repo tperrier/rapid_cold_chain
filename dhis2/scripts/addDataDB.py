@@ -2,7 +2,7 @@ import requests,json,code
 import sys
 sys.path.append('../../')
 from django.core.management import setup_environ
-from rapid_sms import settings
+from django_config import settings
 setup_environ(settings)
 
 import django_ccem.models as ccem

@@ -51,13 +51,13 @@ class Message(util.TimeStampedModel):
 
 class SubmissionMessageManager(models.Manager):
 	
-	def get_query_set(self):
-		return super(SubmissionMessageManager,self).get_query_set().filter(is_submission=True)
+	def get_queryset(self):
+		return super(SubmissionMessageManager,self).get_queryset().filter(is_submission=True)
 		
 class RegularMessageManager(models.Manager):
 	
-	def get_query_set(self):
-		return super(RegularMessageManager,self).get_query_set().filter(is_submission=False)
+	def get_queryset(self):
+		return super(RegularMessageManager,self).get_queryset().filter(is_submission=False)
 
 class SubmissionMessage(Message):
 	'''

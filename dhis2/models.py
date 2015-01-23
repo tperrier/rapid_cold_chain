@@ -350,6 +350,7 @@ class ContactForm(forms.ModelForm):
 		widgets = {
 			'facility':FacilitySelect()
 		}
+		fields = '__all__'
 	
 """
 class ContactConnection(models.Model):

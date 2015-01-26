@@ -30,4 +30,10 @@ class EnvayaOutgoing(util.TimeStampedModel):
 	def mark_sent(self):
 		self.sent = True
 		self.save()
+		
+class EnvayaTraining(util.TimeStampedModel):
+	
+	number = models.CharField(max_length=15)
+	content = models.CharField(max_length=250)
+	response = models.CharField(max_length=250)
 	

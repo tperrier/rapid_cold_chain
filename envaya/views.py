@@ -9,6 +9,9 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
+from django.shortcuts import render, render_to_response
+
+from django.utils import translation 
 
 #rapidsms imports
 from rapidsms.router import receive, lookup_connections, send
@@ -16,6 +19,7 @@ from rapidsms.router import receive, lookup_connections, send
 #envaya imports
 from response import EnvayaResponse
 import models, forms
+from ccem_parser import parser
 logger = logging.getLogger(__name__)
 
 class EnvayaView(View):
@@ -77,7 +81,9 @@ class EnvayaView(View):
 
 		
 class ReceiveView(FormView):
-	
+	'''
+	Test Envaya Receive 
+	'''
 	form_class = forms.EnvayaReceiveForm
 	template_name = "envaya_test.html"
 	backend_name = None
@@ -100,7 +106,51 @@ class SendView(FormView):
 		send(text,connection)
 		
 		return HttpResponse("<pre>%s</pre>"%(pprint.pformat(form.cleaned_data),))
+
+@csrf_exempt
+def training_view(request):
+	if request.method == 'GET':
+		return render(request,'envaya_training.html')
+	elif request.method == 'POST':
+		action = request.POST.get('action',None)
+		if action:
+			try:
+				if action=="incoming": #only parse sms messages not calls or mms
+					
+					if request.POST.get('message_type',None)=='sms':
+						#Get parsed message response 
+						ccem_parsed,ccem_error = parser.parse(request.POST['message'])
+						
+						#Switch Language To Lao Karaoke
+						translation.activate('ka') 
+						message = unicode(ccem_parsed) if not ccem_error else unicode(ccem_error)
+						models.EnvayaTraining.objects.create(
+							**{'number':request.POST['from'],'content':request.POST['message'],'response':message}
+						)
+						if request.POST.get('http_test',False): #Comming from the HTTP Test Form
+							return render(request,'envaya_training.html',{'response':message})
+						else: #Comming from Envaya
+							response = EnvayaResponse(messages=[{'message':message,'to':request.POST['from']}])
+							return EnvayaHttpResponse(response=response)
+					else:
+						return EnvayaHttpResponse(log='only sms messages supported',status=400)
+				elif action=="device_status":
+					return EnvayaHttpResponse('Status Recieved')
+				elif action=="test":
+					print "test"
+					return EnvayaHttpResponse('Test Ok')
+				elif action=='outgoing':
+					return EnvayaOutgoingResponse()
+				elif action=='send_status':
+					return EnvayaHttpResponse(log='Confirm Sent')
+				else:
+					return EnvayaHttpResponse(log='action not implemented',status=404)
+			except KeyError as e:
+				return EnvayaHttpResponse(log="Required POST value missing. "+str(e),status=400)
+		else:
+			return EnvayaHttpResponse(log='action required',status=400)
 	
+
 
 def EnvayaOutgoingResponse():
 	response = models.EnvayaOutgoing.objects.response(send=True)

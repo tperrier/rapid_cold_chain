@@ -156,6 +156,9 @@ class MultipleKeyWordError(SingleArgParseError):
 class InvalidAlarmsError(SingleArgParseError):
 	template = _('Invalid alarm value \'%s\'. Must be a digit')
 	
+class NoAlarmsFoundError(ParseError):
+	message = _('No alarm data found. Must be digits (high)(low)')
+	
 class NoStockFoundError(SingleArgParseError):
 	template = _('No Value For Stock %s Found')
 

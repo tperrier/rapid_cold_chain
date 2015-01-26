@@ -4,7 +4,7 @@ from rapidsms.apps.base import AppBase
 
 from django.utils import translation 
 
-import django_ccem.models as ccem,parser, dhis2.models as dhis2
+import django_ccem.models as ccem, parser, dhis2.models as dhis2
 
 logger = logging.getLogger(__name__)
 

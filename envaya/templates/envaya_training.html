@@ -1,0 +1,28 @@
+<html>
+    
+    <body>
+	
+	<h1>Test Training Gateway</h1>
+	
+	<form method='post' action=''>
+	    {% csrf_token %}
+	    <dl>
+		<dt>Number:</dt>
+		<dd><input name='from' type='text' value='111-111-1111'/><dd>
+		<dt>Message:</dt>
+		<dd><input name='message' type='text'/><dd>
+	    </dl>
+	    <input type='hidden' name='action' value='incoming'/>
+	    <input type='hidden' name='message_type' value='sms'/>
+	    <input type='hidden' name='http_test' value='true'/>
+	    <input type='submit' value='Send'/>
+	</form>
+	
+	{% if response %}
+	    <h3 style='display:inline'>Response: </h3> <i>{{response}}</i>
+	{% endif %}
+	
+    </body>
+    
+    
+</html>

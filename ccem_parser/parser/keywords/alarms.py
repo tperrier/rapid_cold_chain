@@ -29,6 +29,8 @@ def parse_multiple_alarms(alarms,pos=0):
 	while utils.Tokens.singleletter(alarms,pos):
 		label = alarms[pos]
 		pos += 1
+		if len(alarms) == pos:
+			raise utils.NoAlarmsFoundError()
 		args[label],pos = parse_alarms(alarms,pos)
 	
 	if len(args) == 0:

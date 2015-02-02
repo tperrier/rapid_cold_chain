@@ -52,9 +52,8 @@ class Command(BaseCommand):
 		contacts = dhis2.Contact.objects.filter(facility__isnull=False)
 		connections = []
 		for contact in contacts:
-			conn_set = contact.connection_set.filter(connection__backend__name='envaya')
-			if len(conn_set) > 0:
-				connections.append(conn_set[0].connection)
+			if contact.connection.backend.name == 'envaya':
+				connections.append(contact.connection)
 				
 		self.send_batch(message,connections)
 				

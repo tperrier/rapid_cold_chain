@@ -2,10 +2,33 @@ from django.db import models
 from jsonfield import JSONField
 import util.models as util, ccem_parser.parser.utils as utils
 
+class MessageQuerySet(models.QuerySet):
+	
+	def pivot(self):
+		connections = {}
+		for msg in self.all():
+			try:
+				connections[msg.connection.identity].append(msg.created.date())
+			except KeyError as e:
+				connections[msg.connection.identity] = [msg.created.date()]
+		return connections
+
+class SubmissionMessageQuerySet(MessageQuerySet):
+	
+	def get_queryset(self):
+		return super(SubmissionMessageQuerySet,self).get_queryset().filter(is_submission=True)
+		
+class RegularMessageQuerySet(MessageQuerySet):
+	
+	def get_queryset(self):
+		return super(RegularMessageQuerySet,self).get_queryset().filter(is_submission=False)
+
 class Message(util.TimeStampedModel):
 	'''
 	A message model that acts like rapidsms.messagelog.message
 	'''
+	
+	objects = MessageQuerySet.as_manager()
 	
 	INCOMING,OUTGOING = 'I','O'
 	DIRECTION_CHOICES = ((INCOMING,'Incoming'),(OUTGOING,'Outgoing'))
@@ -49,22 +72,12 @@ class Message(util.TimeStampedModel):
 		#boolean if the message should be flagged or not
 		return self.has_error and not self.ignored
 
-class SubmissionMessageManager(models.Manager):
-	
-	def get_queryset(self):
-		return super(SubmissionMessageManager,self).get_queryset().filter(is_submission=True)
-		
-class RegularMessageManager(models.Manager):
-	
-	def get_queryset(self):
-		return super(RegularMessageManager,self).get_queryset().filter(is_submission=False)
-
 class SubmissionMessage(Message):
 	'''
 	A proxy model for Message that has a special Manager filtering on is_submission = True
 	'''
 	
-	objects = SubmissionMessageManager()
+	objects = SubmissionMessageQuerySet.as_manager()
 	
 	class Meta:
 		proxy = True #make this a proxy model 
@@ -74,7 +87,7 @@ class RegularMessage(Message):
 	A proxy model for Message that has a special Manager filtering on is_submission = False
 	'''
 	
-	objects = RegularMessageManager()
+	objects = RegularMessageQuerySet.as_manager()
 	
 	def save(self,*args,**kwargs):
 		self.is_submission = False

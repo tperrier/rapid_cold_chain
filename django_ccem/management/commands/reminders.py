@@ -66,9 +66,8 @@ class Command(BaseCommand):
 		for facility in facilities:
 			self.write(facility)
 			for contact in facility.contact_set.all():
-				for conn in contact.connection_set.all():
-					connections.append(conn.connection)
-					self.write('   %s'%conn)
+				connections.append(contact.connection)
+				self.write('   %s'%contact.connection.identity)
 		
 		self.send_batch(message,connections,verbose=False)
 		
@@ -103,7 +102,7 @@ class Command(BaseCommand):
 	def write(self,*args,**kwargs):
 		verbose = kwargs['verbose'] if 'verbose' in kwargs else True
 		if not self.options['silent'] and verbose:
-			self.stdout.write(*[str(a) for a in args])
+			self.stdout.write(*[unicode(a) for a in args])
 			
 	def test(self):
 		self.write('Test')

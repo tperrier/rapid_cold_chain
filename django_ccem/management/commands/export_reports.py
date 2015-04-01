@@ -51,14 +51,16 @@ Utility Functions
 def message_to_object(message):
 	
 	try:
-		facility = {
-			'name':unicode(message.connection.dhis2.contact.facility),
-			'id':message.connection.dhis2.contact.facility.dhis2_id,
-		}
-	except (ObjectDoesNotExist,AttributeError):
+		if message.connection.dhis2.facility:
+			facility = {
+				'name':unicode(message.connection.dhis2.facility),
+				'id':message.connection.dhis2.facility.dhis2_id,
+			}
+		else:
+			facility = None
+	except (ObjectDoesNotExist):
 		facility = None
 		
-	
 	return {
 		'phone_number':message.connection.identity,
 		'facility':facility,

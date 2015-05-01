@@ -46,8 +46,7 @@ class Command(BaseCommand):
 		Send a monthly visit reminder to all Contacts associated with a facility.
 		'''
 		
-		message = 'Khor khuam teau. Jark NIP:\nGa lou nar song SMS laiy ngarn pa jum deaun phajik 2014 garn jang teaun oun ha phoum luam therng jum nuan vaccine t yung leau'
-		
+		message = 'Khor khuam teaun. Jark NIP: Ga lou nar song SMS laiy ngarn pa jum deaun garn jang teaun oun ha phoum luam therng jum nuan vaccine t yung leau'		
 		#get all connections to send to
 		contacts = dhis2.Contact.objects.filter(facility__isnull=False)
 		connections = []
@@ -59,7 +58,7 @@ class Command(BaseCommand):
 				
 	def missed_reminders(self):
 		
-		message = 'Khor khuam teau. Jark NIP:\nGa lou nar song SMS laiy ngarn pa jum deaun phajik 2014 garn jang teaun oun ha phoum luam therng jum nuan vaccine t yung leau'
+		message = 'Khor khuam teaun. Jark NIP: Ga lou nar song SMS laiy ngarn pa jum deaun garn jang teaun oun ha phoum luam therng jum nuan vaccine t yung leau'
 		facilities = self.missed_facilities()
 		
 		connections = []
@@ -94,6 +93,7 @@ class Command(BaseCommand):
 		'''
 		self.write("Sending: %s"%self.options['send'],verbose=verbose)
 		self.write("Messages to Send: %i"%len(connections),verbose=verbose)
+		self.write('Message: %s'%message)
 		for i,conn in enumerate(connections):
 			self.write('   %i: %s'%(i+1,conn),verbose=verbose)
 			if self.options['send']:

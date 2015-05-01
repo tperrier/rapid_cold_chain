@@ -249,11 +249,9 @@ INSTALLED_BACKENDS = {
 		"ENGINE": "envaya.outgoing.EnvayaBackend",},
 }
 
-'''
 #Local Settings
 try:
     #Import local settings
     from settings_local import *
 except ImportError as e:
     print e
-'''

@@ -1,16 +1,84 @@
+import datetime
+
 from django.db import models
+from django.utils import timezone
+from django.core.exceptions import ObjectDoesNotExist
+
 from jsonfield import JSONField
+
 import util.models as util, ccem_parser.parser.utils as utils
 
 class MessageQuerySet(models.QuerySet):
 	
-	def pivot(self):
+	def month(self):
+		'''
+		Return messages for 3 days before and 10 days after start of current month
+		#TODO: add offset
+		'''
+		today = datetime.date.today()
+		month = datetime.datetime(today.year,today.month,1)
+		
+		start = month - datetime.timedelta(days=3)
+		end = month + datetime.timedelta(days=10)
+		
+		return self.filter(direction='I').range(start,end)
+	
+	def range(self,start,end):
+		if isinstance(start,basestring):
+			start = datetime.datetime.strptime(start,'%y-%m-%d')
+		if isinstance(end,basestring):
+			end = datetime.datetime.strptime(end,'%y-%m-%d')
+		
+		tz = timezone.get_default_timezone()
+		if timezone.is_naive(start):
+			start = timezone.make_aware(start,tz)
+		if timezone.is_naive(end):
+			end = timezone.make_aware(end,tz)
+			
+		return self.filter(created__range=(start,end))
+		
+	def get_rows(self):
+		''' Return generator of rows for query set
+			Columns: date,identity,contact,text
+		'''
+		
+		class RowGen(object):
+			
+			def __init__(this):
+				this.messages = iter(self.all())
+				
+			def __iter__(this):
+				return this
+				
+			def next(this):
+				msg = this.messages.next()
+				date = msg.created.strftime('%m-%d %H:%M')
+				number = msg.connection.identity
+				try:
+					contact = msg.connection.dhis2.name
+					facility = msg.connection.dhis2.facility
+				except ObjectDoesNotExist as e:
+					contact = ''
+					facility = ''
+				return [facility,contact,number,date,msg.text,msg.is_submission,not msg.has_error]
+				
+			def header(this):
+				return ['Facility','Contact','Phone Number','Date','Message','Submission','Valid']
+		
+		return RowGen()
+		
+	
+	def connection_frequancy(self):
+		'''
+		Count messages sent per connection 
+		#TODO: add facility and breakdown by date
+		'''
 		connections = {}
 		for msg in self.all():
 			try:
-				connections[msg.connection.identity].append(msg.created.date())
+				connections[msg.connection.identity] += 1
 			except KeyError as e:
-				connections[msg.connection.identity] = [msg.created.date()]
+				connections[msg.connection.identity] = 1
 		return connections
 
 class SubmissionMessageQuerySet(MessageQuerySet):

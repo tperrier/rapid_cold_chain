@@ -125,7 +125,7 @@ class OrganisationUnit(OrganisationBase):
 	#API Name for access to DHIS2
 	dhis2_api_name = 'organisationUnits'
 	
-class FacilityManager(models.Manager):
+class FacilityQuerySet(models.QuerySet):
 	
 	def non_reporting(self,month=None):
 		return self.get_query_set().exclude(dhis2_id__in=self.reporting(month))
@@ -138,10 +138,12 @@ class FacilityManager(models.Manager):
 			start = datetime.date(month[0],month[1],1)
 		else:
 			start = util.get_month_offset(today,month*-1)
-			
-		end = util.get_month_offset(start,1)
 		
-		return self.get_query_set().filter(
+		#add some buffer
+		start = start - datetime.timedelta(days=5)
+		end = start + datetime.timedelta(days=25)
+		
+		return self.filter(
 			contact__connection__messages__created__range=(start,end),
 			contact__connection__messages__is_submission=True
 		).distinct()
@@ -213,7 +215,7 @@ class Facility(OrganisationBase,GetMessagesByMonthMixin):
 	dhis2_api_name = 'organisationUnits'
 	
 	#set default manager
-	objects = FacilityManager()
+	objects = FacilityQuerySet.as_manager()
 	
 	def get_messages(self,start=None,end=None,direction=None,submission=None):
 		'''
